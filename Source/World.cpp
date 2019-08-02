@@ -1,5 +1,15 @@
 #include "World.h"
 
+void World::LoadScene(const char * scene_path) {
+	mWorldBlock->LoadScene(scene_path);
+}
+
+void World::Update(float dt) {
+	mWorldBlock->Update(dt);
+}
+void World::Draw() {
+	mWorldBlock->Draw();
+}
 
 World* World::worldInstance;
 

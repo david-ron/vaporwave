@@ -28,7 +28,7 @@ int main(int argc, char*argv[])
     
 	if (argc > 1)
 	{
-		worldBlock->LoadScene(argv[1]);
+		mWorld->LoadScene(argv[1]);
 	}
 	else
 	{
@@ -36,12 +36,14 @@ int main(int argc, char*argv[])
 		// Static Scene contains no animation
 		// Animated Scene does
 #if defined(PLATFORM_OSX)		
-		worldBlock->LoadScene("Scenes/AnimatedSceneWithParticles.scene");
+		mWorld.LoadScene("Scenes/AnimatedSceneWithParticles.scene");
+//		worldBlock->LoadScene("Scenes/AnimatedSceneWithParticles.scene");
 //		worldBlock.LoadScene("Scenes/AnimatedScene.scene");
 //		worldBlock.LoadScene("Scenes/StaticScene.scene");
 //		worldBlock.LoadScene("Scenes/CoordinateSystem.scene");
 #else
-		worldBlock->LoadScene("../Assets/Scenes/AnimatedSceneWithParticles.scene");
+		mWorld->LoadScene("../Assets/Scenes/AnimatedSceneWithParticles.scene");
+//		worldBlock->LoadScene("../Assets/Scenes/AnimatedSceneWithParticles.scene");
 //		worldBlock.LoadScene("../Assets/Scenes/AnimatedScene.scene");
 //		worldBlock.LoadScene("../Assets/Scenes/StaticScene.scene");
 //		worldBlock.LoadScene("../Assets/Scenes/CoordinateSystem.scene");
@@ -56,10 +58,12 @@ int main(int argc, char*argv[])
 
 		// Update worldBlock
 		float dt = EventManager::GetFrameTime();
-		worldBlock->Update(dt);
+		//worldBlock->Update(dt);
+		mWorld->Update(dt);
 
 		// Draw worldBlock
-		worldBlock->Draw();
+		//worldBlock->Draw();
+		mWorld->Draw();
 	}
 	while(EventManager::ExitRequested() == false);
 

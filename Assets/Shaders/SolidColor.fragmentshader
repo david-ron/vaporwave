@@ -70,10 +70,10 @@ void main()
 	iTotal += iAmbient;
 
 // light 1
-if(L1Enable == 1){
+if(L1Enable > 0){
 	d = length(vec3(lightVector1));
 	
-	if(lightVector1[3] == 1)
+	if(lightVector1[3] > 0)
 		f_att = 20.0/(lightAttenuation.x + lightAttenuation.y * d + lightAttenuation.z * d * d);
 	else
 		f_att = 1;
@@ -88,9 +88,9 @@ if(L1Enable == 1){
 	iTotal += f_att * (iDiffuse + iSpecular);
 	}
 // light 2
-if(L2Enable == 1){
+if(L2Enable > 0){
 	d = length(vec3(lightVector2));
-	if(lightVector2[3] == 1)
+	if(lightVector2[3] > 0)
 		f_att = 20.0/(lightAttenuation.x + lightAttenuation.y * d + lightAttenuation.z * d * d);
 	else
 		f_att = 1;
@@ -104,9 +104,9 @@ if(L2Enable == 1){
 }
 
 // light 3
-if(L3Enable == 1){
+if(L3Enable > 0){
 	d = length(vec3(lightVector3));
-	if(lightVector3[3] == 1)
+	if(lightVector3[3] > 0)
 		f_att = 20.0/(lightAttenuation.x + lightAttenuation.y * d + lightAttenuation.z * d * d);
 	else
 		f_att = 1;
@@ -119,9 +119,9 @@ if(L3Enable == 1){
 	iTotal += f_att * (iDiffuse + iSpecular);
 }
 // light 4
-if(L4Enable == 1){
+if(L4Enable > 0){
 	d = length(vec3(lightVector4));
-	if(lightVector4[3] == 1)
+	if(lightVector4[3] > 0)
 		f_att = 20.0/(lightAttenuation.x + lightAttenuation.y * d + lightAttenuation.z * d * d);
 	else
 		f_att = 1;
@@ -134,9 +134,9 @@ if(L4Enable == 1){
 	iTotal += f_att * (iDiffuse + iSpecular);
 }
 // light 5
-if(L5Enable == 1){
+if(L5Enable > 0){
 	d = length(vec3(lightVector5));
-	if(lightVector5[3] == 1)
+	if(lightVector5[3] > 0)
 		f_att = 20.0/(lightAttenuation.x + lightAttenuation.y * d + lightAttenuation.z * d * d);
 	else
 		f_att = 1;
@@ -149,9 +149,9 @@ if(L5Enable == 1){
 	iTotal += f_att * (iDiffuse + iSpecular);
 }
 // light 6
-if(L6Enable == 1){
+if(L6Enable > 0){
 	d = length(vec3(lightVector6));
-	if(lightVector6[3] == 1)
+	if(lightVector6[3] > 0)
 		f_att = 20.0/(lightAttenuation.x + lightAttenuation.y * d + lightAttenuation.z * d * d);
 	else
 		f_att = 1;
@@ -164,9 +164,9 @@ if(L6Enable == 1){
 	iTotal += f_att * (iDiffuse + iSpecular);
 }
 // light 7
-if(L7Enable == 1){
+if(L7Enable > 0){
 	d = length(vec3(lightVector7));
-	if(lightVector7[3] == 1)
+	if(lightVector7[3] > 0)
 		f_att = 20.0/(lightAttenuation.x + lightAttenuation.y * d + lightAttenuation.z * d * d);
 	else
 		f_att = 1;
@@ -179,9 +179,9 @@ if(L7Enable == 1){
 	iTotal += f_att * (iDiffuse + iSpecular);
 }
 // light 8
-if(L8Enable == 1){
+if(L8Enable > 0){
 	d = length(vec3(lightVector8));
-	if(lightVector8[3] == 1)
+	if(lightVector8[3] > 0)
 		f_att = 20.0/(lightAttenuation.x + lightAttenuation.y * d + lightAttenuation.z * d * d);
 	else
 		f_att = 1;

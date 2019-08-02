@@ -13,6 +13,9 @@ public:
 	~World();
 	
 	WorldBlock* getWorldBlock()const;
+	void Update(float dt);
+	void Draw();
+	void LoadScene(const char * scene_path);
 
 private:
 	World();

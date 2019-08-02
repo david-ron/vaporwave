@@ -1,0 +1,206 @@
+#version 330 core
+
+// Light and Material Uniform Variables
+uniform vec4 materialCoefficients; // x: ambient   y: diffuse   z: specular   w: specular exponent
+
+uniform int lightSize;
+
+uniform vec3 L1Color;
+uniform vec3 L2Color;
+uniform vec3 L3Color;
+uniform vec3 L4Color;
+uniform vec3 L5Color;
+uniform vec3 L6Color;
+uniform vec3 L7Color;
+uniform vec3 L8Color;
+
+uniform vec3 lightAttenuation; // x: kC  y: kL  z: kQ
+
+// Inputs
+in vec4 v_color;		 // vertex color: also diffuse color
+
+in vec3 normal;          // Transformed normal in View Space
+in vec3 eyeVector;       // Vector from the vertex to the Camera in View Space
+in vec4 lightVector1;     // Vector from the vertex to the Light in View Space
+						 // Length of lightVector is the distance between light and vertex
+						 // if w = 1: Point light, if w = 0: directional light
+// light 2
+in vec4 lightVector2;
+in vec4 lightVector3;
+in vec4 lightVector4;
+in vec4 lightVector5;
+in vec4 lightVector6;
+in vec4 lightVector7;
+in vec4 lightVector8;
+
+// Ouput data
+out vec3 color;
+
+
+uniform int L1Enable;
+uniform int L2Enable;
+uniform int L3Enable;
+uniform int L4Enable;
+uniform int L5Enable;
+uniform int L6Enable;
+uniform int L7Enable;
+uniform int L8Enable;
+
+void main()
+{
+/*
+	// Implment Phong Shading based on the parameters above
+	// Remember that directional light don't have attenuation
+	
+	color = v_color;
+*/
+	vec3 iTotal = vec3(0.0f);
+	// Implment Phong Shading based on the parameters above
+	// Remember that directional light don't have attenuation
+	
+	// iAmient
+	vec3 iAmbient = vec3(materialCoefficients.x);
+	vec3 iDiffuse = vec3(0.0f);
+	vec3 iSpecular = vec3(0.0f);
+	vec3 R;
+
+	float d;
+	float f_att;
+
+	iTotal += iAmbient;
+
+// light 1
+if(L1Enable == 1){
+	d = length(vec3(lightVector1));
+	
+	if(lightVector1[3] == 1)
+		f_att = 20.0/(lightAttenuation.x + lightAttenuation.y * d + lightAttenuation.z * d * d);
+	else
+		f_att = 1;
+
+	// diffuse light
+	iDiffuse = L1Color * max(0, dot(normalize(vec3(lightVector1)), normalize(normal))) * materialCoefficients.y;
+	
+	// specular light
+	R = reflect(-normalize(vec3(lightVector1)), normalize(normal));
+	iSpecular = materialCoefficients.z * L1Color * pow(max(0.0, dot(R,normalize(eyeVector))), materialCoefficients.w);
+
+	iTotal += f_att * (iDiffuse + iSpecular);
+	}
+// light 2
+if(L2Enable == 1){
+	d = length(vec3(lightVector2));
+	if(lightVector2[3] == 1)
+		f_att = 20.0/(lightAttenuation.x + lightAttenuation.y * d + lightAttenuation.z * d * d);
+	else
+		f_att = 1;
+
+	iDiffuse = L2Color * max(0, dot(normalize(vec3(lightVector2)), normalize(normal))) * materialCoefficients.y;
+
+	R = reflect(-normalize(vec3(lightVector2)), normalize(normal));
+	iSpecular = materialCoefficients.z * L2Color * pow(max(0.0, dot(R,normalize(eyeVector))), materialCoefficients.w);
+
+	iTotal += f_att * (iDiffuse + iSpecular);
+}
+
+// light 3
+if(L3Enable == 1){
+	d = length(vec3(lightVector3));
+	if(lightVector3[3] == 1)
+		f_att = 20.0/(lightAttenuation.x + lightAttenuation.y * d + lightAttenuation.z * d * d);
+	else
+		f_att = 1;
+
+	iDiffuse = L3Color * max(0, dot(normalize(vec3(lightVector3)), normalize(normal))) * materialCoefficients.y;
+
+	R = reflect(-normalize(vec3(lightVector3)), normalize(normal));
+	iSpecular = materialCoefficients.z * L3Color * pow(max(0.0, dot(R,normalize(eyeVector))), materialCoefficients.w);
+
+	iTotal += f_att * (iDiffuse + iSpecular);
+}
+// light 4
+if(L4Enable == 1){
+	d = length(vec3(lightVector4));
+	if(lightVector4[3] == 1)
+		f_att = 20.0/(lightAttenuation.x + lightAttenuation.y * d + lightAttenuation.z * d * d);
+	else
+		f_att = 1;
+
+	iDiffuse = L4Color * max(0, dot(normalize(vec3(lightVector4)), normalize(normal))) * materialCoefficients.y;
+
+	R = reflect(-normalize(vec3(lightVector4)), normalize(normal));
+	iSpecular = materialCoefficients.z * L4Color * pow(max(0.0, dot(R,normalize(eyeVector))), materialCoefficients.w);
+
+	iTotal += f_att * (iDiffuse + iSpecular);
+}
+// light 5
+if(L5Enable == 1){
+	d = length(vec3(lightVector5));
+	if(lightVector5[3] == 1)
+		f_att = 20.0/(lightAttenuation.x + lightAttenuation.y * d + lightAttenuation.z * d * d);
+	else
+		f_att = 1;
+
+	iDiffuse = L5Color * max(0, dot(normalize(vec3(lightVector5)), normalize(normal))) * materialCoefficients.y;
+
+	R = reflect(-normalize(vec3(lightVector5)), normalize(normal));
+	iSpecular = materialCoefficients.z * L5Color * pow(max(0.0, dot(R,normalize(eyeVector))), materialCoefficients.w);
+
+	iTotal += f_att * (iDiffuse + iSpecular);
+}
+// light 6
+if(L6Enable == 1){
+	d = length(vec3(lightVector6));
+	if(lightVector6[3] == 1)
+		f_att = 20.0/(lightAttenuation.x + lightAttenuation.y * d + lightAttenuation.z * d * d);
+	else
+		f_att = 1;
+
+	iDiffuse = L6Color * max(0, dot(normalize(vec3(lightVector6)), normalize(normal))) * materialCoefficients.y;
+
+	R = reflect(-normalize(vec3(lightVector6)), normalize(normal));
+	iSpecular = materialCoefficients.z * L6Color * pow(max(0.0, dot(R,normalize(eyeVector))), materialCoefficients.w);
+
+	iTotal += f_att * (iDiffuse + iSpecular);
+}
+// light 7
+if(L7Enable == 1){
+	d = length(vec3(lightVector7));
+	if(lightVector7[3] == 1)
+		f_att = 20.0/(lightAttenuation.x + lightAttenuation.y * d + lightAttenuation.z * d * d);
+	else
+		f_att = 1;
+
+	iDiffuse = L7Color * max(0, dot(normalize(vec3(lightVector7)), normalize(normal))) * materialCoefficients.y;
+
+	R = reflect(-normalize(vec3(lightVector7)), normalize(normal));
+	iSpecular = materialCoefficients.z * L7Color * pow(max(0.0, dot(R,normalize(eyeVector))), materialCoefficients.w);
+
+	iTotal += f_att * (iDiffuse + iSpecular);
+}
+// light 8
+if(L8Enable == 1){
+	d = length(vec3(lightVector8));
+	if(lightVector8[3] == 1)
+		f_att = 20.0/(lightAttenuation.x + lightAttenuation.y * d + lightAttenuation.z * d * d);
+	else
+		f_att = 1;
+
+	iDiffuse = L8Color * max(0, dot(normalize(vec3(lightVector8)), normalize(normal))) * materialCoefficients.y;
+
+	R = reflect(-normalize(vec3(lightVector8)), normalize(normal));
+	iSpecular = materialCoefficients.z * L8Color * pow(max(0.0, dot(R,normalize(eyeVector))), materialCoefficients.w);
+
+	iTotal += f_att * (iDiffuse + iSpecular);
+}
+
+
+
+	//vec3 iTotal = iAmbient + f_att * (iDiffuse + iSpecular);
+
+	//vec3 iTotal = iAmbient;
+	//vec3 iTotal = f_att * iDiffuse;
+	//vec3 iTotal = f_att * iSpecular;
+	
+	color = iTotal * vec3(v_color);
+}

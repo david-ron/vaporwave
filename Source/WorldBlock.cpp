@@ -581,3 +581,42 @@ ParticleDescriptor* WorldBlock::FindParticleDescriptor(ci_string name)
     }
     return nullptr;
 }
+
+void WorldBlock::setModel(std::vector<Model*> mModel) {
+	for (int i = 0; i < mModel.size(); i++) {
+		this->mModel.push_back(mModel[i]);
+	}
+}
+void WorldBlock::setAnimation(std::vector<Animation*> mAnimation) {
+	for (int i = 0; i < mAnimation.size(); i++) {
+		this->mAnimation.push_back(mAnimation[i]);
+	}
+}
+void WorldBlock::setAnimationKey(std::vector<AnimationKey*> mAnimationKey) {
+	for (int i = 0; i < mAnimationKey.size(); i++) {
+		this->mAnimationKey.push_back(mAnimationKey[i]);
+	}
+}
+void WorldBlock::setCamera(std::vector<Camera*> mCamera) {
+	for (int i = 0; i < mCamera.size(); i++) {
+		this->mCamera.push_back(mCamera[i]);
+	}
+}
+void WorldBlock::setParticleSystemList(std::vector<ParticleSystem*> mParticleSystemList) {
+	for (int i = 0; i < mParticleSystemList.size(); i++) {
+		this->mParticleSystemList.push_back(mParticleSystemList[i]);
+	}
+}
+void WorldBlock::setParticleDescriptorList(std::vector<ParticleDescriptor*> mParticleDescriptorList) {
+	for (int i = 0; i < mParticleDescriptorList.size(); i++) {
+		this->mParticleDescriptorList.push_back(mParticleDescriptorList[i]);
+	}
+}
+void WorldBlock::setCurrentCamera(unsigned int mCurrentCamera) {
+	this->mCurrentCamera = mCurrentCamera;
+}
+void WorldBlock::setLightSource(std::vector<LightSource*> lightSource) {
+	for (int i = 0; i < lightSource.size(); i++) {
+		this->lightSource.push_back(lightSource[i]);
+	}
+}

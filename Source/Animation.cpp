@@ -186,7 +186,9 @@ bool Animation::ParseLine(const std::vector<ci_string> &token)
         assert(token[4] == "=");
 
 		ci_string name = token[2];
-		AnimationKey *key = World::getWorldInstance()->getWorldBlock()->FindAnimationKey(name);
+
+		//AnimationKey *key = World::getWorldInstance()->getWorldBlock()->FindAnimationKey(name);
+		AnimationKey *key = World::getWorldInstance()->FindAnimationKey(name);
         
 		assert(key != nullptr);
 		AddKey(key, (float) atof(token[5].c_str()));

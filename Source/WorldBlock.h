@@ -56,6 +56,15 @@ public:
     void RemoveParticleSystem(ParticleSystem* particleSystem);
     void AddParticleDescriptor(ParticleDescriptor* particleDescriptor);
 
+	void setModel(std::vector<Model*> mModel);
+	void setAnimation(std::vector<Animation*> mAnimation);
+	void setAnimationKey(std::vector<AnimationKey*> mAnimationKey);
+	void setCamera(std::vector<Camera*> mCamera);
+	void setParticleSystemList(std::vector<ParticleSystem*> mParticleSystemList);
+	void setParticleDescriptorList(std::vector<ParticleDescriptor*> mParticleDescriptorList);
+	void setCurrentCamera(unsigned int mCurrentCamera);
+	void setLightSource(std::vector<LightSource*> lightSource);
+
     
 private:
     //static WorldBlock* instance;
@@ -67,7 +76,6 @@ private:
     std::vector<ParticleSystem*> mParticleSystemList;
     std::vector<ParticleDescriptor*> mParticleDescriptorList;
 	unsigned int mCurrentCamera;
-
 	std::vector<LightSource*> lightSource;
 
     BillboardList* mpBillboardList;

@@ -17,6 +17,9 @@
 
 #include "LightSource.h"
 
+World* World::worldInstance;
+const float World::WorldBlockSize = 100;
+
 void World::LoadScene(const char * scene_path) {
 	//mWorldBlock->LoadScene(scene_path);
 
@@ -124,7 +127,6 @@ void World::Draw() {
 	mWorldBlock->Draw();
 }
 
-World* World::worldInstance;
 
 World* World::getWorldInstance() {
 	if (worldInstance == NULL)
@@ -140,7 +142,7 @@ WorldBlock* World::getWorldBlock() const{
 }
 
 World::World() {
-	mWorldBlock = new WorldBlock();
+	mWorldBlock = new WorldBlock(vec2(1,0));
 }
 World::~World() {
 	delete mWorldBlock;

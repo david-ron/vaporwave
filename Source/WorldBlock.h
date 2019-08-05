@@ -33,7 +33,7 @@ using namespace glm;
 class WorldBlock
 {
 public:
-	WorldBlock();
+	WorldBlock(vec2);
 	~WorldBlock();
 	
     //static WorldBlock* GetInstance();
@@ -80,6 +80,7 @@ private:
 
     BillboardList* mpBillboardList;
 
-
+	int WB_Coordinate[2];
+	mat4 WB_OffsetMatrix;
 
 };

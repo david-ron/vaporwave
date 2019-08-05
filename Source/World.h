@@ -24,6 +24,8 @@ public:
 	AnimationKey* FindAnimationKey(ci_string keyName);
 	ParticleDescriptor* FindParticleDescriptor(ci_string name);
 
+	static const float WorldBlockSize;
+
 private:
 	World();
 	static World* worldInstance;

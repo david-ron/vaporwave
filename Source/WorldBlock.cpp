@@ -15,6 +15,7 @@
 #include "StaticCamera.h"
 #include "FirstPersonCamera.h"
 
+#include "World.h"
 #include "CubeModel.h"
 #include "SphereModel.h"
 #include "Animation.h"
@@ -29,6 +30,7 @@
 
 #include "LightSource.h"
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 
 using namespace std;
@@ -37,9 +39,14 @@ using namespace glm;
 //WorldBlock* WorldBlock::instance;
 
 
-WorldBlock::WorldBlock()
+WorldBlock::WorldBlock(vec2 coor)
 {
-    //instance = this;
+	WB_Coordinate[0] = coor.x;
+	WB_Coordinate[1] = coor.y;
+
+	WB_OffsetMatrix = glm::translate(mat4(1.0f), vec3(coor[0]*World::WorldBlockSize, 0.0, coor[1]*World::WorldBlockSize));
+	//mat4 offsetMatrix = translate(mat4(1.0), vec3(100.0, 0.0, 0.0));
+
 
 	//lightSource = LightSource();
 
@@ -202,6 +209,11 @@ void WorldBlock::Draw()
 	
 	// Set shader to use
 	glUseProgram(Renderer::GetShaderProgramID());
+
+	//mat4 offsetMatrix = WB_OffsetMatrix;
+	//mat4 offsetMatrix = translate(mat4(1.0), vec3(100.0, 0.0, 0.0));
+	//glUniformMatrix4fv(glGetUniformLocation(Renderer::GetShaderProgramID(), "WBOffsetMatrix"), 1, GL_FALSE, &offsetMatrix[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(Renderer::GetShaderProgramID(), "WBOffsetMatrix"), 1, GL_FALSE, &WB_OffsetMatrix[0][0]);
 
 	// This looks for the MVP Uniform variable in the Vertex Program
 	GLuint VPMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "ViewProjectionTransform");
@@ -394,6 +406,7 @@ void WorldBlock::Draw()
 	unsigned int prevShader = Renderer::GetCurrentShader();
 	Renderer::SetShader(SHADER_PATH_LINES);
 	glUseProgram(Renderer::GetShaderProgramID());
+	glUniformMatrix4fv(glGetUniformLocation(Renderer::GetShaderProgramID(), "WBOffsetMatrix"), 1, GL_FALSE, &WB_OffsetMatrix[0][0]);
 
 	// Send the view projection constants to the shader
 	VPMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "ViewProjectionTransform");
@@ -420,8 +433,24 @@ void WorldBlock::Draw()
     // Draw Billboards
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	// Set current shader to be the Textured Shader
+	Renderer::CheckForErrors();
+	ShaderType oldShader = (ShaderType)Renderer::GetCurrentShader();
+
+	Renderer::SetShader(SHADER_TEXTURED);
+	glUseProgram(Renderer::GetShaderProgramID());
+	Renderer::CheckForErrors();
+
+	glUniformMatrix4fv(glGetUniformLocation(Renderer::GetShaderProgramID(), "WBOffsetMatrix"), 1, GL_FALSE, &WB_OffsetMatrix[0][0]);
+
     mpBillboardList->Draw();
-    glDisable(GL_BLEND);
+
+	Renderer::CheckForErrors();
+	Renderer::SetShader(oldShader);
+	Renderer::CheckForErrors();
+    
+	glDisable(GL_BLEND);
 
 
 	// Restore previous shader

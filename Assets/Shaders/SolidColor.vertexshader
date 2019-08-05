@@ -8,6 +8,7 @@ layout(location = 2) in vec3 vertexColor;
 // Values that stay constant for the whole mesh.
 uniform mat4 ViewProjectionTransform;
 uniform mat4 WorldTransform;
+uniform mat4 WBOffsetMatrix;
 
 /*
 // Outputs to fragment shader
@@ -63,19 +64,19 @@ uniform int L8Enable;
 void main()
 {
 	// Output position of the vertex, in clip space : MVP * position
-	gl_Position =  ViewProjectionTransform * WorldTransform * vec4(vertexPosition_modelspace,1);
-	mat4 MV = ViewTransform * WorldTransform;
-	normal = vertexNormal_modelspace; // Does this need to be transformed when we pass it to the fragment shader?
+	gl_Position =  ViewProjectionTransform * WBOffsetMatrix * WorldTransform * vec4(vertexPosition_modelspace,1);
+	mat4 MV = ViewTransform * WBOffsetMatrix * WorldTransform;
+	//normal = vertexNormal_modelspace; // Does this need to be transformed when we pass it to the fragment shader?
 	
 	v_color = vec4(vertexColor,1);
 
 	vec3 vertexPosition_viewspace = vec3(MV * vec4(vertexPosition_modelspace,1.0f));
-	vec3 vertexPosition_worldspace = vec3(WorldTransform * vec4(vertexPosition_modelspace,1.0f));
+	vec3 vertexPosition_worldspace = vec3(WBOffsetMatrix * WorldTransform * vec4(vertexPosition_modelspace,1.0f));
 
 
 	// Prepare Data for Fragment Shader
 	// Should the normal be transformed?
-	normal = (ViewTransform * WorldTransform * vec4(vertexNormal_modelspace,0)).xyz;
+	normal = (ViewTransform * WBOffsetMatrix * WorldTransform * vec4(vertexNormal_modelspace,0)).xyz;
 	
 	// eyeVector = ...
 	eyeVector = vec3(0)-vertexPosition_viewspace;

@@ -250,13 +250,13 @@ void BillboardList::Draw()
     Renderer::CheckForErrors();
 
     
-    // Set current shader to be the Textured Shader
-    ShaderType oldShader = (ShaderType)Renderer::GetCurrentShader();
-    
-    Renderer::SetShader(SHADER_TEXTURED);
-    glUseProgram(Renderer::GetShaderProgramID());
+    //// Set current shader to be the Textured Shader
+    //ShaderType oldShader = (ShaderType)Renderer::GetCurrentShader();
+    //
+    //Renderer::SetShader(SHADER_TEXTURED);
+    //glUseProgram(Renderer::GetShaderProgramID());
 
-    Renderer::CheckForErrors();
+    //Renderer::CheckForErrors();
 
     
     GLuint textureLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "mySamplerTexture");
@@ -469,5 +469,5 @@ void BillboardList::Draw()
     
     Renderer::CheckForErrors();
     
-    Renderer::SetShader(oldShader);
+    //Renderer::SetShader(oldShader);
 }

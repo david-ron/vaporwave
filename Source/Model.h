@@ -24,7 +24,7 @@ public:
 	virtual ~Model();
 
 	virtual void Update(float dt) = 0;
-	virtual void Draw() = 0;
+	virtual void Draw(glm::mat4 offsetMatrix) = 0;
 
 	void Load(ci_istringstream& iss);
 

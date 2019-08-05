@@ -35,9 +35,9 @@ void AnimationKey::Update(float dt)
 	Model::Update(dt);
 }
 
-void AnimationKey::Draw()
+void AnimationKey::Draw(mat4 offsetMatrix)
 {
-	Model::Draw();
+	Model::Draw(offsetMatrix);
 }
 
 bool AnimationKey::ParseLine(const std::vector<ci_string> &token)

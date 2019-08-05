@@ -42,7 +42,7 @@ ParticleSystem::~ParticleSystem()
 {
 	for (std::list<Particle*>::iterator it = mParticleList.begin(); it != mParticleList.end(); ++it)
 	{
-        World::getWorldInstance()->getWorldBlock()->RemoveBillboard(&(*it)->billboard);
+        World::getWorldInstance()->RemoveBillboard(&(*it)->billboard);
 		delete *it;
 	}
 
@@ -73,7 +73,8 @@ void ParticleSystem::Update(float dt)
         mParticleList.push_back(newParticle);
         mInactiveParticles.pop_back();
 		//WorldBlock* mWorldBlock = World::getWorldInstance()->getWorldBlock();
-		World::getWorldInstance()->getWorldBlock()->AddBillboard(&newParticle->billboard);
+		//World::getWorldInstance()->getWorldBlock()->AddBillboard(&newParticle->billboard);
+		World::getWorldInstance()->AddBillboard(&newParticle->billboard);
         
         // Set particle initial parameters
         newParticle->billboard.position = mpEmitter->GetPosition();
@@ -146,7 +147,8 @@ void ParticleSystem::Update(float dt)
         {
             mInactiveParticles.push_back(*it);
             
-            World::getWorldInstance()->getWorldBlock()->RemoveBillboard(&(p->billboard));
+            //World::getWorldInstance()->getWorldBlock()->RemoveBillboard(&(p->billboard));
+			World::getWorldInstance()->RemoveBillboard(&(p->billboard));
             mParticleList.remove(*it++);
         }
     }

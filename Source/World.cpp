@@ -3,6 +3,7 @@
 #include "StaticCamera.h"
 #include "FirstPersonCamera.h"
 
+#include "Renderer.h"
 #include "CubeModel.h"
 #include "SphereModel.h"
 #include "Animation.h"
@@ -101,6 +102,14 @@ void World::LoadScene(const char * scene_path) {
 	}
 
 	setupWorldBlock(mWorldBlock);
+	setupWorldBlock(mWorldBlock1);
+	setupWorldBlock(mWorldBlock2);
+	setupWorldBlock(mWorldBlock3);
+	setupWorldBlock(mWorldBlock4);
+	setupWorldBlock(mWorldBlock5);
+	setupWorldBlock(mWorldBlock6);
+	setupWorldBlock(mWorldBlock7);
+	setupWorldBlock(mWorldBlock8);
 }
 
 void World::setupWorldBlock(WorldBlock* WB) {
@@ -115,18 +124,136 @@ void World::setupWorldBlock(WorldBlock* WB) {
 	//WB->setCamera(mCamera);
 	//WB->setCurrentCamera(mCurrentCamera);
 	WB->setLightSource(lightSource);
+	WB->setBillboardList(mpBillboardList);
 
 }
 
 
 
 void World::Update(float dt) {
+	// User Inputs
+	// 0 1 2 to change the Camera
+	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_1) == GLFW_PRESS)
+	{
+		mCurrentCamera = 0;
+	}
+	else if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_2) == GLFW_PRESS)
+	{
+		if (mCamera.size() > 1)
+		{
+			mCurrentCamera = 1;
+		}
+	}
+	else if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_3) == GLFW_PRESS)
+	{
+		if (mCamera.size() > 2)
+		{
+			mCurrentCamera = 2;
+		}
+	}
+
+	// Spacebar to change the shader
+	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_0) == GLFW_PRESS)
+	{
+		Renderer::SetShader(SHADER_SOLID_COLOR);
+	}
+	else if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_9) == GLFW_PRESS)
+	{
+		Renderer::SetShader(SHADER_BLUE);
+	}
+
+	for (vector<ParticleSystem*>::iterator it = mParticleSystemList.begin(); it != mParticleSystemList.end(); ++it)
+	{
+		(*it)->Update(dt);
+	}
+
+	mpBillboardList->Update(dt);
+
+
 	mWorldBlock->Update(dt);
+	//mWorldBlock1->Update(dt);
+
+
+
 }
 void World::Draw() {
-	mWorldBlock->Draw();
+	//mWorldBlock->Draw();
+	//mWorldBlock1->Draw();
+
+	//first shader
+	Renderer::BeginFrame();
+	// Set shader to use
+	glUseProgram(Renderer::GetShaderProgramID());
+	Renderer::CheckForErrors();
+	
+	mWorldBlock->DrawCurrentShader();
+	mWorldBlock1->DrawCurrentShader();
+	mWorldBlock2->DrawCurrentShader();
+	mWorldBlock3->DrawCurrentShader();
+	mWorldBlock4->DrawCurrentShader();
+	mWorldBlock5->DrawCurrentShader();
+	mWorldBlock6->DrawCurrentShader();
+	mWorldBlock7->DrawCurrentShader();
+	mWorldBlock8->DrawCurrentShader();
+
+	
+	// path lines shader
+	Renderer::CheckForErrors();
+	unsigned int prevShader = Renderer::GetCurrentShader();
+	Renderer::SetShader(SHADER_PATH_LINES);
+	glUseProgram(Renderer::GetShaderProgramID());
+	Renderer::CheckForErrors();
+
+	mWorldBlock->DrawPathLinesShader();
+	mWorldBlock1->DrawPathLinesShader();
+	mWorldBlock2->DrawPathLinesShader();
+	mWorldBlock3->DrawPathLinesShader();
+	mWorldBlock4->DrawPathLinesShader();
+	mWorldBlock5->DrawPathLinesShader();
+	mWorldBlock6->DrawPathLinesShader();
+	mWorldBlock7->DrawPathLinesShader();
+	mWorldBlock8->DrawPathLinesShader();
+
+
+	Renderer::CheckForErrors();
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	
+	Renderer::CheckForErrors();
+
+	ShaderType oldShader = (ShaderType)Renderer::GetCurrentShader();
+	//Texture shader
+	Renderer::SetShader(SHADER_TEXTURED);
+	glUseProgram(Renderer::GetShaderProgramID());
+
+	Renderer::CheckForErrors();
+
+	mWorldBlock->DrawTextureShader();
+	mWorldBlock1->DrawTextureShader();
+	mWorldBlock2->DrawTextureShader();
+	mWorldBlock3->DrawTextureShader();
+	mWorldBlock4->DrawTextureShader();
+	mWorldBlock5->DrawTextureShader();
+	mWorldBlock6->DrawTextureShader();
+	mWorldBlock7->DrawTextureShader();
+	mWorldBlock8->DrawTextureShader();
+
+	Renderer::CheckForErrors();
+	Renderer::SetShader(oldShader);
+	Renderer::CheckForErrors();
+
+	glDisable(GL_BLEND);
+
+
+	// Restore previous shader
+	Renderer::SetShader((ShaderType)prevShader);
+
+	Renderer::EndFrame();
 }
 
+WorldBlock* World::getWorldBlock() const {
+	return mWorldBlock1;
+}
 
 World* World::getWorldInstance() {
 	if (worldInstance == NULL)
@@ -137,15 +264,48 @@ World* World::getWorldInstance() {
 	return worldInstance;
 }
 
-WorldBlock* World::getWorldBlock() const{ 
-	return mWorldBlock;
-}
+
 
 World::World() {
-	mWorldBlock = new WorldBlock(vec2(1,0));
+	mWorldBlock = new WorldBlock(vec2(0, 0));
+	mWorldBlock1 = new WorldBlock(vec2(1, 0));
+	mWorldBlock2 = new WorldBlock(vec2(-1, 0));
+	mWorldBlock3 = new WorldBlock(vec2(1, 1));
+	mWorldBlock4 = new WorldBlock(vec2(0, 1));
+	mWorldBlock5 = new WorldBlock(vec2(-1, 1));
+	mWorldBlock6 = new WorldBlock(vec2(-1, -1));
+	mWorldBlock7 = new WorldBlock(vec2(0, -1));
+	mWorldBlock8 = new WorldBlock(vec2(1, -1));
+
+
+
+	// Setup Camera
+	mCamera.push_back(new FirstPersonCamera(vec3(3.0f, 5.0f, 20.0f)));
+	mCamera.push_back(new StaticCamera(vec3(3.0f, 30.0f, 5.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f)));
+	mCamera.push_back(new StaticCamera(vec3(0.5f, 0.5f, 5.0f), vec3(0.0f, 0.5f, 0.0f), vec3(0.0f, 1.0f, 0.0f)));
+	mCurrentCamera = 0;
+
+#if defined(PLATFORM_OSX)
+	//    int billboardTextureID = TextureLoader::LoadTexture("Textures/BillboardTest.bmp");
+	int billboardTextureID = TextureLoader::LoadTexture("Textures/Particle.png");
+#else
+	//    int billboardTextureID = TextureLoader::LoadTexture("../Assets/Textures/BillboardTest.bmp");
+	int billboardTextureID = TextureLoader::LoadTexture("../Assets/Textures/Particle.png");
+#endif
+	assert(billboardTextureID != 0);
+
+	mpBillboardList = new BillboardList(2048, billboardTextureID);
 }
 World::~World() {
 	delete mWorldBlock;
+	delete mWorldBlock1;
+	delete mWorldBlock2;
+	delete mWorldBlock3;
+	delete mWorldBlock4;
+	delete mWorldBlock5;
+	delete mWorldBlock6;
+	delete mWorldBlock7;
+	delete mWorldBlock8;
 };
 
 
@@ -189,4 +349,29 @@ ParticleDescriptor* World::FindParticleDescriptor(ci_string name)
 		}
 	}
 	return nullptr;
+}
+
+
+Camera* World::GetCurrentCamera() const
+{
+	return mCamera[mCurrentCamera];
+}
+
+LightSource const World::getLightSourceAt(int index) {
+	return *(lightSource[index]);
+}
+
+void World::AddParticleSystem(ParticleSystem* particleSystem)
+{
+	mParticleSystemList.push_back(particleSystem);
+}
+
+void World::AddBillboard(Billboard* b)
+{
+	mpBillboardList->AddBillboard(b);
+}
+
+void World::RemoveBillboard(Billboard* b)
+{
+	mpBillboardList->RemoveBillboard(b);
 }

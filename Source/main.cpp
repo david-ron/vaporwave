@@ -23,7 +23,7 @@ int main(int argc, char*argv[])
 	//myLights myLights;
 	LightSource lightSource;
 	World* mWorld = World::getWorldInstance();
-	WorldBlock* worldBlock = mWorld->getWorldBlock();
+	//WorldBlock* worldBlock = mWorld->getWorldBlock();
 
     
 	if (argc > 1)

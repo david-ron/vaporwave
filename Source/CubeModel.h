@@ -18,7 +18,7 @@ public:
 	virtual ~CubeModel();
 
 	virtual void Update(float dt);
-	virtual void Draw();
+	virtual void Draw(glm::mat4 offsetMatrix);
 
 protected:
 	virtual bool ParseLine(const std::vector<ci_string> &token);

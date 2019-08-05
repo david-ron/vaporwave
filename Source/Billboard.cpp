@@ -33,7 +33,8 @@ using namespace glm;
 // This is used for sorting the list of Billboards
 bool CompareBillboardAlongZ::operator()(const Billboard* a, const Billboard* b)
 {
-    mat4 viewMatrix = World::getWorldInstance()->getWorldBlock()->GetCurrentCamera()->GetViewMatrix();
+    //mat4 viewMatrix = World::getWorldInstance()->getWorldBlock()->GetCurrentCamera()->GetViewMatrix();
+	mat4 viewMatrix = World::getWorldInstance()->GetCurrentCamera()->GetViewMatrix();
     return ((viewMatrix*vec4(a->position, 1.0f)).z < (viewMatrix*vec4(b->position, 1.0f)).z);
 }
 
@@ -158,7 +159,8 @@ void BillboardList::Update(float dt)
     unsigned long firstVertexIndex = 0;
 
     // Maybe the view matrix will be useful to align the billboards
-    const Camera* cam = World::getWorldInstance()->getWorldBlock()->GetCurrentCamera();
+    //const Camera* cam = World::getWorldInstance()->getWorldBlock()->GetCurrentCamera();
+	const Camera* cam = World::getWorldInstance()->GetCurrentCamera();
     mat4 viewMatrix = cam->GetViewMatrix();
 	
 	
@@ -245,7 +247,8 @@ void BillboardList::Update(float dt)
     glBufferSubData(GL_ARRAY_BUFFER, 0, 6*sizeof(BillboardVertex)*mBillboardList.size(), (void*)&mVertexBuffer[0]);
 }
 
-void BillboardList::Draw()
+//void BillboardList::Draw(glm::mat4 offsetMatrix)
+void BillboardList::Draw(glm::mat4 offsetMatrix)
 {
     Renderer::CheckForErrors();
 
@@ -273,7 +276,8 @@ void BillboardList::Draw()
 
 	GLuint ViewMatrixID = glGetUniformLocation(Renderer::GetShaderProgramID(), "ViewTransform");
 	// viewTransform
-	mat4 View = World::getWorldInstance()->getWorldBlock()->GetCurrentCamera()->GetViewMatrix();
+	//mat4 View = World::getWorldInstance()->getWorldBlock()->GetCurrentCamera()->GetViewMatrix();
+	mat4 View = World::getWorldInstance()->GetCurrentCamera()->GetViewMatrix();
 	glUniformMatrix4fv(ViewMatrixID, 1, GL_FALSE, &View[0][0]);
 
 
@@ -285,7 +289,8 @@ void BillboardList::Draw()
 	vec4 lPosition;// = lightSource.getPositions();
 	vec3 lColor;// = lightSource.getColors();
 	
-	WorldBlock* mWorld = World::getWorldInstance()->getWorldBlock();
+	//WorldBlock* mWorld = World::getWorldInstance()->getWorldBlock();
+	World* mWorld = World::getWorldInstance();
 	int lightSize = mWorld->getLightSize();
 	LightSource lightSource;/// = mWorld->getLightSourceAt(0);
 
@@ -428,28 +433,14 @@ void BillboardList::Draw()
 	glUniform4f(L8PositionID, lPosition.x, lPosition.y, lPosition.z, lPosition.w);
 	glUniform3f(L8ColorID, lColor.x, lColor.y, lColor.z);
 
-/*	// Light 1
-	GLuint L1EnableID = glGetUniformLocation(Renderer::GetShaderProgramID(), "L1Enable");
-	GLuint L1PositionID = glGetUniformLocation(Renderer::GetShaderProgramID(), "L1Position");
-	GLuint L1ColorID = glGetUniformLocation(Renderer::GetShaderProgramID(), "L1Color");
 
-	glUniform4f(L1PositionID, -7.07f, 4.0f, 7.07f, 1);
-	glUniform3f(L1ColorID, 0.0f, 0.8f, 0.8f);
-	
-	// Light 2
-	GLuint L2EnableID = glGetUniformLocation(Renderer::GetShaderProgramID(), "L2Enable");
-	GLuint L2PositionID = glGetUniformLocation(Renderer::GetShaderProgramID(), "L2Position");
-	GLuint L2ColorID = glGetUniformLocation(Renderer::GetShaderProgramID(), "L2Color");
-
-	glUniform4f(L2PositionID, 10.f, 0.0f, 0.0f, 1);
-	glUniform3f(L2ColorID, 0.8f, 0.8f, 0.8f);
-*/
 
     // This looks for the MVP Uniform variable in the Vertex Program
     GLuint VPMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "ViewProjectionTransform");
     
     // Send the view projection constants to the shader
-    const Camera* currentCamera = World::getWorldInstance()->getWorldBlock()->GetCurrentCamera();
+    //const Camera* currentCamera = World::getWorldInstance()->getWorldBlock()->GetCurrentCamera();
+	const Camera* currentCamera = World::getWorldInstance()->GetCurrentCamera();
     mat4 VP = currentCamera->GetViewProjectionMatrix();
     glUniformMatrix4fv(VPMatrixLocation, 1, GL_FALSE, &VP[0][0]);
 
@@ -461,7 +452,8 @@ void BillboardList::Draw()
     GLuint WorldMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "WorldTransform");
 
     // Billboard position are all relative to the origin
-    mat4 worldMatrix(1.0f);
+    //mat4 worldMatrix(1.0f);
+	mat4 worldMatrix = offsetMatrix;
     glUniformMatrix4fv(WorldMatrixLocation, 1, GL_FALSE, &worldMatrix[0][0]);
     
     // Draw the triangles !

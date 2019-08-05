@@ -65,27 +65,47 @@ void FirstPersonCamera::Update(float dt)
 	// A S D W for motion along the camera basis vectors
 	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_W ) == GLFW_PRESS)
 	{
-		mPosition += mLookAt * dt * mSpeed;
+		if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS ||
+			glfwGetKey(EventManager::GetWindow(), GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS )
+			mPosition += mLookAt * dt * mSpeed * speedUpRate;
+		else
+			mPosition += mLookAt * dt * mSpeed;
 	}
 
 	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_S ) == GLFW_PRESS)
 	{
-		mPosition -= mLookAt * dt * mSpeed;
+		if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS ||
+			glfwGetKey(EventManager::GetWindow(), GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+			mPosition -= mLookAt * dt * mSpeed * speedUpRate;
+		else
+			mPosition -= mLookAt * dt * mSpeed;
 	}
 
 	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_D ) == GLFW_PRESS)
 	{
-		mPosition += sideVector * dt * mSpeed;
+		if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS ||
+			glfwGetKey(EventManager::GetWindow(), GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+			mPosition += sideVector * dt * mSpeed * speedUpRate;
+		else
+			mPosition += sideVector * dt * mSpeed;
 	}
 
 	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_A ) == GLFW_PRESS)
 	{
-		mPosition -= sideVector * dt * mSpeed;
+		if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS ||
+			glfwGetKey(EventManager::GetWindow(), GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+			mPosition -= sideVector * dt * mSpeed * speedUpRate;
+		else 
+			mPosition -= sideVector * dt * mSpeed;
 	}
 
 	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_SPACE) == GLFW_PRESS)
 	{
-		mPosition += vec3(0,1,0) * dt * mSpeed;
+		if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS ||
+			glfwGetKey(EventManager::GetWindow(), GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+			mPosition += vec3(0,1,0) * dt * mSpeed * speedUpRate;
+		else
+			mPosition += vec3(0, 1, 0) * dt * mSpeed;
 	}
 }
 

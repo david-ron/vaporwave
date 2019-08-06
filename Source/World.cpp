@@ -11,7 +11,7 @@
 #include <GLFW/glfw3.h>
 #include "EventManager.h"
 #include "TextureLoader.h"
-
+#include "CubeObj.hpp"
 #include "ParticleDescriptor.h"
 #include "ParticleEmitter.h"
 #include "ParticleSystem.h"
@@ -84,6 +84,11 @@ void World::LoadScene(const char * scene_path) {
 				light->Load(iss);
 				lightSource.push_back(light);
 			}
+            else if (result == "object"){
+                CubeObj* cube = new CubeObj();
+                cube->Load(iss);
+                mModel.push_back(cube);
+            }
 			else
 			{
 				fprintf(stderr, "Error loading scene file... !");

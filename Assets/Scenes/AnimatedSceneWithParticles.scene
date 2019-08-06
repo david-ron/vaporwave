@@ -175,3 +175,8 @@ name = "light8"
 position = 0.3 0.3 -0.3 0.0
 color = 0.3 0.3 0.3
 lightAttenuation = 0.0 0.0 1.0
+
+[object]
+name     = "Cube3"
+scaling  = 1.0 1.0 1.0
+position = 0.0 1.0 0.0

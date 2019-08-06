@@ -71,7 +71,7 @@ name     = "Ground"
 scaling  = 100.0 100.0 100.0
 position = 0.0 -50 0.0
 rotation = 1.0 0.0 0.0 90.0
-properties = 0.2 0.8 0.2 50
+properties = 0.4 0.5 0.2 50
 
 
 [ParticleDescriptor]
@@ -172,6 +172,6 @@ lightAttenuation = 0.0 0.0 1.0
 
 [Light]
 name = "light8"
-position = 7.07 2.0 -7.07 1.0
-color = -1.0 -1.0 -1.0
+position = 0.3 0.3 -0.3 0.0
+color = 0.3 0.3 0.3
 lightAttenuation = 0.0 0.0 1.0

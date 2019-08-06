@@ -36,7 +36,7 @@ void Model::Update(float dt)
 	mPosition = vec3(worldMatrix[3][0], worldMatrix[3][1], worldMatrix[3][2]);
 }
 
-void Model::Draw()
+void Model::Draw(mat4 offsetMatrix)
 {
 
 }
@@ -116,20 +116,22 @@ bool Model::ParseLine(const std::vector<ci_string> &token)
 
 			ci_string animName = token[2];
             
-            mAnimation = World::getWorldInstance()->getWorldBlock()->FindAnimation(animName);
+            //mAnimation = World::getWorldInstance()->getWorldBlock()->FindAnimation(animName);
+			mAnimation = World::getWorldInstance()->FindAnimation(animName);
 		}
         else if (token[0] == "particleemitter")
         {
             assert(token.size() > 2);
             assert(token[1] == "=");
 
-            ParticleDescriptor* desc = World::getWorldInstance()->getWorldBlock()->FindParticleDescriptor(token[2]);
+            ParticleDescriptor* desc = World::getWorldInstance()->FindParticleDescriptor(token[2]);
             assert(desc != nullptr);
             
             ParticleEmitter* emitter = new ParticleEmitter(vec3(0.0f, 0.0f, 0.0f), this);
             
             ParticleSystem* ps = new ParticleSystem(emitter, desc);
-            World::getWorldInstance()->getWorldBlock()->AddParticleSystem(ps);
+            //World::getWorldInstance()->getWorldBlock()->AddParticleSystem(ps);
+			World::getWorldInstance()->AddParticleSystem(ps);
         }
 		else if (token[0] == "properties")
 		{

@@ -1332,7 +1332,7 @@ void SphereModel::Update(float dt)
     Model::Update(dt);
 }
 
-void SphereModel::Draw()
+void SphereModel::Draw(mat4 offsetMatrix)
 {
     // Draw the Vertex Buffer
     // Note this draws a Sphere
@@ -1341,7 +1341,8 @@ void SphereModel::Draw()
     glBindBuffer(GL_ARRAY_BUFFER, mVBO);
 
     GLuint WorldMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "WorldTransform"); 
-    glUniformMatrix4fv(WorldMatrixLocation, 1, GL_FALSE, &GetWorldMatrix()[0][0]);
+	glm::mat4 wMatrix = offsetMatrix * GetWorldMatrix();
+    glUniformMatrix4fv(WorldMatrixLocation, 1, GL_FALSE, &wMatrix[0][0]);
     
 
 	// Get a handle for Material Attributes uniform

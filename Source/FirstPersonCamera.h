@@ -27,7 +27,10 @@ private:
 	float mVerticalAngle;   // vertical angle
 
 	float mSpeed;			// WorldBlock units per second
+	const float speedUpRate = 4.0f;
 	float mAngularSpeed;    // Degrees per pixel
 
 	glm::vec3 mLookAt;
+
+
 };

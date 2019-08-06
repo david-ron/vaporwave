@@ -38,7 +38,8 @@ public:
     void RemoveBillboard(Billboard* b);
     
     void Update(float dt);
-    void Draw();
+    //void Draw(glm::mat4 offsetMatrix);
+	void Draw(glm::mat4 offsetMatrix);
     
 private:
     // Each vertex on a billboard

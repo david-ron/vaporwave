@@ -148,6 +148,7 @@ if(L8Enable > 0){
 
     // modulate texture color with vertex color
     color = v_color * textureColor * vec4(iTotal,1);
+	//color = v_color * textureColor * vec4(1.5);
 
     // Alpha test - Discard Fragment below treshold
     if(color.a <= 0.02f)

@@ -46,6 +46,9 @@ WorldBlock::WorldBlock(vec2 coor)
 	WB_Coordinate[1] = coor.y;
 
 	WB_OffsetMatrix = glm::translate(mat4(1.0f), vec3(coor[0]*World::WorldBlockSize, 0.0, coor[1]*World::WorldBlockSize));
+
+
+
 	//mat4 offsetMatrix = translate(mat4(1.0), vec3(100.0, 0.0, 0.0));
 
 
@@ -645,15 +648,20 @@ void WorldBlock::DrawCurrentShader() {
 	// Draw models
 	for (vector<Model*>::iterator it = mModel.begin(); it < mModel.end(); ++it)
 	{
+		
 		mProperties = (*it)->getProperties();
 		GLuint materialCoefficientsID = glGetUniformLocation(Renderer::GetShaderProgramID(), "materialCoefficients");
 		glUniform4f(materialCoefficientsID, mProperties.x, mProperties.y, mProperties.z, mProperties.w);
-
-		(*it)->Draw(WB_OffsetMatrix);
+		if ((*it)->GetName() != "\"Building\"")
+			(*it)->Draw(WB_OffsetMatrix);
+		//for()
 	}
+
+
 
 	Renderer::CheckForErrors();
 }
+
 void WorldBlock::DrawPathLinesShader() {
 	Renderer::CheckForErrors();
 	glUniformMatrix4fv(glGetUniformLocation(Renderer::GetShaderProgramID(), "WBOffsetMatrix"), 1, GL_FALSE, &WB_OffsetMatrix[0][0]);

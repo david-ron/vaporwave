@@ -177,6 +177,8 @@ void World::Update(float dt) {
 
 }
 void World::Draw() {
+
+	glClearColor(0.1f, 0.13f, 0.2f,0.0f);
 	//mWorldBlock->Draw();
 	//mWorldBlock1->Draw();
 

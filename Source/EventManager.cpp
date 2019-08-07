@@ -160,3 +160,15 @@ float EventManager::GetRandomFloat(float min, float max)
 
     return min + value*(max - min);
 }
+
+int EventManager::GetRandomInt(int min, int max)
+{
+	int value = static_cast <int> (rand()) / static_cast <int> (RAND_MAX);
+
+	return min + value * (max - min);
+}
+
+int EventManager::GetRandomInt()
+{
+	return static_cast <int> (rand());
+}

@@ -8,6 +8,7 @@
 
 #include "FirstPersonCamera.h"
 #include "EventManager.h"
+#include "World.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/string_cast.hpp>
@@ -59,8 +60,8 @@ void FirstPersonCamera::Update(float dt)
 
 	mLookAt = vec3(cosf(phi)*cosf(theta), sinf(phi), -cosf(phi)*sinf(theta));
 	
-	vec3 sideVector = glm::cross(mLookAt, vec3(0.0f, 1.0f, 0.0f));
-	glm::normalize(sideVector);
+	mSideVector = glm::cross(mLookAt, vec3(0.0f, 1.0f, 0.0f));
+	glm::normalize(mSideVector);
 
 	// A S D W for motion along the camera basis vectors
 	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_W ) == GLFW_PRESS)
@@ -85,18 +86,18 @@ void FirstPersonCamera::Update(float dt)
 	{
 		if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS ||
 			glfwGetKey(EventManager::GetWindow(), GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
-			mPosition += sideVector * dt * mSpeed * speedUpRate;
+			mPosition += mSideVector * dt * mSpeed * speedUpRate;
 		else
-			mPosition += sideVector * dt * mSpeed;
+			mPosition += mSideVector * dt * mSpeed;
 	}
 
 	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_A ) == GLFW_PRESS)
 	{
 		if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS ||
 			glfwGetKey(EventManager::GetWindow(), GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
-			mPosition -= sideVector * dt * mSpeed * speedUpRate;
+			mPosition -= mSideVector * dt * mSpeed * speedUpRate;
 		else 
-			mPosition -= sideVector * dt * mSpeed;
+			mPosition -= mSideVector * dt * mSpeed;
 	}
 
 	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_SPACE) == GLFW_PRESS)
@@ -107,7 +108,20 @@ void FirstPersonCamera::Update(float dt)
 		else
 			mPosition += vec3(0, 1, 0) * dt * mSpeed;
 	}
+	
+	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_O) == GLFW_PRESS)
+	{
+		if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS ||
+			glfwGetKey(EventManager::GetWindow(), GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+			mPosition = vec3(3.0f, 5.0f, 20.0f);
+		
+	}
+
+	World::getWorldInstance()->updateMCharacterPosition(mPosition);
 }
+
+glm::vec3 FirstPersonCamera::getLookAt() { return mLookAt; }
+glm::vec3 FirstPersonCamera::getSideVector() { return mSideVector; }
 
 glm::mat4 FirstPersonCamera::GetViewMatrix() const
 {

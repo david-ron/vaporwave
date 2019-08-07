@@ -30,6 +30,8 @@ public:
 	static void EnableMouseCursor();
 	static void DisableMouseCursor();
     static float GetRandomFloat(float min, float max);
+	static int GetRandomInt(int min, int max);
+	static int GetRandomInt();
 
 private:
 	// Time

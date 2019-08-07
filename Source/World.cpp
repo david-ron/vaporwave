@@ -137,8 +137,8 @@ void World::Update(float dt) {
 	mCamera[mCurrentCamera]->Update(dt);
 
 	// check for the center block
-	int x = floor((mCharacterPosition.x + 49.9) / 100);
-	int z = floor((mCharacterPosition.z + 49.9) / 100);
+	int x = floor((mCharacterPosition.x + 50) / 100);
+	int z = floor((mCharacterPosition.z + 50) / 100);
 	vec2 newCenter = vec2(x, z);
 	if (newCenter != CenterBlock) {
 		CenterBlock = newCenter;

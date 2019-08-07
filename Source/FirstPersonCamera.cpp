@@ -109,6 +109,14 @@ void FirstPersonCamera::Update(float dt)
 			mPosition += vec3(0, 1, 0) * dt * mSpeed;
 	}
 	
+	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_O) == GLFW_PRESS)
+	{
+		if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS ||
+			glfwGetKey(EventManager::GetWindow(), GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+			mPosition = vec3(3.0f, 5.0f, 20.0f);
+		
+	}
+
 	World::getWorldInstance()->updateMCharacterPosition(mPosition);
 }
 

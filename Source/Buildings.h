@@ -23,6 +23,7 @@ private:
 	int cBuildingAmo;
 	vector<vec3> mPosition;
 	vector<vec3> mScaling;
+	float mRotation;
 
 	void ClusterShape();
 	void WallShape();

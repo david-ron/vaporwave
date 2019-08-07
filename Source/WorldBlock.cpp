@@ -7,6 +7,8 @@
 // Copyright (c) 2014-2019 Concordia University. All rights reserved.
 //
 
+#include "Terrain/Terrain.h"
+
 #include "WorldBlock.h"
 #include "Renderer.h"
 #include "ParsingHelper.h"

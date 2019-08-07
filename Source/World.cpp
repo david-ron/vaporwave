@@ -2,7 +2,6 @@
 
 #include "StaticCamera.h"
 #include "FirstPersonCamera.h"
-
 #include "Renderer.h"
 #include "CubeModel.h"
 #include "SphereModel.h"
@@ -11,12 +10,11 @@
 #include <GLFW/glfw3.h>
 #include "EventManager.h"
 #include "TextureLoader.h"
-
 #include "ParticleDescriptor.h"
 #include "ParticleEmitter.h"
 #include "ParticleSystem.h"
-
 #include "LightSource.h"
+#include "Terrain/Terrain.h"
 
 World* World::worldInstance;
 const float World::WorldBlockSize = 100;
@@ -293,11 +291,20 @@ World::World() {
 #else
 	//    int billboardTextureID = TextureLoader::LoadTexture("../Assets/Textures/BillboardTest.bmp");
 	int billboardTextureID = TextureLoader::LoadTexture("../Assets/Textures/Particle.png");
+	int terrainTextureID = Terrain::LoadTerrain("../Assets/Textures/terrain.png");
+	//int terrainTextureID = Terrain::LoadTerrain("../Assets/Textures/terrain.bmp");
+
+
+
+
+
 #endif
 	assert(billboardTextureID != 0);
 
 	mpBillboardList = new BillboardList(2048, billboardTextureID);
+
 }
+
 World::~World() {
 	delete mWorldBlock;
 	delete mWorldBlock1;

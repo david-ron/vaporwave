@@ -13,7 +13,7 @@
 #include "ParsingHelper.h"
 #include "Billboard.h"
 #include "LightSource.h"
-
+#include "Buildings.h"
 
 
 #include <vector>
@@ -51,7 +51,8 @@ public:
     ParticleDescriptor* FindParticleDescriptor(ci_string name);
 	std::vector<LightSource*> getLightSource();
 	const LightSource getLightSourceAt(int);
-	const int getLightSize() { return lightSource.size(); };
+	const int getLightSize() { return lightSource.size(); }
+
 
     //const Camera* GetCurrentCamera() const;
     void AddBillboard(Billboard* b);
@@ -69,10 +70,9 @@ public:
 	void setCurrentCamera(unsigned int mCurrentCamera);
 	void setLightSource(std::vector<LightSource*> lightSource);
 	void setBillboardList(BillboardList* mpBillboardList);
-
+	vec2 getWorldBlockCoor() { return vec2(WB_Coordinate[0], WB_Coordinate[1]); }
     
 private:
-    //static WorldBlock* instance;
     
 	std::vector<Model*> mModel;
     std::vector<Animation*> mAnimation;
@@ -88,4 +88,8 @@ private:
 	int WB_Coordinate[2];
 	mat4 WB_OffsetMatrix;
 
+	static int const buildingSizeRange[2];
+	int BuildingAmo;
+	//vector<mat4> buildingOffsetMatrix;
+	Buildings* mBuildings;
 };

@@ -8,7 +8,7 @@
 //
 
 #include "Terrain/Terrain.h"
-
+#include "Terrain/Pixel.h"
 #include "WorldBlock.h"
 #include "Renderer.h"
 #include "ParsingHelper.h"
@@ -856,4 +856,8 @@ void WorldBlock::setLightSource(std::vector<LightSource*> lightSource) {
 
 void WorldBlock::setBillboardList(BillboardList* mpBillboardList) {
 	this->mpBillboardList = mpBillboardList;
+}
+
+void WorldBlock::setPixelList(PixelList * mpPixelList)
+{
 }

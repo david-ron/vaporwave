@@ -16,8 +16,6 @@ int Terrain::LoadTerrain(const char * imagepath)
 	
 	GLuint texture = 0;
 
-
-
 	glGenTextures(1, &texture);
 	assert(texture != 0);
 

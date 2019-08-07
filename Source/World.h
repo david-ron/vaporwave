@@ -85,6 +85,7 @@ private:
 	std::vector<LightSource*> lightSource;
 
 	BillboardList* mpBillboardList;
+	PixelList* mpPixelList;
 
 
 

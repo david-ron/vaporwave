@@ -9,6 +9,8 @@
 #pragma once
 
 #include "Camera.h"
+using namespace std;
+using namespace glm;
 
 class FirstPersonCamera : public Camera
 {
@@ -19,6 +21,8 @@ public:
 	virtual void Update(float dt);
 
 	virtual glm::mat4 GetViewMatrix() const;
+	vec3 getLookAt();
+	vec3 getSideVector();
 	
 
 private:
@@ -31,6 +35,7 @@ private:
 	float mAngularSpeed;    // Degrees per pixel
 
 	glm::vec3 mLookAt;
+	glm::vec3 mSideVector;
 
 
 };

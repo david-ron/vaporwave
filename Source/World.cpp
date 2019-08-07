@@ -101,15 +101,18 @@ void World::LoadScene(const char * scene_path) {
 		(*it)->CreateVertexBuffer();
 	}
 
-	setupWorldBlock(mWorldBlock);
-	setupWorldBlock(mWorldBlock1);
-	setupWorldBlock(mWorldBlock2);
-	setupWorldBlock(mWorldBlock3);
-	setupWorldBlock(mWorldBlock4);
-	setupWorldBlock(mWorldBlock5);
-	setupWorldBlock(mWorldBlock6);
-	setupWorldBlock(mWorldBlock7);
-	setupWorldBlock(mWorldBlock8);
+	//setupWorldBlock(mWorldBlock0);
+	//setupWorldBlock(mWorldBlock1);
+	//setupWorldBlock(mWorldBlock2);
+	//setupWorldBlock(mWorldBlock3);
+	//setupWorldBlock(mWorldBlock4);
+	//setupWorldBlock(mWorldBlock5);
+	//setupWorldBlock(mWorldBlock6);
+	//setupWorldBlock(mWorldBlock7);
+	//setupWorldBlock(mWorldBlock8);
+
+	setupWorldBlock(mWorldBlock[0]);
+	checkNeighbors();
 }
 
 void World::setupWorldBlock(WorldBlock* WB) {
@@ -128,9 +131,24 @@ void World::setupWorldBlock(WorldBlock* WB) {
 
 }
 
-
-
 void World::Update(float dt) {
+
+	// Update current Camera
+	mCamera[mCurrentCamera]->Update(dt);
+
+	// check for the center block
+	int x = floor((mCharacterPosition.x + 49.9) / 100);
+	int z = floor((mCharacterPosition.z + 49.9) / 100);
+	vec2 newCenter = vec2(x, z);
+	if (newCenter != CenterBlock) {
+		CenterBlock = newCenter;
+		checkNeighbors();
+	}
+	
+
+
+
+
 	// User Inputs
 	// 0 1 2 to change the Camera
 	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_1) == GLFW_PRESS)
@@ -169,17 +187,16 @@ void World::Update(float dt) {
 
 	mpBillboardList->Update(dt);
 
-
-	mWorldBlock->Update(dt);
-	//mWorldBlock1->Update(dt);
-
-
+	mWorldBlock[0]->Update(dt);
+	//mWorldBlock0->Update(dt);
 
 }
+
+
 void World::Draw() {
 
 	glClearColor(0.1f, 0.13f, 0.2f,0.0f);
-	//mWorldBlock->Draw();
+	//mWorldBlock0->Draw();
 	//mWorldBlock1->Draw();
 
 	//first shader
@@ -187,16 +204,22 @@ void World::Draw() {
 	// Set shader to use
 	glUseProgram(Renderer::GetShaderProgramID());
 	Renderer::CheckForErrors();
-	
-	mWorldBlock->DrawCurrentShader();
-	mWorldBlock1->DrawCurrentShader();
-	mWorldBlock2->DrawCurrentShader();
-	mWorldBlock3->DrawCurrentShader();
-	mWorldBlock4->DrawCurrentShader();
-	mWorldBlock5->DrawCurrentShader();
-	mWorldBlock6->DrawCurrentShader();
-	mWorldBlock7->DrawCurrentShader();
-	mWorldBlock8->DrawCurrentShader();
+
+	for (int i = 0; i < 9; i++) {
+		mWorldBlock[DisplayedWBIndex[i]]->DrawCurrentShader();
+	}
+
+
+	//mWorldBlock0->DrawCurrentShader();
+	//mWorldBlock1->DrawCurrentShader();
+	//mWorldBlock2->DrawCurrentShader();
+	//mWorldBlock3->DrawCurrentShader();
+	//mWorldBlock4->DrawCurrentShader();
+	//mWorldBlock5->DrawCurrentShader();
+	//mWorldBlock6->DrawCurrentShader();
+	//mWorldBlock7->DrawCurrentShader();
+	//mWorldBlock8->DrawCurrentShader();
+
 
 	
 	// path lines shader
@@ -206,15 +229,19 @@ void World::Draw() {
 	glUseProgram(Renderer::GetShaderProgramID());
 	Renderer::CheckForErrors();
 
-	mWorldBlock->DrawPathLinesShader();
-	mWorldBlock1->DrawPathLinesShader();
-	mWorldBlock2->DrawPathLinesShader();
-	mWorldBlock3->DrawPathLinesShader();
-	mWorldBlock4->DrawPathLinesShader();
-	mWorldBlock5->DrawPathLinesShader();
-	mWorldBlock6->DrawPathLinesShader();
-	mWorldBlock7->DrawPathLinesShader();
-	mWorldBlock8->DrawPathLinesShader();
+	for (int i = 0; i < 9; i++) {
+		mWorldBlock[DisplayedWBIndex[i]]->DrawPathLinesShader();
+	}
+
+	//mWorldBlock0->DrawPathLinesShader();
+	//mWorldBlock1->DrawPathLinesShader();
+	//mWorldBlock2->DrawPathLinesShader();
+	//mWorldBlock3->DrawPathLinesShader();
+	//mWorldBlock4->DrawPathLinesShader();
+	//mWorldBlock5->DrawPathLinesShader();
+	//mWorldBlock6->DrawPathLinesShader();
+	//mWorldBlock7->DrawPathLinesShader();
+	//mWorldBlock8->DrawPathLinesShader();
 
 
 	Renderer::CheckForErrors();
@@ -230,15 +257,19 @@ void World::Draw() {
 
 	Renderer::CheckForErrors();
 
-	mWorldBlock->DrawTextureShader();
-	mWorldBlock1->DrawTextureShader();
-	mWorldBlock2->DrawTextureShader();
-	mWorldBlock3->DrawTextureShader();
-	mWorldBlock4->DrawTextureShader();
-	mWorldBlock5->DrawTextureShader();
-	mWorldBlock6->DrawTextureShader();
-	mWorldBlock7->DrawTextureShader();
-	mWorldBlock8->DrawTextureShader();
+	for (int i = 0; i < 9; i++) {
+		mWorldBlock[DisplayedWBIndex[i]]->DrawTextureShader();
+	}
+
+	//mWorldBlock0->DrawTextureShader();
+	//mWorldBlock1->DrawTextureShader();
+	//mWorldBlock2->DrawTextureShader();
+	//mWorldBlock3->DrawTextureShader();
+	//mWorldBlock4->DrawTextureShader();
+	//mWorldBlock5->DrawTextureShader();
+	//mWorldBlock6->DrawTextureShader();
+	//mWorldBlock7->DrawTextureShader();
+	//mWorldBlock8->DrawTextureShader();
 
 	Renderer::CheckForErrors();
 	Renderer::SetShader(oldShader);
@@ -253,9 +284,9 @@ void World::Draw() {
 	Renderer::EndFrame();
 }
 
-WorldBlock* World::getWorldBlock() const {
-	return mWorldBlock1;
-}
+//WorldBlock* World::getWorldBlock() const {
+//	return mWorldBlock1;
+//}
 
 World* World::getWorldInstance() {
 	if (worldInstance == NULL)
@@ -269,22 +300,34 @@ World* World::getWorldInstance() {
 
 
 World::World() {
-	mWorldBlock = new WorldBlock(vec2(0, 0));
-	mWorldBlock1 = new WorldBlock(vec2(1, 0));
-	mWorldBlock2 = new WorldBlock(vec2(-1, 0));
-	mWorldBlock3 = new WorldBlock(vec2(1, 1));
-	mWorldBlock4 = new WorldBlock(vec2(0, 1));
-	mWorldBlock5 = new WorldBlock(vec2(-1, 1));
-	mWorldBlock6 = new WorldBlock(vec2(-1, -1));
-	mWorldBlock7 = new WorldBlock(vec2(0, -1));
-	mWorldBlock8 = new WorldBlock(vec2(1, -1));
+
+	mCharacterPosition = vec3(3.0f, 5.0f, 20.0f);
+
+	CenterBlock = vec2(0, 0);
+	// Neighbors = getNeighbors(CenterBlock);
+	mWorldBlock.push_back(new WorldBlock(vec2(0, 0)));
+	
+	
+
+	//mWorldBlock0 = new WorldBlock(vec2(0, 0));
+	//mWorldBlock1 = new WorldBlock(vec2(1, 0));
+	//mWorldBlock2 = new WorldBlock(vec2(-1, 0));
+	//mWorldBlock3 = new WorldBlock(vec2(1, 1));
+	//mWorldBlock4 = new WorldBlock(vec2(0, 1));
+	//mWorldBlock5 = new WorldBlock(vec2(-1, 1));
+	//mWorldBlock6 = new WorldBlock(vec2(-1, -1));
+	//mWorldBlock7 = new WorldBlock(vec2(0, -1));
+	//mWorldBlock8 = new WorldBlock(vec2(1, -1));
+
+	//mWorldBlock.insert()
 
 
 
 	// Setup Camera
-	mCamera.push_back(new FirstPersonCamera(vec3(3.0f, 5.0f, 20.0f)));
-	mCamera.push_back(new StaticCamera(vec3(3.0f, 30.0f, 5.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f)));
-	mCamera.push_back(new StaticCamera(vec3(0.5f, 0.5f, 5.0f), vec3(0.0f, 0.5f, 0.0f), vec3(0.0f, 1.0f, 0.0f)));
+	//mCamera.push_back(new FirstPersonCamera(vec3(3.0f, 5.0f, 20.0f)));
+	mCamera.push_back(new FirstPersonCamera(mCharacterPosition));
+	/*mCamera.push_back(new StaticCamera(vec3(3.0f, 30.0f, 5.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f)));
+	mCamera.push_back(new StaticCamera(vec3(0.5f, 0.5f, 5.0f), vec3(0.0f, 0.5f, 0.0f), vec3(0.0f, 1.0f, 0.0f)));*/
 	mCurrentCamera = 0;
 
 #if defined(PLATFORM_OSX)
@@ -298,16 +341,18 @@ World::World() {
 
 	mpBillboardList = new BillboardList(2048, billboardTextureID);
 }
+
+
 World::~World() {
-	delete mWorldBlock;
-	delete mWorldBlock1;
-	delete mWorldBlock2;
-	delete mWorldBlock3;
-	delete mWorldBlock4;
-	delete mWorldBlock5;
-	delete mWorldBlock6;
-	delete mWorldBlock7;
-	delete mWorldBlock8;
+	//delete mWorldBlock0;
+	//delete mWorldBlock1;
+	//delete mWorldBlock2;
+	//delete mWorldBlock3;
+	//delete mWorldBlock4;
+	//delete mWorldBlock5;
+	//delete mWorldBlock6;
+	//delete mWorldBlock7;
+	//delete mWorldBlock8;
 };
 
 
@@ -376,4 +421,49 @@ void World::AddBillboard(Billboard* b)
 void World::RemoveBillboard(Billboard* b)
 {
 	mpBillboardList->RemoveBillboard(b);
+}
+
+
+void World::checkNeighbors() {
+	mNeighbors.clear();
+
+
+	mNeighbors.push_back(vec2(CenterBlock.x - 1, CenterBlock.y + 1));	// upper left
+	mNeighbors.push_back(vec2(CenterBlock.x, CenterBlock.y + 1));		// upper mid
+	mNeighbors.push_back(vec2(CenterBlock.x + 1, CenterBlock.y + 1));	// upper right
+	mNeighbors.push_back(vec2(CenterBlock.x - 1, CenterBlock.y));		// level left
+	mNeighbors.push_back(vec2(CenterBlock.x + 1, CenterBlock.y));		// level right
+	mNeighbors.push_back(vec2(CenterBlock.x - 1, CenterBlock.y - 1));	// lower left
+	mNeighbors.push_back(vec2(CenterBlock.x, CenterBlock.y - 1));		// lower mid
+	mNeighbors.push_back(vec2(CenterBlock.x + 1, CenterBlock.y - 1));	// lower right
+	assert(mNeighbors.size() == 8);
+
+	// generate the world blocks that were not called before
+	int dIndex = 0;
+	for (int i = 0; i < 8; i++) {
+		bool isNew = true;
+		for (int j = 0; j < mWorldBlock.size(); j++) {
+			if (mWorldBlock[j]->getWorldBlockCoor() == mNeighbors[i]) {
+				DisplayedWBIndex[dIndex++] = j;
+				isNew = false;
+				break;
+			}
+				
+		}
+		if (isNew) {
+			DisplayedWBIndex[dIndex++] = mWorldBlock.size();
+			WorldBlock* newWorldBlock = new WorldBlock(mNeighbors[i]);
+			setupWorldBlock(newWorldBlock);
+			mWorldBlock.push_back(newWorldBlock);
+		}
+			//mWorldBlock.push_back(new WorldBlock(mNeighbors[i]));
+	}
+
+	for (int i = 0; i < mWorldBlock.size(); i++) {
+		if (mWorldBlock[i]->getWorldBlockCoor() == CenterBlock) {
+			DisplayedWBIndex[8] = i;
+			break;
+		}
+	}
+
 }

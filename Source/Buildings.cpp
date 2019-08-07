@@ -59,7 +59,7 @@ void Buildings::ClusterShape() {
 	mPosition[cBuildingAmo].y = BuildingDefaultSize.y * mScaling[cBuildingAmo].y / 2;
 	cBuildingAmo++;
 
-	float dIndex = 0.2;
+	float dIndex = 0.3;
 	float yScalingIndex = 1;
 	int centerBuildingIndex = cBuildingAmo - 1;
 	while (cBuildingAmo < BuildingAmo) {
@@ -90,7 +90,7 @@ void Buildings::ClusterShape() {
 		cBuildingAmo++;
 
 		yScalingIndex -= 0.07;
-		dIndex += 0.06;
+		dIndex += 0.1;
 
 	}
 
@@ -115,7 +115,7 @@ void Buildings::WallShape() {
 	mPosition[cBuildingAmo].y = BuildingDefaultSize.y * mScaling[cBuildingAmo].y / 2;
 	cBuildingAmo++;
 
-	float dIndex = 0.2;
+	float dIndex = 0.3;
 	float yScalingIndex = 1;
 	int centerBuildingIndex = cBuildingAmo - 1;
 	while (cBuildingAmo < BuildingAmo) {
@@ -146,7 +146,7 @@ void Buildings::WallShape() {
 		cBuildingAmo++;
 
 		yScalingIndex -= 0.07;
-		dIndex += 0.06;
+		dIndex += 0.1;
 
 	}
 }
@@ -154,7 +154,7 @@ void Buildings::WallShape() {
 bool Buildings::isAcceptable(vec3 aPosition, vec3 aScaling) {
 	
 	vec3 bPosition, bScaling;
-
+	                                                                  
 	for (int i = 0; i < cBuildingAmo; i++) {
 		bPosition = mPosition[i];
 		bScaling = mScaling[i];

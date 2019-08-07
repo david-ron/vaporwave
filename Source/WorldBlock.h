@@ -51,7 +51,8 @@ public:
     ParticleDescriptor* FindParticleDescriptor(ci_string name);
 	std::vector<LightSource*> getLightSource();
 	const LightSource getLightSourceAt(int);
-	const int getLightSize() { return lightSource.size(); };
+	const int getLightSize() { return lightSource.size(); }
+
 
     //const Camera* GetCurrentCamera() const;
     void AddBillboard(Billboard* b);
@@ -69,7 +70,7 @@ public:
 	void setCurrentCamera(unsigned int mCurrentCamera);
 	void setLightSource(std::vector<LightSource*> lightSource);
 	void setBillboardList(BillboardList* mpBillboardList);
-
+	vec2 getWorldBlockCoor() { return vec2(WB_Coordinate[0], WB_Coordinate[1]); }
     
 private:
     

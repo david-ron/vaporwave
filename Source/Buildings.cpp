@@ -28,14 +28,14 @@ Buildings::Buildings(int BuildingAmo)
 	int shape = EventManager::GetRandomInt(0, 1);
 	// generate the buildings;
 	while (cBuildingAmo < BuildingAmo) {
-		//if (shape) {
-		//	WallShape();
-		//	shape = 0;
-		//}
-		//else {
+		if (shape) {
+			WallShape();
+			shape = 0;
+		}
+		else {
 			ClusterShape();
 			shape = 1;
-		//}
+		}
 	}
 
 }
@@ -43,7 +43,7 @@ Buildings::Buildings(int BuildingAmo)
 void Buildings::ClusterShape() {
 	std::default_random_engine generator;
 	generator.seed(EventManager::GetRandomInt());
-	std::normal_distribution<float> ScalingGenerator(1.0, 0.5);
+	std::normal_distribution<float> ScalingGenerator(1.2, 0.3);
 
 	// check if there are enough building
 	if (cBuildingAmo >= BuildingAmo) return;
@@ -52,14 +52,14 @@ void Buildings::ClusterShape() {
 	float temp[3];
 	for (int i = 0; i < 3; i++) {
 		temp[i] = ScalingGenerator(generator);
-		//if (temp[i] <= 0)
-		//	i--;
+		if (temp[i] <= 0.3)
+			i--;
 	}
 	mScaling.push_back(vec3(temp[0], temp[1], temp[2]));
 	mPosition[cBuildingAmo].y = BuildingDefaultSize.y * mScaling[cBuildingAmo].y / 2;
 	cBuildingAmo++;
 
-	float dIndex = 0.3;
+	float dIndex = 0.2;
 	float yScalingIndex = 1;
 	int centerBuildingIndex = cBuildingAmo - 1;
 	while (cBuildingAmo < BuildingAmo) {
@@ -69,33 +69,104 @@ void Buildings::ClusterShape() {
 		std::normal_distribution<float> xGenerator(mPosition[centerBuildingIndex].x, BuildingDefaultSize.x*dIndex);
 		std::normal_distribution<float> yGenerator(mPosition[centerBuildingIndex].y, BuildingDefaultSize.y*dIndex);
 
-		mPosition.push_back(vec3(xGenerator(generator), 0, yGenerator(generator)));
+		vec3 tempPosition, tempScaling;
 
-		float temp[3];
-		for (int i = 0; i < 3; i++) {temp[i] = ScalingGenerator(generator);}
-		mScaling.push_back(vec3(temp[0], temp[1] * yScalingIndex, temp[2]));
-		mPosition[cBuildingAmo].y = BuildingDefaultSize.y * mScaling[cBuildingAmo].y / 2;
+		do {
+			tempPosition = vec3(xGenerator(generator), 0, yGenerator(generator));
+			float temp[3];
+			for (int i = 0; i < 3; i++) { 
+				temp[i] = ScalingGenerator(generator); 
+				if (temp[i] <= 0.3)
+					i--;
+			}
+			tempScaling = vec3(temp[0], temp[1] * yScalingIndex, temp[2]);
+			tempPosition.y = BuildingDefaultSize.y * tempScaling.y / 2;
+			
+		} while (!isAcceptable(tempPosition, tempScaling));
+
+
+		mPosition.push_back(tempPosition);
+		mScaling.push_back(tempScaling);
 		cBuildingAmo++;
 
-		yScalingIndex -= 0.1;
-		dIndex += 0.1;
+		yScalingIndex -= 0.07;
+		dIndex += 0.06;
 
 	}
 
 }
 
 void Buildings::WallShape() {
-	
+	std::default_random_engine generator;
+	generator.seed(EventManager::GetRandomInt());
+	std::normal_distribution<float> ScalingGenerator(1.2, 0.3);
+
+	// check if there are enough building
+	if (cBuildingAmo >= BuildingAmo) return;
+	// center of the cluster
+	mPosition.push_back(vec3(EventManager::GetRandomFloat(-45, 45), 0, EventManager::GetRandomFloat(-45, 45)));
+	float temp[3];
+	for (int i = 0; i < 3; i++) {
+		temp[i] = ScalingGenerator(generator);
+		if (temp[i] <= 0.3)
+			i--;
+	}
+	mScaling.push_back(vec3(temp[0], temp[1], temp[2]));
+	mPosition[cBuildingAmo].y = BuildingDefaultSize.y * mScaling[cBuildingAmo].y / 2;
+	cBuildingAmo++;
+
+	float dIndex = 0.2;
+	float yScalingIndex = 1;
+	int centerBuildingIndex = cBuildingAmo - 1;
+	while (cBuildingAmo < BuildingAmo) {
+		// there is a chance that 
+		if (EventManager::GetRandomFloat(0, 1) < ShapeEscapeChance) return;
+
+		std::normal_distribution<float> xGenerator(mPosition[centerBuildingIndex].x, BuildingDefaultSize.x*dIndex);
+		std::normal_distribution<float> yGenerator(mPosition[centerBuildingIndex].y, BuildingDefaultSize.y*dIndex);
+
+		vec3 tempPosition, tempScaling;
+
+		do {
+			tempPosition = vec3(xGenerator(generator), 0, yGenerator(generator));
+			float temp[3];
+			for (int i = 0; i < 3; i++) {
+				temp[i] = ScalingGenerator(generator);
+				if (temp[i] <= 0.3)
+					i--;
+			}
+			tempScaling = vec3(temp[0], temp[1] * yScalingIndex, temp[2]);
+			tempPosition.y = BuildingDefaultSize.y * tempScaling.y / 2;
+
+		} while (!isAcceptable(tempPosition, tempScaling));
+
+
+		mPosition.push_back(tempPosition);
+		mScaling.push_back(tempScaling);
+		cBuildingAmo++;
+
+		yScalingIndex -= 0.07;
+		dIndex += 0.06;
+
+	}
 }
 
-bool Buildings::isAcceptable(vec3 position, vec3 scaling) {
-	bool result = true;
+bool Buildings::isAcceptable(vec3 aPosition, vec3 aScaling) {
+	
+	vec3 bPosition, bScaling;
 
 	for (int i = 0; i < cBuildingAmo; i++) {
-		
+		bPosition = mPosition[i];
+		bScaling = mScaling[i];
+
+		float xDiff = abs(aPosition.x - bPosition.x);
+		float yDiff = abs(aPosition.y - bPosition.y);
+
+		if (xDiff < 1.2*(aScaling.x + bScaling.x) && yDiff < 1.2*(aScaling.y + bScaling.y))
+			return false;
 	}
 
-	return result;
+	return true;
 }
 
 Buildings::~Buildings()

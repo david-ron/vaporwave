@@ -39,7 +39,7 @@ using namespace std;
 using namespace glm;
 
 //WorldBlock* WorldBlock::instance;
-const int WorldBlock::buildingSizeRange[2] = {2,12};
+const int WorldBlock::buildingSizeRange[2] = {5,15};
 
 WorldBlock::WorldBlock(vec2 coor)
 {

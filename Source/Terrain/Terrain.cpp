@@ -1,30 +1,23 @@
-//
-// COMP 371 Assignment Framework
-//
-// Created by Nicolas Bergeron on 15/7/15.
-//
-// Copyright (c) 2014-2019 Concordia University. All rights reserved.
-//
 
-
-#include "TextureLoader.h"
-#include "Renderer.h"
-
+#include "Terrain.h"
 #include <cassert>
 #include <FreeImageIO.h>
+#include <GL/glew.h>
 
 
-
-int TextureLoader::LoadTexture(const char * imagepath)
+int Terrain::LoadTerrain(const char * imagepath)
 {
 
-	// Load image using the Free Image library
 	FREE_IMAGE_FORMAT format = FreeImage_GetFileType(imagepath, 0);
 	FIBITMAP* image = FreeImage_Load(format, imagepath);
 	FIBITMAP* image32bits = FreeImage_ConvertTo32Bits(image);
 
 	// Get an available texture index from OpenGL
+	
 	GLuint texture = 0;
+
+
+
 	glGenTextures(1, &texture);
 	assert(texture != 0);
 
@@ -47,3 +40,4 @@ int TextureLoader::LoadTexture(const char * imagepath)
 
 	return texture;
 }
+

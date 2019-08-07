@@ -36,7 +36,7 @@ int main(int argc, char*argv[])
 		// Static Scene contains no animation
 		// Animated Scene does
 #if defined(PLATFORM_OSX)		
-		mWorld.LoadScene("Scenes/AnimatedSceneWithParticles.scene");
+		mWorld->LoadScene("Scenes/AnimatedSceneWithParticles.scene");
 //		worldBlock->LoadScene("Scenes/AnimatedSceneWithParticles.scene");
 //		worldBlock.LoadScene("Scenes/AnimatedScene.scene");
 //		worldBlock.LoadScene("Scenes/StaticScene.scene");

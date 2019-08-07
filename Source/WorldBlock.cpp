@@ -32,13 +32,14 @@
 #include "LightSource.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <random>
 
 
 using namespace std;
 using namespace glm;
 
 //WorldBlock* WorldBlock::instance;
-
+const int WorldBlock::buildingSizeRange[2] = {2,12};
 
 WorldBlock::WorldBlock(vec2 coor)
 {
@@ -47,18 +48,23 @@ WorldBlock::WorldBlock(vec2 coor)
 
 	WB_OffsetMatrix = glm::translate(mat4(1.0f), vec3(coor[0]*World::WorldBlockSize, 0.0, coor[1]*World::WorldBlockSize));
 
+	std::default_random_engine generator;
 
+	float MidRange = buildingSizeRange[0] + (buildingSizeRange[1] - buildingSizeRange[0]) / 2.0;
+	float c = (buildingSizeRange[1] - buildingSizeRange[0]) / 3.0;
+	std::normal_distribution<double> distribution(MidRange, c);
+	
 
-	//mat4 offsetMatrix = translate(mat4(1.0), vec3(100.0, 0.0, 0.0));
+	BuildingAmo = 0;
+	while (BuildingAmo< buildingSizeRange[0] || BuildingAmo > buildingSizeRange[1])
+	{
+		BuildingAmo = round(distribution(generator));
+	}
+	
+	assert(BuildingAmo > buildingSizeRange[0] && BuildingAmo < buildingSizeRange[1]);
 
-
-	//lightSource = LightSource();
-
-	//// Setup Camera
-	//mCamera.push_back(new FirstPersonCamera(vec3(3.0f, 5.0f, 20.0f)));
-	//mCamera.push_back(new StaticCamera(vec3(3.0f, 30.0f, 5.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f)));
-	//mCamera.push_back(new StaticCamera(vec3(0.5f,  0.5f, 5.0f), vec3(0.0f, 0.5f, 0.0f), vec3(0.0f, 1.0f, 0.0f)));
-	//mCurrentCamera = 0;
+	
+	mBuildings = new Buildings(BuildingAmo);
 
     
 #if defined(PLATFORM_OSX)
@@ -72,22 +78,6 @@ WorldBlock::WorldBlock(vec2 coor)
 
     mpBillboardList = new BillboardList(2048, billboardTextureID);
 
-    
-    // TODO - You can un-comment out these 2 temporary billboards and particle system
-    // That can help you debug billboards, you can set the billboard texture to billboardTest.png
-    /*    Billboard *b = new Billboard();
-     b->size  = glm::vec2(2.0, 2.0);
-     b->position = glm::vec3(0.0, 3.0, 0.0);
-     b->color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-     
-     Billboard *b2 = new Billboard();
-     b2->size  = glm::vec2(2.0, 2.0);
-     b2->position = glm::vec3(0.0, 3.0, 1.0);
-     b2->color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
-
-     mpBillboardList->AddBillboard(b);
-     mpBillboardList->AddBillboard(b2);
-     */    // TMP
 }
 
 WorldBlock::~WorldBlock()
@@ -144,36 +134,7 @@ WorldBlock::~WorldBlock()
 
 void WorldBlock::Update(float dt)
 {
-	//// User Inputs
-	//// 0 1 2 to change the Camera
-	//if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_1 ) == GLFW_PRESS)
-	//{
-	//	mCurrentCamera = 0;
-	//}
-	//else if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_2 ) == GLFW_PRESS)
-	//{
-	//	if (mCamera.size() > 1)
-	//	{
-	//		mCurrentCamera = 1;
-	//	}
-	//}
-	//else if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_3 ) == GLFW_PRESS)
-	//{
-	//	if (mCamera.size() > 2)
-	//	{
-	//		mCurrentCamera = 2;
-	//	}
-	//}
 
-	//// Spacebar to change the shader
-	//if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_0 ) == GLFW_PRESS)
-	//{
-	//	Renderer::SetShader(SHADER_SOLID_COLOR);
-	//}
-	//else if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_9 ) == GLFW_PRESS)
-	//{
-	//	Renderer::SetShader(SHADER_BLUE);
-	//}
 
     // Update animation and keys
     for (vector<Animation*>::iterator it = mAnimation.begin(); it < mAnimation.end(); ++it)
@@ -654,7 +615,10 @@ void WorldBlock::DrawCurrentShader() {
 		glUniform4f(materialCoefficientsID, mProperties.x, mProperties.y, mProperties.z, mProperties.w);
 		if ((*it)->GetName() != "\"Building\"")
 			(*it)->Draw(WB_OffsetMatrix);
-		//for()
+		else
+			for (int i = 0; i < BuildingAmo; i++) {
+				(*it)->Draw(WB_OffsetMatrix * mBuildings->getBuildingOffsetMatrixAt(i));
+			}
 	}
 
 

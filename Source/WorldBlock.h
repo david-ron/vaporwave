@@ -13,7 +13,7 @@
 #include "ParsingHelper.h"
 #include "Billboard.h"
 #include "LightSource.h"
-
+#include "Buildings.h"
 
 
 #include <vector>
@@ -72,7 +72,6 @@ public:
 
     
 private:
-    //static WorldBlock* instance;
     
 	std::vector<Model*> mModel;
     std::vector<Animation*> mAnimation;
@@ -88,6 +87,8 @@ private:
 	int WB_Coordinate[2];
 	mat4 WB_OffsetMatrix;
 
-
-
+	static int const buildingSizeRange[2];
+	int BuildingAmo;
+	//vector<mat4> buildingOffsetMatrix;
+	Buildings* mBuildings;
 };

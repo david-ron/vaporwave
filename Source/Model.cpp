@@ -14,6 +14,7 @@
 #include "ParticleEmitter.h"
 #include "ParticleDescriptor.h"
 #include "ParticleSystem.h"
+#include "Buildings.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/common.hpp>
 
@@ -108,6 +109,10 @@ bool Model::ParseLine(const std::vector<ci_string> &token)
 			mScaling.x = static_cast<float>(atof(token[2].c_str()));
 			mScaling.y = static_cast<float>(atof(token[3].c_str()));
 			mScaling.z = static_cast<float>(atof(token[4].c_str()));
+
+			ci_string temp = GetName();
+			if (GetName() == "\"Building\"")
+				Buildings::setBuildingDefaultSize(mScaling);
 		}
 		else if (token[0] == "animation")
 		{

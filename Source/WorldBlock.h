@@ -13,7 +13,7 @@
 #include "ParsingHelper.h"
 #include "Billboard.h"
 #include "LightSource.h"
-
+#include "Terrain/Pixel.h"
 
 
 #include <vector>
@@ -69,6 +69,7 @@ public:
 	void setCurrentCamera(unsigned int mCurrentCamera);
 	void setLightSource(std::vector<LightSource*> lightSource);
 	void setBillboardList(BillboardList* mpBillboardList);
+	void setPixelList(PixelList* mpPixelList);
 
     
 private:
@@ -84,6 +85,7 @@ private:
 	std::vector<LightSource*> lightSource;
 
     BillboardList* mpBillboardList;
+	PixelList* mpPixelList;
 
 	int WB_Coordinate[2];
 	mat4 WB_OffsetMatrix;

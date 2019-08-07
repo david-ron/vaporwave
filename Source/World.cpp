@@ -15,6 +15,7 @@
 #include "ParticleSystem.h"
 #include "LightSource.h"
 #include "Terrain/Terrain.h"
+#include "Terrain/Pixel.h"
 
 World* World::worldInstance;
 const float World::WorldBlockSize = 100;
@@ -300,8 +301,9 @@ World::World() {
 
 #endif
 	assert(billboardTextureID != 0);
-
+	assert(terrainTextureID != 0);
 	mpBillboardList = new BillboardList(2048, billboardTextureID);
+	mpPixelList = new PixelList(2048, terrainTextureID);
 
 }
 

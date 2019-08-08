@@ -25,8 +25,10 @@ CubeObj::CubeObj(glm::vec3 size) : Model(){
     int i = 0;
     //read the vertices from the cube.obj file
     //We won't be needing the normals or UVs for this program
-    loadOBJ(cubeObjFile.c_str(),vertices, normals, UVs);
+
+    loadOBJ(cubeObjFile.c_str(),vertices, normals, UVs, max, min);
     for (unsigned int i = 0; i<vertices.size(); ++i){makeSimpleColor(colors);};
+
     glGenVertexArrays(1, &mVAO);
     glBindVertexArray(mVAO); //Becomes active VAO
     // Bind the Vertex Array Object first, then bind and set vertex buffer(s) and attribute pointer(s).

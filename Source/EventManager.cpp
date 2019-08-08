@@ -35,6 +35,8 @@ float  EventManager::sMouseDeltaY = 0.0f;
 
 // Window
 GLFWwindow* EventManager::spWindow = nullptr;
+float EventManager::window_height = 768;
+float EventManager::window_width = 1024;
 
 
 void EventManager::Initialize()
@@ -68,7 +70,13 @@ void EventManager::Initialize()
     
 	// Open a window and create its OpenGL context
 	glfwWindowHint(GLFW_RESIZABLE, 0);
-	spWindow = glfwCreateWindow(1024, 768, "COMP371 - Assignment Framework", nullptr, nullptr);
+	const GLFWvidmode * mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+	window_width = mode->width;
+	window_height = mode->height;
+	//spWindow = glfwCreateWindow(1024, 768, "COMP371 - Assignment Framework", glfwGetPrimaryMonitor(), nullptr);
+	/*int count;
+	GLFWmonitor** monitors = glfwGetMonitors(&count);*/
+	spWindow = glfwCreateWindow(window_width, window_height, "COMP371 - Assignment Framework", glfwGetPrimaryMonitor(), nullptr);
 
 	if (spWindow == nullptr)
 	{

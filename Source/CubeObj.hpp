@@ -26,6 +26,7 @@ protected:
     
 private:
     // The vertex format could be different for different types of models
+    inline void makeSimpleColor (std::vector<glm::vec3> &colors){colors.push_back(glm::vec3(0.7f,0.0f,0.9f));};
     struct Vertexs
     {
         std::vector<glm::vec3> position;

@@ -33,6 +33,9 @@ public:
 	static int GetRandomInt(int min, int max);
 	static int GetRandomInt();
 
+	static float GetWindowHight() { return window_height; }
+	static float GetWindowWidth() { return window_width; }
+
 private:
 	// Time
 	static double sLastFrameTime;
@@ -43,6 +46,9 @@ private:
 	static float  sMouseDeltaX;
 	static double sLastMousePositionY;
 	static float  sMouseDeltaY;
+
+	static float window_width;
+	static float window_height;
 
 	// Window
 	static GLFWwindow* spWindow;

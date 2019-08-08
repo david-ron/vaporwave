@@ -106,15 +106,6 @@ void World::LoadScene(const char * scene_path) {
 		(*it)->CreateVertexBuffer();
 	}
 
-	//setupWorldBlock(mWorldBlock0);
-	//setupWorldBlock(mWorldBlock1);
-	//setupWorldBlock(mWorldBlock2);
-	//setupWorldBlock(mWorldBlock3);
-	//setupWorldBlock(mWorldBlock4);
-	//setupWorldBlock(mWorldBlock5);
-	//setupWorldBlock(mWorldBlock6);
-	//setupWorldBlock(mWorldBlock7);
-	//setupWorldBlock(mWorldBlock8);
 
 	setupWorldBlock(mWorldBlock[0]);
 	checkNeighbors();
@@ -138,8 +129,105 @@ void World::setupWorldBlock(WorldBlock* WB) {
 
 void World::Update(float dt) {
 
+	// update charater 
+
+	// Prevent from having the camera move only when the cursor is within the windows
+	EventManager::DisableMouseCursor();
+
+
+	// The Camera moves based on the User inputs
+	// - You can access the mouse motion with EventManager::GetMouseMotionXY()
+	// - For mapping A S D W, you can look in WorldBlock.cpp for an example of accessing key states
+	// - Don't forget to use dt to control the speed of the camera motion
+
+	// Mouse motion to get the variation in angle
+	mHorizontalAngle -= EventManager::GetMouseMotionX() * mAngularSpeed * dt;
+	mVerticalAngle -= EventManager::GetMouseMotionY() * mAngularSpeed * dt;
+
+	// Clamp vertical angle to [-85, 85] degrees
+	mVerticalAngle = std::max(-85.0f, std::min(85.0f, mVerticalAngle));
+	if (mHorizontalAngle > 360)
+	{
+		mHorizontalAngle -= 360;
+	}
+	else if (mHorizontalAngle < -360)
+	{
+		mHorizontalAngle += 360;
+	}
+
+	float theta = radians(mHorizontalAngle);
+	float phi = radians(mVerticalAngle);
+
+	mcLookAt = vec3(cosf(phi)*cosf(theta), sinf(phi), -cosf(phi)*sinf(theta));
+
+	mcSideVector = glm::cross(mcLookAt, vec3(0.0f, 1.0f, 0.0f));
+	glm::normalize(mcSideVector);
+
+	// A S D W for motion along the camera basis vectors
+	// Forward
+	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_W) == GLFW_PRESS) 
+	{
+		vec3 direction = mcLookAt;
+
+		if ( (mcPosition.y - mcRadius) <= 0 && dot(direction,vec3(0,1,0)) < 0.0f) {
+			vec3 mSideVector = cross(vec3(0, 1, 0), direction);
+			direction = cross(mSideVector, vec3(0, 1, 0));
+			direction = normalize(direction);
+		}
+
+		if (glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS)
+			mcPosition += direction * dt * mCharacterDefaultSpeed * mCharacterSpeedUpRate;
+		else
+			mcPosition += direction * dt * mCharacterDefaultSpeed;
+	}
+	// Backward
+	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_S) == GLFW_PRESS)
+	{
+		vec3 direction = mcLookAt;
+
+		
+
+		if (glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS)
+			mcPosition -= direction * dt * mCharacterDefaultSpeed * mCharacterSpeedUpRate;
+		else
+			mcPosition -= direction * dt * mCharacterDefaultSpeed;
+	}
+	// To the left
+	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_D) == GLFW_PRESS)
+	{
+		if (glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS)
+			mcPosition += mcSideVector * dt * mCharacterDefaultSpeed * mCharacterSpeedUpRate;
+		else
+			mcPosition += mcSideVector * dt * mCharacterDefaultSpeed;
+	}
+	// To the right
+	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_A) == GLFW_PRESS)
+	{
+		if (glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS)
+			mcPosition -= mcSideVector * dt * mCharacterDefaultSpeed * mCharacterSpeedUpRate;
+		else
+			mcPosition -= mcSideVector * dt * mCharacterDefaultSpeed;
+	}
+	// Up
+	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_SPACE) == GLFW_PRESS)
+	{
+		if (glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS)
+			mcPosition += vec3(0, 1, 0) * dt * mCharacterDefaultSpeed * mCharacterSpeedUpRate;
+		else
+			mcPosition += vec3(0, 1, 0) * dt * mCharacterDefaultSpeed;
+	}
+	// Back to intial
+	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_O) == GLFW_PRESS)
+	{
+		if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS ||
+			glfwGetKey(EventManager::GetWindow(), GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+			mcPosition = mcPositionInitial;
+	}
+
+
 	// Update current Camera
 	mCamera[mCurrentCamera]->Update(dt);
+
 
 	// check for the center block
 	int x = floor((mcPosition.x + 50) / 100);
@@ -214,18 +302,6 @@ void World::Draw() {
 		mWorldBlock[DisplayedWBIndex[i]]->DrawCurrentShader();
 	}
 
-
-	//mWorldBlock0->DrawCurrentShader();
-	//mWorldBlock1->DrawCurrentShader();
-	//mWorldBlock2->DrawCurrentShader();
-	//mWorldBlock3->DrawCurrentShader();
-	//mWorldBlock4->DrawCurrentShader();
-	//mWorldBlock5->DrawCurrentShader();
-	//mWorldBlock6->DrawCurrentShader();
-	//mWorldBlock7->DrawCurrentShader();
-	//mWorldBlock8->DrawCurrentShader();
-
-
 	
 	// path lines shader
 	Renderer::CheckForErrors();
@@ -238,15 +314,6 @@ void World::Draw() {
 		mWorldBlock[DisplayedWBIndex[i]]->DrawPathLinesShader();
 	}
 
-	//mWorldBlock0->DrawPathLinesShader();
-	//mWorldBlock1->DrawPathLinesShader();
-	//mWorldBlock2->DrawPathLinesShader();
-	//mWorldBlock3->DrawPathLinesShader();
-	//mWorldBlock4->DrawPathLinesShader();
-	//mWorldBlock5->DrawPathLinesShader();
-	//mWorldBlock6->DrawPathLinesShader();
-	//mWorldBlock7->DrawPathLinesShader();
-	//mWorldBlock8->DrawPathLinesShader();
 
 
 	Renderer::CheckForErrors();
@@ -307,6 +374,7 @@ World* World::getWorldInstance() {
 World::World() {
 
 	mcPosition = vec3(3.0f, 5.0f, 20.0f);
+	mcPositionInitial = mcPosition;
 	mcLookAt = vec3(0.0f, 0.0f, -1.0f);
 
 	CenterBlock = vec2(0, 0);

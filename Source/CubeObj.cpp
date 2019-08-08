@@ -23,7 +23,7 @@ CubeObj::CubeObj(glm::vec3 size) : Model(){
     
     //read the vertices from the cube.obj file
     //We won't be needing the normals or UVs for this program
-    loadOBJ(cubeObjFile.c_str(),vertices, normals, UVs);
+    loadOBJ(cubeObjFile.c_str(),vertices, normals, UVs, max, min);
     
     glGenVertexArrays(1, &mVAO);
     glBindVertexArray(mVAO); //Becomes active VAO

@@ -41,6 +41,10 @@ private:
     unsigned int mVAO;
     unsigned int mVBO;
     unsigned int vertexCount;
+
+	glm::vec3 max;
+	glm::vec3 min;
+
 };
 
 

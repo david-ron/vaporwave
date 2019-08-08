@@ -57,7 +57,7 @@ void Buildings::ClusterShape() {
 		if (temp[i] <= 0.3)
 			i--;
 	}
-	mScaling.push_back(vec3(temp[0], temp[1], temp[2]));
+	mScaling.push_back(vec3(temp[0], temp[1], temp[2]) * 0.5f);
 	mPosition[cBuildingAmo].y = BuildingDefaultSize.y * mScaling[cBuildingAmo].y / 2;
 	cBuildingAmo++;
 
@@ -88,11 +88,11 @@ void Buildings::ClusterShape() {
 
 
 		mPosition.push_back(tempPosition);
-		mScaling.push_back(tempScaling);
+		mScaling.push_back(tempScaling * 0.5f);
 		cBuildingAmo++;
 
 		yScalingIndex -= 0.07;
-		dIndex += 0.1;
+		dIndex += 0.2;
 
 	}
 
@@ -113,7 +113,7 @@ void Buildings::WallShape() {
 		if (temp[i] <= 0.3)
 			i--;
 	}
-	mScaling.push_back(vec3(temp[0], temp[1], temp[2]));
+	mScaling.push_back(vec3(temp[0], temp[1], temp[2]) * 0.5f);
 	mPosition[cBuildingAmo].y = BuildingDefaultSize.y * mScaling[cBuildingAmo].y / 2;
 	cBuildingAmo++;
 
@@ -144,11 +144,11 @@ void Buildings::WallShape() {
 
 
 		mPosition.push_back(tempPosition);
-		mScaling.push_back(tempScaling);
+		mScaling.push_back(tempScaling * 0.5f);
 		cBuildingAmo++;
 
 		yScalingIndex -= 0.07;
-		dIndex += 0.1;
+		dIndex += 0.2;
 
 	}
 }

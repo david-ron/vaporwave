@@ -22,8 +22,8 @@ public:
 	void AddParticleSystem(ParticleSystem* particleSystem);
 	void AddParticleDescriptor(ParticleDescriptor* particleDescriptor);
 	void setupWorldBlock(WorldBlock*);
-	void setCharacterPosition(vec3 cPosition) { mCharacterPosition = cPosition; }
-	void updateMCharacterPosition(vec3 newPosition) { mCharacterPosition = newPosition; }
+	void setCharacterPosition(vec3 cPosition) { mcPosition = cPosition; }
+	void updateMCharacterPosition(vec3 newPosition) { mcPosition = newPosition; }
 
 	Animation* FindAnimation(ci_string animName);
 	AnimationKey* FindAnimationKey(ci_string keyName);
@@ -31,7 +31,7 @@ public:
 	Camera* GetCurrentCamera() const;
 	const int getLightSize() { return lightSource.size(); };
 	const LightSource getLightSourceAt(int);
-	vec3 getCharacterPosition() const { return mCharacterPosition; }
+	vec3 getCharacterPosition() const { return mcPosition; }
 
 	static const float WorldBlockSize;
 
@@ -51,7 +51,8 @@ private:
 	vec2 CenterBlock;
 	vector<vec2> mNeighbors;
 	vector<WorldBlock*> mWorldBlock;
-	vec3 mCharacterPosition;
+	vec3 mcPosition;		// my character's position
+	vec3 mcLookAt;			// my character's facing direction(lookAt vector for FPV)
 	int DisplayedWBIndex[9];
 
 	std::vector<Model*> mModel;

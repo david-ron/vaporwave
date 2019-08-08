@@ -142,8 +142,8 @@ void World::Update(float dt) {
 	mCamera[mCurrentCamera]->Update(dt);
 
 	// check for the center block
-	int x = floor((mCharacterPosition.x + 50) / 100);
-	int z = floor((mCharacterPosition.z + 50) / 100);
+	int x = floor((mcPosition.x + 50) / 100);
+	int z = floor((mcPosition.z + 50) / 100);
 	vec2 newCenter = vec2(x, z);
 	if (newCenter != CenterBlock) {
 		CenterBlock = newCenter;
@@ -306,7 +306,8 @@ World* World::getWorldInstance() {
 
 World::World() {
 
-	mCharacterPosition = vec3(3.0f, 5.0f, 20.0f);
+	mcPosition = vec3(3.0f, 5.0f, 20.0f);
+	mcLookAt = vec3(0.0f, 0.0f, -1.0f);
 
 	CenterBlock = vec2(0, 0);
 	// Neighbors = getNeighbors(CenterBlock);
@@ -330,9 +331,9 @@ World::World() {
 
 	// Setup Camera
 	//mCamera.push_back(new FirstPersonCamera(vec3(3.0f, 5.0f, 20.0f)));
-	mCamera.push_back(new FirstPersonCamera(mCharacterPosition));
-	/*mCamera.push_back(new StaticCamera(vec3(3.0f, 30.0f, 5.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f)));
-	mCamera.push_back(new StaticCamera(vec3(0.5f, 0.5f, 5.0f), vec3(0.0f, 0.5f, 0.0f), vec3(0.0f, 1.0f, 0.0f)));*/
+	mCamera.push_back(new FirstPersonCamera(mcPosition, mcLookAt));
+	//mCamera.push_back(new StaticCamera(vec3(3.0f, 30.0f, 5.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f)));
+	//mCamera.push_back(new StaticCamera(vec3(0.5f, 0.5f, 5.0f), vec3(0.0f, 0.5f, 0.0f), vec3(0.0f, 1.0f, 0.0f)));
 	mCurrentCamera = 0;
 
 #if defined(PLATFORM_OSX)

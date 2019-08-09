@@ -11,7 +11,7 @@ mat4 Buildings::getBuildingOffsetMatrixAt(int index) {
 	mat4 t = glm::translate(mat4(1.0f), mPosition[index]);
 	mat4 r = glm::rotate(mat4(1.0f), glm::radians(mRotation), vec3(0,1,0));
 	mat4 s = glm::scale(mat4(1.0f), mScaling[index]);
-	return t * r * s;
+	return t * s;
 
 }
 

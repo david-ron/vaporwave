@@ -37,6 +37,7 @@ public:
 
 	vec3 getMClookAt() { return mcLookAt; }
 	vec3 getMCposition() { return mcPosition; }
+	float getMCradius() { return mcRadius; }
 
 
 	static const float WorldBlockSize;
@@ -74,8 +75,8 @@ private:
 	const float mcRadius = 10.0f;
 	vec3 mcLookAt;			// my character's facing direction(lookAt vector for FPV)
 	vec3 mcSideVector;
-	const float mCharacterDefaultSpeed = 5.0f;
-	const float mCharacterSpeedUpRate = 4.0f;
+	const float mCharacterDefaultSpeed = 10.0f;
+	const float mCharacterSpeedUpRate = 5.0f;
 	const float mAngularSpeed = 2.5f;
 
 	float mVerticalAngle = 0.0f;

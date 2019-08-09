@@ -160,7 +160,9 @@ void World::Update(float dt) {
 
 	mcLookAt = vec3(cosf(phi)*cosf(theta), sinf(phi), -cosf(phi)*sinf(theta));
 
-	mcSideVector = glm::cross(mcLookAt, vec3(0.0f, 1.0f, 0.0f));
+	vec3 groundNormal = vec3(0.0f, 1.0f, 0.0f);
+
+	mcSideVector = glm::cross(mcLookAt, groundNormal);
 	glm::normalize(mcSideVector);
 
 	// A S D W for motion along the camera basis vectors
@@ -169,13 +171,15 @@ void World::Update(float dt) {
 	{
 		vec3 direction = mcLookAt;
 
-		if ( (mcPosition.y - mcRadius) <= 0 && dot(direction,vec3(0,1,0)) < 0.0f) {
-			vec3 mSideVector = cross(vec3(0, 1, 0), direction);
-			direction = cross(mSideVector, vec3(0, 1, 0));
+		if ( (mcPosition.y - mcRadius) <= 0 && dot(direction, groundNormal) < 0.0f) {
+			vec3 mSideVector = cross(groundNormal, direction);
+			direction = cross(mSideVector, groundNormal);
 			direction = normalize(direction);
 		}
-
-		if (glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS)
+		if (glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS && 
+			glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_2) == GLFW_PRESS)
+			mcPosition += direction * dt * mCharacterDefaultSpeed * mCharacterSpeedUpRate * 10.0f;
+		else if (glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS)
 			mcPosition += direction * dt * mCharacterDefaultSpeed * mCharacterSpeedUpRate;
 		else
 			mcPosition += direction * dt * mCharacterDefaultSpeed;
@@ -183,19 +187,30 @@ void World::Update(float dt) {
 	// Backward
 	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_S) == GLFW_PRESS)
 	{
-		vec3 direction = mcLookAt;
+		vec3 direction = -mcLookAt;
 
-		
+		if ((mcPosition.y - mcRadius) <= 0 && dot(direction, groundNormal) < 0.0f) {
+			vec3 mSideVector = cross(groundNormal, direction);
+			direction = cross(mSideVector, groundNormal);
+			direction = normalize(direction);
+		}
 
-		if (glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS)
-			mcPosition -= direction * dt * mCharacterDefaultSpeed * mCharacterSpeedUpRate;
+		if (glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS &&
+			glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_2) == GLFW_PRESS)
+			mcPosition += direction * dt * mCharacterDefaultSpeed * mCharacterSpeedUpRate * 10.0f;
+		else if (glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS)
+			mcPosition += direction * dt * mCharacterDefaultSpeed * mCharacterSpeedUpRate;
 		else
-			mcPosition -= direction * dt * mCharacterDefaultSpeed;
+			mcPosition += direction * dt * mCharacterDefaultSpeed;
 	}
 	// To the left
 	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_D) == GLFW_PRESS)
 	{
-		if (glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS)
+
+		if (glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS &&
+			glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_2) == GLFW_PRESS)
+			mcPosition += mcSideVector * dt * mCharacterDefaultSpeed * mCharacterSpeedUpRate * 10.0f;
+		else if (glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS)
 			mcPosition += mcSideVector * dt * mCharacterDefaultSpeed * mCharacterSpeedUpRate;
 		else
 			mcPosition += mcSideVector * dt * mCharacterDefaultSpeed;
@@ -203,7 +218,10 @@ void World::Update(float dt) {
 	// To the right
 	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_A) == GLFW_PRESS)
 	{
-		if (glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS)
+		if (glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS &&
+			glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_2) == GLFW_PRESS)
+			mcPosition -= mcSideVector * dt * mCharacterDefaultSpeed * mCharacterSpeedUpRate * 10.0f;
+		else if (glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS)
 			mcPosition -= mcSideVector * dt * mCharacterDefaultSpeed * mCharacterSpeedUpRate;
 		else
 			mcPosition -= mcSideVector * dt * mCharacterDefaultSpeed;
@@ -212,7 +230,7 @@ void World::Update(float dt) {
 	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_SPACE) == GLFW_PRESS)
 	{
 		if (glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS)
-			mcPosition += vec3(0, 1, 0) * dt * mCharacterDefaultSpeed * mCharacterSpeedUpRate;
+			mcPosition += vec3(0, 1, 0) * dt * mCharacterDefaultSpeed * mCharacterSpeedUpRate * 0.6f;
 		else
 			mcPosition += vec3(0, 1, 0) * dt * mCharacterDefaultSpeed;
 	}

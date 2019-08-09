@@ -37,6 +37,7 @@ public:
 
 	vec3 getMClookAt() { return mcLookAt; }
 	vec3 getMCposition() { return mcPosition; }
+	float getMCradius() { return mcRadius; }
 
 
 	static const float WorldBlockSize;
@@ -57,6 +58,7 @@ private:
 	vec2 CenterBlock;
 	vector<vec2> mNeighbors;
 	vector<WorldBlock*> mWorldBlock;
+	WorldBlock* oldCenterBlock;
 	
 	int DisplayedWBIndex[9];
 

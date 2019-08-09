@@ -9,6 +9,7 @@
 
 #include "ParticleEmitter.h"
 #include "Model.h"
+#include "World.h"
 
 using namespace glm;
 
@@ -30,6 +31,7 @@ glm::vec3 ParticleEmitter::GetPosition()
     // If the emitter is parented, the position is relative to its parent
 
     glm::vec3 position = mpParent->GetPosition();
+	//glm::vec3 position = World::getWorldInstance()->getMCposition();
 
     // ...
     

@@ -43,6 +43,7 @@ const int WorldBlock::buildingSizeRange[2] = {5,15};
 
 WorldBlock::WorldBlock(vec2 coor)
 {
+	
 	WB_Coordinate[0] = coor.x;
 	WB_Coordinate[1] = coor.y;
 
@@ -66,13 +67,13 @@ WorldBlock::WorldBlock(vec2 coor)
 	
 	mBuildings = new Buildings(BuildingAmo);
 
-    
+	
 #if defined(PLATFORM_OSX)
 //    int billboardTextureID = TextureLoader::LoadTexture("Textures/BillboardTest.bmp");
     int billboardTextureID = TextureLoader::LoadTexture("Textures/Particle.png");
 #else
 //    int billboardTextureID = TextureLoader::LoadTexture("../Assets/Textures/BillboardTest.bmp");
-    int billboardTextureID = TextureLoader::LoadTexture("../Assets/Textures/Particle.png");
+    int billboardTextureID = TextureLoader::LoadTexture("../Assets/Textures/Color.png");
 #endif
     assert(billboardTextureID != 0);
 

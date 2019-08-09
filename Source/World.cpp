@@ -380,6 +380,8 @@ World::World() {
 	CenterBlock = vec2(0, 0);
 	// Neighbors = getNeighbors(CenterBlock);
 	mWorldBlock.push_back(new WorldBlock(vec2(0, 0)));
+	mWorldBlock[0]->setOnThis(true);
+	oldCenterBlock = mWorldBlock[0];
 	
 	
 
@@ -409,7 +411,7 @@ World::World() {
 	int billboardTextureID = TextureLoader::LoadTexture("Textures/Particle.png");
 #else
 	//    int billboardTextureID = TextureLoader::LoadTexture("../Assets/Textures/BillboardTest.bmp");
-	int billboardTextureID = TextureLoader::LoadTexture("../Assets/Textures/Particle.png");
+	int billboardTextureID = TextureLoader::LoadTexture("../Assets/Textures/Color.png");
 #endif
 	assert(billboardTextureID != 0);
 
@@ -496,6 +498,7 @@ void World::RemoveBillboard(Billboard* b)
 {
 	mpBillboardList->RemoveBillboard(b);
 }
+
 void World::checkNeighbors() {
 	mNeighbors.clear();
 
@@ -534,6 +537,9 @@ void World::checkNeighbors() {
 	for (int i = 0; i < mWorldBlock.size(); i++) {
 		if (mWorldBlock[i]->getWorldBlockCoor() == CenterBlock) {
 			DisplayedWBIndex[8] = i;
+			oldCenterBlock->setOnThis(false);
+			oldCenterBlock = mWorldBlock[i];
+			oldCenterBlock->setOnThis(true);
 			break;
 		}
 	}

@@ -71,6 +71,8 @@ public:
 	void setLightSource(std::vector<LightSource*> lightSource);
 	void setBillboardList(BillboardList* mpBillboardList);
 	vec2 getWorldBlockCoor() { return vec2(WB_Coordinate[0], WB_Coordinate[1]); }
+
+	void setOnThis(bool o) { onThis = o; }
     
 private:
     
@@ -92,4 +94,6 @@ private:
 	int BuildingAmo;
 	//vector<mat4> buildingOffsetMatrix;
 	Buildings* mBuildings;
+
+	bool onThis = false;
 };

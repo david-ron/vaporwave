@@ -10,17 +10,19 @@
 
 using namespace glm;
 using namespace std;
+//World::getWorldInstance()->getMCposition();
 
 ParticleDescriptor::ParticleDescriptor() :  name("unnamed"), velocity(), velocityAngleRandomness(0.0f), acceleration(),
                                             initialRotationAngle(0.0f), initialRotationAngleRandomness(0.0f),
                                             initialSize(100.0f, 100.0f), initialSizeRandomness(), sizeGrowthVelocity(0.0f),
-                                            initialColor(1.0f,1.0f,1.0f,1.0f), midColor(1.0f,1.0f,1.0f,1.0f), endColor(1.0f,1.0f,1.0f,1.0f),
+                                            initialColor(0.5f,0.0f,0.5f,1.0f), midColor(0.5f, 0.0f, 0.5f, 1.0f), endColor(0.5f, 0.0f, 0.5f, 1.0f),
                                             emissionRate(1.0f), fadeInTime(1.0f), fadeOutTime(1.0f), totalLifetime(3.0f), totalLifetimeRandomness(0.0f)
 {
 }
 
 bool ParticleDescriptor::ParseLine(vector<ci_string> token)
 {
+	
     if (token.empty())
     {
         return true;

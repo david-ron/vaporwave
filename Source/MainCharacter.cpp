@@ -10,6 +10,7 @@
 #include "Renderer.h"
 #include "ObjLoader.hpp"
 #include "World.h"
+#include <glm/gtc/matrix_transform.hpp>
 
 using namespace glm;
 using namespace std;
@@ -100,7 +101,8 @@ void MainCharacter::Draw(glm::mat4 offsetMatrix)
     
     GLuint WorldMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "WorldTransform");
     //glm::mat4 WorldMatrix = offsetMatrix * GetWorldMatrix();
-	glm::mat4 WorldMatrix = GetWorldMatrix();
+	mat4 modelSpaceMatrix = translate(mat4(1.0f), vec3(0.0f, -5.0f, 0.0));
+	glm::mat4 WorldMatrix = GetWorldMatrix() * modelSpaceMatrix;
     glUniformMatrix4fv(WorldMatrixLocation, 1, GL_FALSE, &WorldMatrix[0][0]);
     //glUniformMatrix4fv(WorldMatrixLocation, 1, GL_FALSE, mAnimation->GetAnimationWorldMatrix()[0][0]);
     

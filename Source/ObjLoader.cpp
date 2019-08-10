@@ -1,32 +1,31 @@
 //
-//  objLoader.hpp
+//  ObjLoader.cpp
 //  COMP371_Framework
 //
-//  Created by David Ronci on 2019-08-03.
+//  Created by David Ronci on 2019-08-09.
 //  Copyright © 2019 Concordia. All rights reserved.
 //
-#include <glm/glm.hpp>
-#include <cstring>
-#include <vector>
-#include <string>
+
+#include "ObjLoader.hpp"
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
 
-bool loadOBJ(
+bool ObjLoader::loadOBJ(
              const char * path,
              std::vector<glm::vec3> & out_vertices,
              std::vector<glm::vec3> & out_normals,
              std::vector<glm::vec2> & out_uvs,
-			 glm::vec3 & max,
-			 glm::vec3 & min) {
+             glm::vec3 & max,
+             glm::vec3 & min) {
     
     std::vector<int> vertexIndices, uvIndices, normalIndices;
     std::vector<glm::vec3> temp_vertices;
     std::vector<glm::vec2> temp_uvs;
     std::vector<glm::vec3> temp_normals;
-
-	max = glm::vec3(-INFINITY);
-	min = glm::vec3(INFINITY);
+    
+    max = glm::vec3(-INFINITY);
+    min = glm::vec3(INFINITY);
     
     FILE * file;
     file = fopen(path, "r");
@@ -50,6 +49,19 @@ bool loadOBJ(
             glm::vec3 vertex;
             fscanf(file, "%f %f %f\n", &vertex.x, &vertex.y, &vertex.z);
             temp_vertices.push_back(vertex);
+
+			if (vertex.x > max.x)
+				max.x = vertex.x;
+			if (vertex.y > max.y)
+				max.y = vertex.y;
+			if (vertex.z > max.z)
+				max.z = vertex.z;
+			if (vertex.x < min.x)
+				min.x = vertex.x;
+			if (vertex.y < min.y)
+				min.y = vertex.y;
+			if (vertex.z < min.z)
+				min.z = vertex.z;
         }
         else if (strcmp(lineHeader, "vt") == 0) {
             glm::vec2 uv;
@@ -61,6 +73,7 @@ bool loadOBJ(
             glm::vec3 normal;
             fscanf(file, "%f %f %f\n", &normal.x, &normal.y, &normal.z);
             temp_normals.push_back(normal);
+
         }
         else if (strcmp(lineHeader, "f") == 0) {
             int vertexIndex[3], uvIndex[3], normalIndex[3];

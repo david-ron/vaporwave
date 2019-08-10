@@ -55,7 +55,7 @@ ParticleSystem::~ParticleSystem()
 	mInactiveParticles.resize(0);
 }
 
-void ParticleSystem::Update(float dt)
+void ParticleSystem::Update(float dt, bool isCharater)
 {
     // Emit particle according to the emission rate
     float averageTimeBetweenEmission = 1.0f / mpDescriptor->emissionRate;
@@ -74,7 +74,11 @@ void ParticleSystem::Update(float dt)
         mInactiveParticles.pop_back();
 		//WorldBlock* mWorldBlock = World::getWorldInstance()->getWorldBlock();
 		//World::getWorldInstance()->getWorldBlock()->AddBillboard(&newParticle->billboard);
-		World::getWorldInstance()->AddBillboard(&newParticle->billboard);
+
+		if (isCharater)
+			World::getWorldInstance()->AddMCBillborad(&newParticle->billboard);
+		else
+			World::getWorldInstance()->AddBillboard(&newParticle->billboard);
         
         // Set particle initial parameters
         newParticle->billboard.position = mpEmitter->GetPosition();
@@ -129,7 +133,7 @@ void ParticleSystem::Update(float dt)
 		if (mpDescriptor->fadeInTime < p->currentTime & p->currentTime <= p->lifeTime - mpDescriptor->fadeOutTime) {
 			p->billboard.color = mpDescriptor->midColor;
 		}
-        // Phase 3 - End:     from t = [lifeTime - fadeOutTime, lifeTime]
+        // Phase 3 - End:     from t = [lifeTime - fadeOutTime, lifeTimdoun
 		if (p->lifeTime - mpDescriptor->fadeOutTime < p->currentTime & p->currentTime <= p->lifeTime) {
 			p->billboard.color = mix(mpDescriptor->midColor, mpDescriptor->endColor, (p->currentTime - (p->lifeTime - mpDescriptor->fadeOutTime)) / mpDescriptor->fadeOutTime);
 		}
@@ -148,7 +152,10 @@ void ParticleSystem::Update(float dt)
             mInactiveParticles.push_back(*it);
             
             //World::getWorldInstance()->getWorldBlock()->RemoveBillboard(&(p->billboard));
-			World::getWorldInstance()->RemoveBillboard(&(p->billboard));
+			if (isCharater)
+				World::getWorldInstance()->RemoveMCBillboard(&(p->billboard));
+			else
+				World::getWorldInstance()->RemoveBillboard(&(p->billboard));
             mParticleList.remove(*it++);
         }
     }

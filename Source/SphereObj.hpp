@@ -1,28 +1,23 @@
 //
-//  CubeObj.hpp
+//  SphereObj.hpp
 //  COMP371_Framework
 //
-//  Created by David Ronci on 2019-08-03.
+//  Created by David Ronci on 2019-08-08.
 //  Copyright © 2019 Concordia. All rights reserved.
 //
 
-
-
-#pragma once
-#include <stdio.h>
+#ifndef SphereObj_hpp
+#define SphereObj_hpp
 #include "Model.h"
 
-class CubeObj : public Model
+class SphereObj : public Model
 {
 public:
-    CubeObj(glm::vec3 size = glm::vec3(1.0f, 1.0f, 1.0f));
-    virtual ~CubeObj();
+    SphereObj(glm::vec3 size = glm::vec3(1.0f, 1.0f, 1.0f));
+    virtual ~SphereObj();
     
     virtual void Update(float dt);
     virtual void Draw(glm::mat4 offsetMatrix);
-
-	void getCornerPoint(std::vector<glm::vec3>&);
-	//virtual bool isCollided();
     
 protected:
     virtual bool ParseLine(const std::vector<ci_string> &token);
@@ -37,19 +32,17 @@ private:
     };
     
 #if defined(PLATFORM_OSX)
-    const std::string cubeObjFile = "./Models/cube.obj";
+    const std::string sphereObjFile = "./Models/sphere.obj";
 #else
-    const std::string cubeObjFile ="../Assets/Models/cube.obj";
+    const std::string sphereObjFile ="../Assets/Models/sphere.obj";
 #endif
     unsigned int mVAO;
     unsigned int mVBO;
     unsigned int vertexCount;
-
-	glm::vec3 max;
-	glm::vec3 min;
-
-	std::vector<glm::vec3> CornerPoint;
-
+    
+    glm::vec3 max;
+    glm::vec3 min;
+    
 };
 
-
+#endif /* SphereObj_hpp */

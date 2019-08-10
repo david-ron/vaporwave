@@ -1,26 +1,19 @@
 //
-//  CubeObj.cpp
+//  SphereObj.cpp
 //  COMP371_Framework
 //
-//  Created by David Ronci on 2019-08-03.
+//  Created by David Ronci on 2019-08-08.
 //  Copyright © 2019 Concordia. All rights reserved.
 //
 
-#include "CubeObj.hpp"
-#include "Renderer.h"
+#include "SphereObj.hpp"
 #include "ObjLoader.hpp"
-#include "World.h"
+#include "Renderer.h"
 
 using namespace glm;
 using namespace std;
 
-
-void CubeObj::getCornerPoint(vector<vec3>& input) {
-	for (int i = 0; i < 8; i++)
-		input.push_back(CornerPoint[i]);
-}
-
-CubeObj::CubeObj(glm::vec3 size) : Model(){
+SphereObj::SphereObj(glm::vec3 size) : Model(){
     //string path, int& vertexCount
     //string path;
     //vector<int> vertexIndices; //The contiguous sets of three indices of vertices, normals and UVs, used to make a triangle
@@ -29,28 +22,12 @@ CubeObj::CubeObj(glm::vec3 size) : Model(){
     vector<glm::vec2> UVs;
     vector<glm::vec3> colors;
     
-    int i = 0;
     //read the vertices from the cube.obj file
     //We won't be needing the normals or UVs for this program
-
-
-	ObjLoader::loadOBJ(cubeObjFile.c_str(), vertices, normals, UVs, max, min);
-
-
-	// the 8 corner points
-	CornerPoint.push_back(vec3(min.x, max.y, min.z));// 0 back top left point
-	CornerPoint.push_back(vec3(min.x, max.y, max.z));// 1 back top right point
-	CornerPoint.push_back(vec3(max.x, max.y, max.z));// 2 front top right point
-	CornerPoint.push_back(vec3(max.x, max.y, min.z));// 3 front top left point
-	CornerPoint.push_back(vec3(min.x, min.y, min.z));// 4 back bottom left point
-	CornerPoint.push_back(vec3(min.x, min.y, max.z));// 5 back bottom right point
-	CornerPoint.push_back(vec3(max.x, min.y, max.z));// 6 front bottom right point
-	CornerPoint.push_back(vec3(max.x, min.y, min.z));// 7 front bottom left point
-
-	assert(CornerPoint.size() == 8);
-
+    
+    ObjLoader::loadOBJ(sphereObjFile.c_str(),vertices, normals, UVs, max, min);
     for (unsigned int i = 0; i<vertices.size(); ++i){makeSimpleColor(colors);};
-
+    
     glGenVertexArrays(1, &mVAO);
     glBindVertexArray(mVAO); //Becomes active VAO
     // Bind the Vertex Array Object first, then bind and set vertex buffer(s) and attribute pointer(s).
@@ -71,7 +48,7 @@ CubeObj::CubeObj(glm::vec3 size) : Model(){
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
     glEnableVertexAttribArray(1);
     
-//
+    //
     GLuint colors_VBO;
     glGenBuffers(1, &colors_VBO);
     glBindBuffer(GL_ARRAY_BUFFER, colors_VBO);
@@ -79,19 +56,19 @@ CubeObj::CubeObj(glm::vec3 size) : Model(){
     glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
     glEnableVertexAttribArray(2);
     //UVs VBO setup
-//     TODO readd UVS
-//    GLuint uvs_VBO;
-//    glGenBuffers(1, &uvs_VBO);
-//    glBindBuffer(GL_ARRAY_BUFFER, uvs_VBO);
-//    glBufferData(GL_ARRAY_BUFFER, UVs.size() * sizeof(glm::vec2), &UVs.front(), GL_STATIC_DRAW);
-//    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
-//    glEnableVertexAttribArray(2);
+    //     TODO readd UVS
+    //    GLuint uvs_VBO;
+    //    glGenBuffers(1, &uvs_VBO);
+    //    glBindBuffer(GL_ARRAY_BUFFER, uvs_VBO);
+    //    glBufferData(GL_ARRAY_BUFFER, UVs.size() * sizeof(glm::vec2), &UVs.front(), GL_STATIC_DRAW);
+    //    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
+    //    glEnableVertexAttribArray(2);
     
     glBindVertexArray(0); // Unbind VAO (it's always a good thing to unbind any buffer/array to prevent strange bugs), remember: do NOT unbind the EBO, keep it bound to this VAO
     vertexCount = vertices.size();
 }
 
-void CubeObj::Draw(glm::mat4 offsetMatrix)
+void SphereObj::Draw(glm::mat4 offsetMatrix)
 {
     // Draw the Vertex Buffer
     // Note this draws a unit Cube
@@ -113,7 +90,7 @@ void CubeObj::Draw(glm::mat4 offsetMatrix)
     glDrawArrays(GL_TRIANGLES, 0, vertexCount); // 36 vertices: 3 * 2 * 6 (3 per triangle, 2 triangles per face, 6 faces)
 }
 
-void CubeObj::Update(float dt)
+void SphereObj::Update(float dt)
 {
     // If you are curious, un-comment this line to have spinning cubes!
     // That will only work if your world transform is correct...
@@ -121,7 +98,7 @@ void CubeObj::Update(float dt)
     
     Model::Update(dt);
 }
-bool CubeObj::ParseLine(const std::vector<ci_string> &token){
+bool SphereObj::ParseLine(const std::vector<ci_string> &token){
     if (token.empty())
     {
         return true;
@@ -131,10 +108,9 @@ bool CubeObj::ParseLine(const std::vector<ci_string> &token){
         return Model::ParseLine(token);
     }
 }
-CubeObj::~CubeObj()
+SphereObj::~SphereObj()
 {
     // Free the GPU from the Vertex Buffer
     glDeleteBuffers(1, &mVBO);
     glDeleteVertexArrays(1, &mVAO);
 }
-

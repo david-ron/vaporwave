@@ -49,8 +49,8 @@ int main(int argc, char*argv[])
 //		worldBlock.LoadScene("../Assets/Scenes/CoordinateSystem.scene");
 #endif
 	}
-	glCullFace(GL_BACK);
-	glEnable(GL_CULL_FACE);
+	//glCullFace(GL_BACK);
+	//glEnable(GL_CULL_FACE);
 	// Main Loop
 	do
 	{

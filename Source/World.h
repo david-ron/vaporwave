@@ -2,6 +2,7 @@
 
 #include <glm/glm.hpp>
 #include "WorldBlock.h"
+#include "CubeObj.hpp"
 
 using namespace std;
 using namespace glm;
@@ -45,15 +46,7 @@ public:
 private:
 	World();
 	static World* worldInstance;
-	//WorldBlock* mWorldBlock0;
-	//WorldBlock* mWorldBlock1;
-	//WorldBlock* mWorldBlock2;
-	//WorldBlock* mWorldBlock3;
-	//WorldBlock* mWorldBlock4;
-	//WorldBlock* mWorldBlock5;
-	//WorldBlock* mWorldBlock6;
-	//WorldBlock* mWorldBlock7;
-	//WorldBlock* mWorldBlock8;
+
 
 	vec2 CenterBlock;
 	vector<vec2> mNeighbors;
@@ -62,6 +55,9 @@ private:
 	int DisplayedWBIndex[9];
 
 	std::vector<Model*> mModel;
+	CubeObj* mBuildingModel = nullptr;
+	vector<vec3> cornerPoint;		// 8 corner points for the model
+	vector<mat4> mBuildingsMw;		// all Buildings' world matrixes in the current 9 blocks
 	std::vector<Animation*> mAnimation;
 	std::vector<AnimationKey*> mAnimationKey;
 	std::vector<Camera*> mCamera;
@@ -72,10 +68,10 @@ private:
 
 	vec3 mcPositionInitial; 
 	vec3 mcPosition;		// my character's position
-	const float mcRadius = 10.0f;
+	const float mcRadius = 5.0f;
 	vec3 mcLookAt;			// my character's facing direction(lookAt vector for FPV)
 	vec3 mcSideVector;
-	const float mCharacterDefaultSpeed = 10.0f;
+	const float mCharacterDefaultSpeed = 5.0f;
 	const float mCharacterSpeedUpRate = 5.0f;
 	const float mAngularSpeed = 2.5f;
 

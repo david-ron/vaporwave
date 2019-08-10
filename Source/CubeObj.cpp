@@ -15,22 +15,9 @@ using namespace glm;
 using namespace std;
 
 
-bool CubeObj::isCollided() {
-	
-	vec3 mcPosition = World::getWorldInstance()->getMCposition();
-	float mcRadius = World::getWorldInstance()->getMCradius();
-
-	vec3 modelSize = max - min;
-
-	vec3 diffVectorSum(0.0f);
-	for (int i = 0; i < CornerPoint.size(); i++) {
-		diffVectorSum += mcPosition - CornerPoint[i];
-	}
-
-
-
-	return false;
-
+void CubeObj::getCornerPoint(vector<vec3>& input) {
+	for (int i = 0; i < 8; i++)
+		input.push_back(CornerPoint[i]);
 }
 
 CubeObj::CubeObj(glm::vec3 size) : Model(){

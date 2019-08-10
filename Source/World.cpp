@@ -85,9 +85,11 @@ void World::LoadScene(const char * scene_path) {
 				lightSource.push_back(light);
 			}
             else if (result == "object"){
+				assert(mBuildingModel == nullptr);
                 CubeObj* cube = new CubeObj();
                 cube->Load(iss);
                 mModel.push_back(cube);
+				mBuildingModel = cube;
             }
 			else
 			{
@@ -108,7 +110,57 @@ void World::LoadScene(const char * scene_path) {
 
 
 	setupWorldBlock(mWorldBlock[0]);
+	mBuildingModel->getCornerPoint(cornerPoint);
+
 	checkNeighbors();
+
+	// Building colision
+	vector<vec3> cbCorner;
+	vec3 axisLength;
+	vec3 centerPoint;
+	mat4 buildingModelMatrix = mBuildingModel->GetWorldMatrix();
+	bool allGood;
+	do {
+		allGood = true;
+		for (int b = 0; b < mBuildingsMw.size(); b++) { // b for building
+
+			// get the corner point for the current building in world space
+			cbCorner.clear();
+			for (int c = 0; c < 8; c++) { // c for corners	
+				cbCorner.push_back(vec3(mBuildingsMw[b] * buildingModelMatrix * vec4(cornerPoint[c], 1.0f)));
+				//diffVecSum += cbCorner[c] - mcPosition;
+			}
+			assert(cbCorner.size() == 8);
+			// length of the building on x, y & z axis
+			axisLength = cbCorner[2] - cbCorner[4];
+			centerPoint = (cbCorner[2] + cbCorner[4]) / 2.0f;
+
+			vec3 refVector = mcPosition - centerPoint;
+			//vec3 nRefVector = normalize();
+			normalize(refVector);
+			//assert(length(refVector) > 1.1);
+			refVector -= (mcRadius) * normalize(refVector);
+
+
+			// not close to this building, continue the loop
+			if (abs(refVector.x) > 0.5f*axisLength.x ||
+				abs(refVector.y) > 0.5f*axisLength.y ||
+				abs(refVector.z) > 0.5f*axisLength.z)
+				continue;
+			// too close to a building
+			allGood = false;
+			break;
+		}
+		float x = EventManager::GetRandomFloat(-45, 45);
+		float y = EventManager::GetRandomFloat(mcRadius, 20);
+		float z = EventManager::GetRandomFloat(-45, 45);
+		mcPosition = vec3(x,y,z);
+		
+
+	} while (!allGood);
+
+	mcPositionInitial = mcPosition;
+	mCamera[mCurrentCamera]->Update(0.1);
 }
 
 void World::setupWorldBlock(WorldBlock* WB) {
@@ -120,8 +172,6 @@ void World::setupWorldBlock(WorldBlock* WB) {
 
 	WB->setModel(mModel);
 	
-	//WB->setCamera(mCamera);
-	//WB->setCurrentCamera(mCurrentCamera);
 	WB->setLightSource(lightSource);
 	WB->setBillboardList(mpBillboardList);
 
@@ -129,8 +179,7 @@ void World::setupWorldBlock(WorldBlock* WB) {
 
 void World::Update(float dt) {
 
-	// update charater 
-
+	// update charater --------------------------------------------------------------
 	// Prevent from having the camera move only when the cursor is within the windows
 	EventManager::DisableMouseCursor();
 
@@ -165,75 +214,149 @@ void World::Update(float dt) {
 	mcSideVector = glm::cross(mcLookAt, groundNormal);
 	glm::normalize(mcSideVector);
 
+	vec3 sDirection(0.0f);
+
+
 	// A S D W for motion along the camera basis vectors
 	// Forward
 	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_W) == GLFW_PRESS) 
 	{
-		vec3 direction = mcLookAt;
-
-		if ( (mcPosition.y - mcRadius) <= 0 && dot(direction, groundNormal) < 0.0f) {
-			vec3 mSideVector = cross(groundNormal, direction);
-			direction = cross(mSideVector, groundNormal);
-			direction = normalize(direction);
-		}
-		if (glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS && 
-			glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_2) == GLFW_PRESS)
-			mcPosition += direction * dt * mCharacterDefaultSpeed * mCharacterSpeedUpRate * 10.0f;
-		else if (glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS)
-			mcPosition += direction * dt * mCharacterDefaultSpeed * mCharacterSpeedUpRate;
-		else
-			mcPosition += direction * dt * mCharacterDefaultSpeed;
+		sDirection += mcLookAt;
 	}
 	// Backward
 	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_S) == GLFW_PRESS)
 	{
-		vec3 direction = -mcLookAt;
-
-		if ((mcPosition.y - mcRadius) <= 0 && dot(direction, groundNormal) < 0.0f) {
-			vec3 mSideVector = cross(groundNormal, direction);
-			direction = cross(mSideVector, groundNormal);
-			direction = normalize(direction);
-		}
-
-		if (glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS &&
-			glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_2) == GLFW_PRESS)
-			mcPosition += direction * dt * mCharacterDefaultSpeed * mCharacterSpeedUpRate * 10.0f;
-		else if (glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS)
-			mcPosition += direction * dt * mCharacterDefaultSpeed * mCharacterSpeedUpRate;
-		else
-			mcPosition += direction * dt * mCharacterDefaultSpeed;
+		sDirection -= mcLookAt;
 	}
 	// To the left
 	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_D) == GLFW_PRESS)
 	{
-
-		if (glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS &&
-			glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_2) == GLFW_PRESS)
-			mcPosition += mcSideVector * dt * mCharacterDefaultSpeed * mCharacterSpeedUpRate * 10.0f;
-		else if (glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS)
-			mcPosition += mcSideVector * dt * mCharacterDefaultSpeed * mCharacterSpeedUpRate;
-		else
-			mcPosition += mcSideVector * dt * mCharacterDefaultSpeed;
+		sDirection += mcSideVector;
 	}
 	// To the right
 	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_A) == GLFW_PRESS)
 	{
-		if (glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS &&
-			glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_2) == GLFW_PRESS)
-			mcPosition -= mcSideVector * dt * mCharacterDefaultSpeed * mCharacterSpeedUpRate * 10.0f;
-		else if (glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS)
-			mcPosition -= mcSideVector * dt * mCharacterDefaultSpeed * mCharacterSpeedUpRate;
-		else
-			mcPosition -= mcSideVector * dt * mCharacterDefaultSpeed;
+		sDirection -= mcSideVector;
 	}
 	// Up
 	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_SPACE) == GLFW_PRESS)
 	{
-		if (glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS)
-			mcPosition += vec3(0, 1, 0) * dt * mCharacterDefaultSpeed * mCharacterSpeedUpRate * 0.6f;
-		else
-			mcPosition += vec3(0, 1, 0) * dt * mCharacterDefaultSpeed;
+		sDirection += vec3(0,1,0);
 	}
+	// Speed
+	float mSpeed = mCharacterDefaultSpeed;
+	if (glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS)
+		mSpeed *= mCharacterSpeedUpRate;
+
+	// Ground collision
+	if ((mcPosition.y - mcRadius) <= 0 && dot(sDirection, groundNormal) < 0.0f) {
+
+		vec3 mSideVector = cross(groundNormal, sDirection);
+		sDirection = cross(mSideVector, groundNormal);
+		sDirection = normalize(sDirection);
+	}
+
+	// Building colision
+	vector<vec3> cbCorner;
+	vec3 axisLength;
+	vec3 centerPoint;
+	//vector<vec3> doubleCheckNormals;
+	vec3 firstNormal = vec3(0.0f);
+	mat4 modelScalingMatrix = mBuildingModel->GetWorldMatrix();
+	if (length(sDirection) > 0)
+		for (int b = 0; b < mBuildingsMw.size(); b++) { // b for building
+		
+			// get the corner point for the current building in world space
+			cbCorner.clear();
+			for (int c = 0; c < 8; c++) { // c for corners	
+				cbCorner.push_back(vec3(mBuildingsMw[b] * modelScalingMatrix * vec4(cornerPoint[c], 1.0f)));
+				//diffVecSum += cbCorner[c] - mcPosition;
+			}
+			assert(cbCorner.size() == 8);
+			// length of the building on x, y & z axis
+			axisLength = cbCorner[2] - cbCorner[4];
+			centerPoint = (cbCorner[2] + cbCorner[4]) / 2.0f;
+
+			vec3 refVector = mcPosition - centerPoint;
+			//vec3 nRefVector = normalize();
+			normalize(refVector);
+			//assert(length(refVector) > 1.1);
+			refVector -= (mcRadius) * normalize(refVector);
+
+		
+			// not close to this building, continue the loop
+			if (abs(refVector.x) > 0.5f*axisLength.x ||
+				abs(refVector.y) > 0.5f*axisLength.y ||
+				abs(refVector.z) > 0.5f*axisLength.z)
+				continue;
+
+			//if close to this building 
+			//cout << "...(" << centerPoint.x << "," << centerPoint.y << "," << centerPoint.z << ")" << endl;
+			refVector /= (0.5f*axisLength);
+
+			int mIndex = 0;
+			float max = abs(refVector.x);
+			if (abs(refVector.y) > max) {
+				max = abs(refVector.y);
+				mIndex = 1;
+			}
+			if (abs(refVector.z) > max) {
+				max = abs(refVector.z);
+				mIndex = 2;
+			}
+
+			vec3 mNormal;
+			if (mIndex == 0) {
+				mNormal = vec3(1.0f, 0.0f, 0.0f);
+				if (refVector.x < 0)
+					mNormal *= -1;
+			}
+			else if (mIndex == 1) {
+				mNormal = vec3(0.0f, 1.0f, 0.0f);
+				if (refVector.y < 0)
+					mNormal *= -1;
+			}
+			else {
+				mNormal = vec3(0.0f, 0.0f, 1.0f);
+				if (refVector.z < 0)
+					mNormal *= -1;
+			}
+
+			if (dot(sDirection, mNormal) < 0.0f) {
+				//if (firstNormal == vec3(0.0f)) {
+				//	firstNormal = mNormal;
+					vec3 mSideVector = cross(mNormal, sDirection);
+					sDirection = cross(mSideVector, mNormal);
+					//if(sDirection == vec3(0.0f))
+					//	cout << "Huh" << endl;
+					sDirection = normalize(sDirection);
+				//}
+				//else if (firstNormal != mNormal) {
+				//		sDirection = vec3(0.0f);
+				//		break;
+				//}
+			}
+
+		}
+
+
+	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_P) == GLFW_PRESS)
+		cout << "Pausing" << endl;
+	if (isnan(sDirection.x)) {
+		sDirection = vec3(0.0f);
+	}
+	else if (length(sDirection) > 0) {
+		sDirection = normalize(sDirection);
+	}
+	
+	
+
+
+	// new charater position
+	
+	mcPosition += sDirection * dt * mSpeed;
+
+
 	// Back to intial
 	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_O) == GLFW_PRESS)
 	{
@@ -241,6 +364,9 @@ void World::Update(float dt) {
 			glfwGetKey(EventManager::GetWindow(), GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
 			mcPosition = mcPositionInitial;
 	}
+	// update charater ends --------------------------------------------------------------
+
+
 
 
 	// Update current Camera
@@ -299,7 +425,7 @@ void World::Update(float dt) {
 	mpBillboardList->Update(dt);
 
 	mWorldBlock[0]->Update(dt);
-	//mWorldBlock0->Update(dt);
+
 
 }
 
@@ -307,8 +433,6 @@ void World::Update(float dt) {
 void World::Draw() {
 
 	glClearColor(0.1f, 0.13f, 0.2f,0.0f);
-	//mWorldBlock0->Draw();
-	//mWorldBlock1->Draw();
 
 	//first shader
 	Renderer::BeginFrame();
@@ -351,15 +475,7 @@ void World::Draw() {
 		mWorldBlock[DisplayedWBIndex[i]]->DrawTextureShader();
 	}
 
-	//mWorldBlock0->DrawTextureShader();
-	//mWorldBlock1->DrawTextureShader();
-	//mWorldBlock2->DrawTextureShader();
-	//mWorldBlock3->DrawTextureShader();
-	//mWorldBlock4->DrawTextureShader();
-	//mWorldBlock5->DrawTextureShader();
-	//mWorldBlock6->DrawTextureShader();
-	//mWorldBlock7->DrawTextureShader();
-	//mWorldBlock8->DrawTextureShader();
+
 
 	Renderer::CheckForErrors();
 	Renderer::SetShader(oldShader);
@@ -391,28 +507,14 @@ World* World::getWorldInstance() {
 
 World::World() {
 
-	mcPosition = vec3(3.0f, 5.0f, 20.0f);
+	//mcPosition = vec3(3.0f, 5.0f, 20.0f);
+	mcPosition = vec3(0.0f, 5.0f, 0.0f);
 	mcPositionInitial = mcPosition;
 	mcLookAt = vec3(0.0f, 0.0f, -1.0f);
 
 	CenterBlock = vec2(0, 0);
 	// Neighbors = getNeighbors(CenterBlock);
 	mWorldBlock.push_back(new WorldBlock(vec2(0, 0)));
-	
-	
-
-	//mWorldBlock0 = new WorldBlock(vec2(0, 0));
-	//mWorldBlock1 = new WorldBlock(vec2(1, 0));
-	//mWorldBlock2 = new WorldBlock(vec2(-1, 0));
-	//mWorldBlock3 = new WorldBlock(vec2(1, 1));
-	//mWorldBlock4 = new WorldBlock(vec2(0, 1));
-	//mWorldBlock5 = new WorldBlock(vec2(-1, 1));
-	//mWorldBlock6 = new WorldBlock(vec2(-1, -1));
-	//mWorldBlock7 = new WorldBlock(vec2(0, -1));
-	//mWorldBlock8 = new WorldBlock(vec2(1, -1));
-
-	//mWorldBlock.insert()
-
 
 
 	// Setup Camera
@@ -532,7 +634,7 @@ void World::checkNeighbors() {
 	int dIndex = 0;
 	for (int i = 0; i < 8; i++) {
 		bool isNew = true;
-		for (int j = 0; j < mWorldBlock.size(); j++) {
+		for (int j = mWorldBlock.size() - 1; j >= 0; j--) {
 			if (mWorldBlock[j]->getWorldBlockCoor() == mNeighbors[i]) {
 				DisplayedWBIndex[dIndex++] = j;
 				isNew = false;
@@ -549,11 +651,18 @@ void World::checkNeighbors() {
 			//mWorldBlock.push_back(new WorldBlock(mNeighbors[i]));
 	}
 
-	for (int i = 0; i < mWorldBlock.size(); i++) {
+	for (int i = mWorldBlock.size()-1; i >= 0; i--) {
 		if (mWorldBlock[i]->getWorldBlockCoor() == CenterBlock) {
 			DisplayedWBIndex[8] = i;
 			break;
 		}
 	}
+
+
+	mBuildingsMw.clear();
+	for (int i = 0; i < 9; i++) {
+		mWorldBlock[DisplayedWBIndex[i]]->getBuildingsWorldMatrix(mBuildingsMw);
+	}
+
 
 }

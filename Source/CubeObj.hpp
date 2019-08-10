@@ -21,8 +21,8 @@ public:
     virtual void Update(float dt);
     virtual void Draw(glm::mat4 offsetMatrix);
 
-	virtual bool isCollided();
-
+	void getCornerPoint(std::vector<glm::vec3>&);
+	//virtual bool isCollided();
     
 protected:
     virtual bool ParseLine(const std::vector<ci_string> &token);

@@ -73,10 +73,11 @@ void EventManager::Initialize()
 	const GLFWvidmode * mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 	window_width = mode->width;
 	window_height = mode->height;
-	//spWindow = glfwCreateWindow(1024, 768, "Vaporwave", nullptr, nullptr);
+	
 	/*int count;
 	GLFWmonitor** monitors = glfwGetMonitors(&count);*/
-	spWindow = glfwCreateWindow(window_width, window_height, "Vaporwave", glfwGetPrimaryMonitor(), nullptr);
+	spWindow = glfwCreateWindow(1024, 768, "Vaporwave", nullptr, nullptr);
+	//spWindow = glfwCreateWindow(window_width, window_height, "Vaporwave", glfwGetPrimaryMonitor(), nullptr);
 
 	if (spWindow == nullptr)
 	{

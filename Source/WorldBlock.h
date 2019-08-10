@@ -73,6 +73,7 @@ public:
 	void setCurrentCamera(unsigned int mCurrentCamera);
 	void setLightSource(std::vector<LightSource*> lightSource);
 	void setBillboardList(BillboardList* mpBillboardList);
+	void setOnThis(bool o) { onThis = o; }
 	
     
 private:
@@ -95,4 +96,7 @@ private:
 	int BuildingAmo;
 	//vector<mat4> buildingOffsetMatrix;
 	Buildings* mBuildings;
+
+	//to tell whether object is on a worldBlock
+	bool onThis = false;
 };

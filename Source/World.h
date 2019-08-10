@@ -51,6 +51,7 @@ private:
 	vec2 CenterBlock;
 	vector<vec2> mNeighbors;
 	vector<WorldBlock*> mWorldBlock;
+	WorldBlock* oldCenterBlock;
 	
 	int DisplayedWBIndex[9];
 

@@ -7,7 +7,7 @@
 //
 
 #pragma once
-
+#include <math.h>
 #include "Camera.h"
 using namespace std;
 using namespace glm;
@@ -37,5 +37,8 @@ private:
 	glm::vec3 mLookAt;
 	glm::vec3 mSideVector;
 
-
+	float radius=10.0f; //radius of the sphere
+	float theta = radians(mHorizontalAngle);
+	float phi = radians(mVerticalAngle);
+	vec3 newPosition;
 };

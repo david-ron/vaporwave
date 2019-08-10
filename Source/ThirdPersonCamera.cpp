@@ -23,6 +23,7 @@ using namespace glm;
 using namespace std;
 ThirdPersonCamera::ThirdPersonCamera(glm::vec3 position, glm::vec3 lookAt) :  Camera(), mPosition(position), mLookAt(lookAt), mHorizontalAngle(90.0f), mVerticalAngle(0.0f), mSpeed(5.0f), mAngularSpeed(2.5f)
 {
+
 }
 
 ThirdPersonCamera::~ThirdPersonCamera()
@@ -118,6 +119,11 @@ void ThirdPersonCamera::Update(float dt)
 	mPosition = World::getWorldInstance()->getMCposition();
 	mSideVector = World::getWorldInstance()->getMCsideVector();
 
+	//newPosition = mPosition -vec3(radius*cosf(phi)*cosf(theta), 
+	//								radius*sinf(phi), 
+	//								-radius * cosf(phi)*sinf(theta));
+
+	newPosition = mPosition - mLookAt * 20.0f;
 }
 
 glm::vec3 ThirdPersonCamera::getLookAt() { return mLookAt; }
@@ -125,6 +131,7 @@ glm::vec3 ThirdPersonCamera::getSideVector() { return mSideVector; }
 
 glm::mat4 ThirdPersonCamera::GetViewMatrix() const
 {
+
+	return glm::lookAt(	newPosition , mPosition , vec3(0.0f, 1.0f, 0.0f));
 	
-	return glm::lookAt(	mPosition, mPosition + mLookAt, vec3(0.0f, 1.0f, 0.0f) );
 }

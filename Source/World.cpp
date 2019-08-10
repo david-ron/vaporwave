@@ -2,6 +2,7 @@
 
 #include "StaticCamera.h"
 #include "FirstPersonCamera.h"
+#include "ThirdPersonCamera.h"
 
 #include "Renderer.h"
 #include "CubeModel.h"
@@ -232,7 +233,9 @@ void World::Update(float dt) {
 	// Backward
 	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_S) == GLFW_PRESS)
 	{
+
 		sDirection -= mcLookAt;
+
 	}
 	// To the left
 	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_D) == GLFW_PRESS)
@@ -528,6 +531,8 @@ World::World() {
 	// Setup Camera
 	//mCamera.push_back(new FirstPersonCamera(vec3(3.0f, 5.0f, 20.0f)));
 	mCamera.push_back(new FirstPersonCamera(mcPosition, mcLookAt));
+	mCamera.push_back(new ThirdPersonCamera(mcPosition,mcLookAt));
+	//mCamera.push_back
 	//mCamera.push_back(new StaticCamera(vec3(3.0f, 30.0f, 5.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f)));
 	//mCamera.push_back(new StaticCamera(vec3(0.5f, 0.5f, 5.0f), vec3(0.0f, 0.5f, 0.0f), vec3(0.0f, 1.0f, 0.0f)));
 	mCurrentCamera = 0;

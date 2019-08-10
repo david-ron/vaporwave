@@ -20,6 +20,9 @@ public:
     
     virtual void Update(float dt);
     virtual void Draw(glm::mat4 offsetMatrix);
+
+	void getCornerPoint(std::vector<glm::vec3>&);
+	//virtual bool isCollided();
     
 protected:
     virtual bool ParseLine(const std::vector<ci_string> &token);
@@ -44,6 +47,8 @@ private:
 
 	glm::vec3 max;
 	glm::vec3 min;
+
+	std::vector<glm::vec3> CornerPoint;
 
 };
 

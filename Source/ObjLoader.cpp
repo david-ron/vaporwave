@@ -49,6 +49,19 @@ bool ObjLoader::loadOBJ(
             glm::vec3 vertex;
             fscanf(file, "%f %f %f\n", &vertex.x, &vertex.y, &vertex.z);
             temp_vertices.push_back(vertex);
+
+			if (vertex.x > max.x)
+				max.x = vertex.x;
+			if (vertex.y > max.y)
+				max.y = vertex.y;
+			if (vertex.z > max.z)
+				max.z = vertex.z;
+			if (vertex.x < min.x)
+				min.x = vertex.x;
+			if (vertex.y < min.y)
+				min.y = vertex.y;
+			if (vertex.z < min.z)
+				min.z = vertex.z;
         }
         else if (strcmp(lineHeader, "vt") == 0) {
             glm::vec2 uv;
@@ -60,6 +73,7 @@ bool ObjLoader::loadOBJ(
             glm::vec3 normal;
             fscanf(file, "%f %f %f\n", &normal.x, &normal.y, &normal.z);
             temp_normals.push_back(normal);
+
         }
         else if (strcmp(lineHeader, "f") == 0) {
             int vertexIndex[3], uvIndex[3], normalIndex[3];

@@ -9,8 +9,16 @@
 #include "CubeObj.hpp"
 #include "Renderer.h"
 #include "ObjLoader.hpp"
+#include "World.h"
+
 using namespace glm;
 using namespace std;
+
+
+void CubeObj::getCornerPoint(vector<vec3>& input) {
+	for (int i = 0; i < 8; i++)
+		input.push_back(CornerPoint[i]);
+}
 
 CubeObj::CubeObj(glm::vec3 size) : Model(){
     //string path, int& vertexCount
@@ -25,7 +33,20 @@ CubeObj::CubeObj(glm::vec3 size) : Model(){
     //read the vertices from the cube.obj file
     //We won't be needing the normals or UVs for this program
 
-    ObjLoader::loadOBJ(cubeObjFile.c_str(),vertices, normals, UVs, max, min);
+    loadOBJ(cubeObjFile.c_str(),vertices, normals, UVs, max, min);
+
+	// the 8 corner points
+	CornerPoint.push_back(vec3(min.x, max.y, min.z));// 0 back top left point
+	CornerPoint.push_back(vec3(min.x, max.y, max.z));// 1 back top right point
+	CornerPoint.push_back(vec3(max.x, max.y, max.z));// 2 front top right point
+	CornerPoint.push_back(vec3(max.x, max.y, min.z));// 3 front top left point
+	CornerPoint.push_back(vec3(min.x, min.y, min.z));// 4 back bottom left point
+	CornerPoint.push_back(vec3(min.x, min.y, max.z));// 5 back bottom right point
+	CornerPoint.push_back(vec3(max.x, min.y, max.z));// 6 front bottom right point
+	CornerPoint.push_back(vec3(max.x, min.y, min.z));// 7 front bottom left point
+
+	assert(CornerPoint.size() == 8);
+
     for (unsigned int i = 0; i<vertices.size(); ++i){makeSimpleColor(colors);};
 
     glGenVertexArrays(1, &mVAO);

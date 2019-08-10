@@ -555,7 +555,7 @@ World::World() {
 
 	mpBillboardList = new BillboardList(2048, billboardTextureID);
 
-	int mcBillboardTextureID = TextureLoader::LoadTexture("../Assets/Textures/Particle.png");
+	int mcBillboardTextureID = TextureLoader::LoadTexture("../Assets/Textures/Particle2.png");
 	assert(mcBillboardTextureID != 0);
 
 	mcBillboardList = new BillboardList(2048, mcBillboardTextureID);

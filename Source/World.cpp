@@ -458,7 +458,7 @@ void World::Draw() {
 	for (int i = 0; i < 9; i++) {
 		mWorldBlock[DisplayedWBIndex[i]]->DrawCurrentShader();
 	}
-
+    mCharater->Draw(mat4(1.0f));
 	
 	// path lines shader
 	Renderer::CheckForErrors();
@@ -471,7 +471,7 @@ void World::Draw() {
 		mWorldBlock[DisplayedWBIndex[i]]->DrawPathLinesShader();
 	}
 
-	mCharater->Draw(mat4(1.0f));
+	
 
 	Renderer::CheckForErrors();
 	glEnable(GL_BLEND);

@@ -94,9 +94,9 @@ void World::LoadScene(const char * scene_path) {
 				mBuildingModel = cube;
             }
             else if (result == "maincharacter"){
-                MainCharacter* mC = new MainCharacter();
-                mC->Load(iss);
-                mModel.push_back(mC);
+                mCharater = new MainCharacter();
+                mCharater->Load(iss);
+                
             }
 			else
 			{
@@ -168,6 +168,7 @@ void World::LoadScene(const char * scene_path) {
 
 	mcPositionInitial = mcPosition;
 	mCamera[mCurrentCamera]->Update(0.1);
+
 }
 
 void World::setupWorldBlock(WorldBlock* WB) {
@@ -431,7 +432,12 @@ void World::Update(float dt) {
 		(*it)->Update(dt);
 	}
 
+	mCharater->Update(dt);
+
 	mpBillboardList->Update(dt);
+	mcBillboardList->Update(dt);
+
+	mcParticleSystem->Update(dt, true);
 
 	mWorldBlock[0]->Update(dt);
 
@@ -465,7 +471,7 @@ void World::Draw() {
 		mWorldBlock[DisplayedWBIndex[i]]->DrawPathLinesShader();
 	}
 
-
+	mCharater->Draw(mat4(1.0f));
 
 	Renderer::CheckForErrors();
 	glEnable(GL_BLEND);
@@ -484,6 +490,7 @@ void World::Draw() {
 		mWorldBlock[DisplayedWBIndex[i]]->DrawTextureShader();
 	}
 
+	mcBillboardList->Draw(mat4(1.0));
 
 
 	Renderer::CheckForErrors();
@@ -547,6 +554,13 @@ World::World() {
 	assert(billboardTextureID != 0);
 
 	mpBillboardList = new BillboardList(2048, billboardTextureID);
+
+	int mcBillboardTextureID = TextureLoader::LoadTexture("../Assets/Textures/Particle.png");
+	assert(mcBillboardTextureID != 0);
+
+	mcBillboardList = new BillboardList(2048, mcBillboardTextureID);
+
+
 }
 
 

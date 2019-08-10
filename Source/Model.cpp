@@ -136,7 +136,10 @@ bool Model::ParseLine(const std::vector<ci_string> &token)
             
             ParticleSystem* ps = new ParticleSystem(emitter, desc);
             //World::getWorldInstance()->getWorldBlock()->AddParticleSystem(ps);
-			World::getWorldInstance()->AddParticleSystem(ps);
+			if (GetName() == "\"MainCharacter\"")
+				World::getWorldInstance()->AddMCParticleSystem(ps);
+			else
+				World::getWorldInstance()->AddParticleSystem(ps);
         }
 		else if (token[0] == "properties")
 		{

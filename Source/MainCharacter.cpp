@@ -90,6 +90,7 @@ MainCharacter::MainCharacter(glm::vec3 size) : Model(){
 }
 
 void MainCharacter::Draw(glm::mat4 offsetMatrix)
+//void MainCharacter::Draw()
 {
     // Draw the Vertex Buffer
     // Note this draws a unit Cube
@@ -98,7 +99,8 @@ void MainCharacter::Draw(glm::mat4 offsetMatrix)
     glBindBuffer(GL_ARRAY_BUFFER, mVBO);
     
     GLuint WorldMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "WorldTransform");
-    glm::mat4 WorldMatrix = offsetMatrix * GetWorldMatrix();
+    //glm::mat4 WorldMatrix = offsetMatrix * GetWorldMatrix();
+	glm::mat4 WorldMatrix = GetWorldMatrix();
     glUniformMatrix4fv(WorldMatrixLocation, 1, GL_FALSE, &WorldMatrix[0][0]);
     //glUniformMatrix4fv(WorldMatrixLocation, 1, GL_FALSE, mAnimation->GetAnimationWorldMatrix()[0][0]);
     
@@ -117,7 +119,10 @@ void MainCharacter::Update(float dt)
     // That will only work if your world transform is correct...
     // mRotationAngleInDegrees += 90 * dt; // spins by 90 degrees per second
     
-    Model::Update(dt);
+    //Model::Update(dt);
+
+	mPosition = World::getWorldInstance()->getMCposition();
+
 }
 bool MainCharacter::ParseLine(const std::vector<ci_string> &token){
     if (token.empty())

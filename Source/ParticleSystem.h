@@ -28,7 +28,8 @@ public:
     ParticleSystem(ParticleEmitter* emitter, ParticleDescriptor* descriptor);
 	~ParticleSystem();
 
-    void Update(float dt);
+    void Update(float dt, bool isChar = false);
+	
 
 private:
     float timeSinceLastParticleEmitted;

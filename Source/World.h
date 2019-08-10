@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include "WorldBlock.h"
 #include "Model.h"
+#include "MainCharacter.hpp"
 
 using namespace std;
 using namespace glm;
@@ -19,9 +20,13 @@ public:
 	void LoadScene(const char * scene_path);
 
 	void AddBillboard(Billboard* b);
+	void AddMCBillborad(Billboard* b) { mcBillboardList->AddBillboard(b); }
 	void RemoveBillboard(Billboard* b);
+	void RemoveMCBillboard(Billboard* b) { mcBillboardList->RemoveBillboard(b); };
 	void AddParticleSystem(ParticleSystem* particleSystem);
+
 	void AddParticleDescriptor(ParticleDescriptor* particleDescriptor);
+	void AddMCParticleSystem(ParticleSystem* particleSystem) { this->mcParticleSystem = particleSystem; }
 	void setupWorldBlock(WorldBlock*);
 	void setCharacterPosition(vec3 cPosition) { mcPosition = cPosition; }
 	void updateMCharacterPosition(vec3 newPosition) { mcPosition = newPosition; }
@@ -55,6 +60,7 @@ private:
 	
 	int DisplayedWBIndex[9];
 
+	
 	std::vector<Model*> mModel;
 	Model* mBuildingModel = nullptr;
 	vector<vec3> cornerPoint;		// 8 corner points for the model
@@ -67,6 +73,7 @@ private:
 	
 	unsigned int mCurrentCamera;
 
+	MainCharacter* mCharater;
 	vec3 mcPositionInitial; 
 	vec3 mcPosition;		// my character's position
 	const float mcRadius = 5.0f;
@@ -75,9 +82,10 @@ private:
 	const float mCharacterDefaultSpeed = 5.0f;
 	const float mCharacterSpeedUpRate = 5.0f;
 	const float mAngularSpeed = 2.5f;
-
 	float mVerticalAngle = 0.0f;
 	float mHorizontalAngle = 90.0f;
+	BillboardList* mcBillboardList;
+	ParticleSystem* mcParticleSystem;
 
 
 	std::vector<LightSource*> lightSource;
@@ -85,8 +93,6 @@ private:
 	BillboardList* mpBillboardList;
 
 	
-
-
 
 
 	// private functions

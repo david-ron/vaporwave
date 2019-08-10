@@ -20,6 +20,7 @@ public:
     
     virtual void Update(float dt);
     virtual void Draw(glm::mat4 offsetMatrix);
+	//virtual void Draw();
     
     void getCornerPoint(std::vector<glm::vec3>&);
     //virtual bool isCollided();

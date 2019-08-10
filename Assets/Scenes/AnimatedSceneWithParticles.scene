@@ -101,7 +101,7 @@ totalLifetime = 2.0
 totalLifetimeRandomness = 0.3
 
 [ParticleDescriptor]
-name        = "gasy"
+name        = "Gasy"
 velocity    = 5.0 0.0 5.0
 velocityAngleRandomness = 15
 acceleration = 0.0 0.0 0.0
@@ -205,6 +205,7 @@ lightAttenuation = 0.0 0.0 1.0
 
 [maincharacter]
 name     = "MainCharacter"
+particleEmitter = "Gasy"
 scaling  = 0.80 0.80 0.80
 position = 0.0 0.0 0.0
 rotation = 1.0 0.0 0.0 0.0

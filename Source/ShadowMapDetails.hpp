@@ -10,5 +10,17 @@
 #define ShadowMapDetails_hpp
 
 #include <stdio.h>
+#include <vector>
+#include <glm/glm.hpp>
+#include "LightSource.h"
 
+
+class ShadowMapDetails{
+public:
+    glm::mat4 getLightViewMatrix(LightSource LightSource);
+    
+private:
+
+};
 #endif /* ShadowMapDetails_hpp */
+

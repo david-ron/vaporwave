@@ -12,7 +12,7 @@
 #include "ParsingHelper.h"
 
 #include <vector>
-
+#include "objLoader.hpp"
 #include <glm/glm.hpp>
 
 class Animation;
@@ -50,7 +50,7 @@ protected:
 	glm::vec3 mScaling;
 	glm::vec3 mRotationAxis;
 	float     mRotationAngleInDegrees;
-
+    virtual void makeSimpleColor (std::vector<glm::vec3> &colors){colors.push_back(glm::vec3(0.7f,0.0f,0.9f));};
     // Makes the model follow a list of Animation Keys so it's world transform changes over time
     Animation* mAnimation;
 	glm::vec4 properties;

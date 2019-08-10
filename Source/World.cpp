@@ -15,7 +15,7 @@
 #include "ParticleDescriptor.h"
 #include "ParticleEmitter.h"
 #include "ParticleSystem.h"
-
+#include "SphereObj.hpp"
 #include "LightSource.h"
 
 World* World::worldInstance;
@@ -53,7 +53,7 @@ void World::LoadScene(const char * scene_path) {
 			}
 			else if (result == "sphere")
 			{
-				SphereModel* sphere = new SphereModel();
+				SphereObj* sphere = new SphereObj();
 				sphere->Load(iss);
 				mModel.push_back(sphere);
 			}

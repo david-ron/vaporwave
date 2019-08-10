@@ -100,6 +100,26 @@ fadeOutTime = 0.7
 totalLifetime = 2.0
 totalLifetimeRandomness = 0.3
 
+[ParticleDescriptor]
+name        = "gasy"
+velocity    = 5.0 0.0 5.0
+velocityAngleRandomness = 15
+acceleration = 0.0 0.0 0.0
+initialRotationAngle = 0.0
+initialRotationAngleRandomness = 360.0
+initialSize = 0.5 0.5
+initialSizeRandomness = 0.1 0.1
+sizeGrowthVelocity = 2.1 2.1
+initialColor = 0.5 0.5 0.5 0.0
+midColor = 0.8 0.8 1.0 1.0
+endColor = 0.5 0.5 0.5 0.0
+emissionRate = 25.0
+fadeInTime = 0.2
+fadeOutTime = 0.7
+totalLifetime = 2.0
+totalLifetimeRandomness = 0.3
+
+
 [Cube]
 name     = "Cube"
 scaling  = 1.0 1.0 1.0
@@ -183,7 +203,9 @@ position = 0.3 0.3 -0.3 0.0
 color = 0.3 0.3 0.3
 lightAttenuation = 0.0 0.0 1.0
 
-[object]
-name     = "Cube3"
-scaling  = 1.0 1.0 1.0
-position = 0.0 1.0 0.0
+[maincharacter]
+name     = "MainCharacter"
+scaling  = 0.80 0.80 0.80
+position = 0.0 0.0 0.0
+rotation = 1.0 0.0 0.0 0.0
+properties = 0.4 0.5 0.2 50

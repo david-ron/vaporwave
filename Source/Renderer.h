@@ -39,9 +39,12 @@ public:
 	static void EndFrame();
 
 	static GLuint LoadShaders(std::string vertex_shader_path, std::string fragment_shader_path);
-
+    static GLuint LoadShadowFrameBuffer();
 	static unsigned int GetShaderProgramID() { return sShaderProgramID[sCurrentShader]; }
 	static unsigned int GetCurrentShader() { return sCurrentShader; }
+    static unsigned int GetFrameBufferID() { return sShaderProgramID[sCurrentShader]; }
+    // not sure if needed
+    static unsigned int GetFrameBuffer() { return sCurrentShader; }
 	static void SetShader(ShaderType type);
     
     static void CheckForErrors();
@@ -51,6 +54,8 @@ private:
 	static GLFWwindow* spWindow;
 
 	static std::vector<unsigned int> sShaderProgramID;
+    static std::vector<unsigned int> fShaderProgramID;
+    static unsigned int CurrentFrameBuffer;
 	static unsigned int sCurrentShader;
 
 };

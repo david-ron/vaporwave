@@ -1,28 +1,28 @@
 //
-//  CubeObj.hpp
+//  MainCharacter.hpp
 //  COMP371_Framework
 //
-//  Created by David Ronci on 2019-08-03.
+//  Created by David Ronci on 2019-08-10.
 //  Copyright © 2019 Concordia. All rights reserved.
 //
-
-
-
 #pragma once
+
+#ifndef MainCharacter_hpp
+#define MainCharacter_hpp
 #include <stdio.h>
 #include "Model.h"
 
-class CubeObj : public Model
+class MainCharacter : public Model
 {
 public:
-    CubeObj(glm::vec3 size = glm::vec3(1.0f, 1.0f, 1.0f));
-    virtual ~CubeObj();
+    MainCharacter(glm::vec3 size = glm::vec3(1.0f, 1.0f, 1.0f));
+    virtual ~MainCharacter();
     
     virtual void Update(float dt);
     virtual void Draw(glm::mat4 offsetMatrix);
-
-	void getCornerPoint(std::vector<glm::vec3>&);
-	//virtual bool isCollided();
+    
+    void getCornerPoint(std::vector<glm::vec3>&);
+    //virtual bool isCollided();
     
 protected:
     virtual bool ParseLine(const std::vector<ci_string> &token);
@@ -37,19 +37,21 @@ private:
     };
     
 #if defined(PLATFORM_OSX)
-    const std::string cubeObjFile = "./Models/cube.obj";
+    const std::string characterObjFile = "./Models/gameChar.obj";
 #else
-    const std::string cubeObjFile ="../Assets/Models/cube.obj";
+    const std::string characterObjFile ="../Assets/Models/gameChar.obj";
 #endif
     unsigned int mVAO;
     unsigned int mVBO;
     unsigned int vertexCount;
-
-	glm::vec3 max;
-	glm::vec3 min;
-
-	std::vector<glm::vec3> CornerPoint;
-
+    
+    glm::vec3 max;
+    glm::vec3 min;
+    
+    std::vector<glm::vec3> CornerPoint;
+    
 };
 
 
+
+#endif /* MainCharacter_hpp */

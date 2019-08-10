@@ -39,19 +39,22 @@ public:
     //static WorldBlock* GetInstance();
 
 	void Update(float dt);
-	void Draw();
+	//void Draw();
 	void DrawCurrentShader();
 	void DrawPathLinesShader();
 	void DrawTextureShader();
 
 
-	void LoadScene(const char * scene_path);
+	//void LoadScene(const char * scene_path);
     Animation* FindAnimation(ci_string animName);
     AnimationKey* FindAnimationKey(ci_string keyName);
     ParticleDescriptor* FindParticleDescriptor(ci_string name);
-	std::vector<LightSource*> getLightSource();
+	//std::vector<LightSource*> getLightSource();
 	const LightSource getLightSourceAt(int);
 	const int getLightSize() { return lightSource.size(); }
+	vec2 getWorldBlockCoor() { return vec2(WB_Coordinate[0], WB_Coordinate[1]); }
+	Buildings* getBuildings() { return mBuildings; }
+	void getBuildingsWorldMatrix(vector<mat4>&);
 
 
     //const Camera* GetCurrentCamera() const;
@@ -70,7 +73,8 @@ public:
 	void setCurrentCamera(unsigned int mCurrentCamera);
 	void setLightSource(std::vector<LightSource*> lightSource);
 	void setBillboardList(BillboardList* mpBillboardList);
-	vec2 getWorldBlockCoor() { return vec2(WB_Coordinate[0], WB_Coordinate[1]); }
+	void setOnThis(bool o) { onThis = o; }
+	
     
 private:
     
@@ -92,4 +96,7 @@ private:
 	int BuildingAmo;
 	//vector<mat4> buildingOffsetMatrix;
 	Buildings* mBuildings;
+
+	//to tell whether object is on a worldBlock
+	bool onThis = false;
 };

@@ -136,7 +136,7 @@ void Animation::Draw()
 	glUniformMatrix4fv(WorldMatrixLocation, 1, GL_FALSE, &worldMatrix[0][0]);
 
 	// Draw the loop !
-	glDrawArrays(GL_LINE_LOOP, 0, mVertexBuffer.size());
+	//glDrawArrays(GL_LINE_LOOP, 0, mVertexBuffer.size());
 
 }
 

@@ -12,7 +12,7 @@
 #include "ParsingHelper.h"
 
 #include <vector>
-
+#include "objLoader.hpp"
 #include <glm/glm.hpp>
 
 class Animation;
@@ -41,7 +41,8 @@ public:
 	float     GetRotationAngle() const	{ return mRotationAngleInDegrees; }
     ci_string GetName()                 { return mName; }
 	glm::vec4 getProperties() { return properties; }
-
+    virtual void getCornerPoint(std::vector<glm::vec3>& input){ for (int i = 0; i < 8; i++)
+        input.push_back(CornerPoint[i]);};
 protected:
 	virtual bool ParseLine(const std::vector<ci_string> &token) = 0;
 
@@ -50,10 +51,10 @@ protected:
 	glm::vec3 mScaling;
 	glm::vec3 mRotationAxis;
 	float     mRotationAngleInDegrees;
-
+    virtual void makeSimpleColor (std::vector<glm::vec3> &colors){colors.push_back(glm::vec3(0.7f,0.0f,0.9f));};
     // Makes the model follow a list of Animation Keys so it's world transform changes over time
     Animation* mAnimation;
 	glm::vec4 properties;
-
+    std::vector<glm::vec3> CornerPoint;
     friend class Animation;
 };

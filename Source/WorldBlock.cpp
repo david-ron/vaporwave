@@ -654,6 +654,8 @@ void WorldBlock::DrawPathLinesShader() {
 	}
 	Renderer::CheckForErrors();
 }
+
+
 void WorldBlock::DrawTextureShader() {
 	Renderer::CheckForErrors();
 	mpBillboardList->Draw(WB_OffsetMatrix);

@@ -521,6 +521,8 @@ World::World() {
 	CenterBlock = vec2(0, 0);
 	// Neighbors = getNeighbors(CenterBlock);
 	mWorldBlock.push_back(new WorldBlock(vec2(0, 0)));
+	mWorldBlock[0]->setOnThis(true);
+	oldCenterBlock = mWorldBlock[0];
 
 
 	// Setup Camera
@@ -660,6 +662,9 @@ void World::checkNeighbors() {
 	for (int i = mWorldBlock.size()-1; i >= 0; i--) {
 		if (mWorldBlock[i]->getWorldBlockCoor() == CenterBlock) {
 			DisplayedWBIndex[8] = i;
+			oldCenterBlock->setOnThis(false);
+			oldCenterBlock = mWorldBlock[i];
+			oldCenterBlock->setOnThis(true);
 			break;
 		}
 	}

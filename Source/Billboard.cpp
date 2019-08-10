@@ -24,8 +24,6 @@
 #include <vector>
 
 using namespace std;
-
-
 using namespace std;
 using namespace glm;
 
@@ -44,7 +42,6 @@ BillboardList::BillboardList(unsigned int maxNumBillboards, int textureID)
 {
 	// light source info
 	LightSource lightSource = LightSource();
-
 
     // Pre-allocate Vertex Buffer - 6 vertices by billboard (2 triangles)
     mVertexBuffer.resize(maxNumBillboards * 6);

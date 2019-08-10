@@ -1,32 +1,31 @@
 //
-//  objLoader.hpp
+//  ObjLoader.cpp
 //  COMP371_Framework
 //
-//  Created by David Ronci on 2019-08-03.
+//  Created by David Ronci on 2019-08-09.
 //  Copyright © 2019 Concordia. All rights reserved.
 //
-#include <glm/glm.hpp>
-#include <cstring>
-#include <vector>
-#include <string>
+
+#include "ObjLoader.hpp"
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
 
-bool loadOBJ(
+bool ObjLoader::loadOBJ(
              const char * path,
              std::vector<glm::vec3> & out_vertices,
              std::vector<glm::vec3> & out_normals,
              std::vector<glm::vec2> & out_uvs,
-			 glm::vec3 & max,
-			 glm::vec3 & min) {
+             glm::vec3 & max,
+             glm::vec3 & min) {
     
     std::vector<int> vertexIndices, uvIndices, normalIndices;
     std::vector<glm::vec3> temp_vertices;
     std::vector<glm::vec2> temp_uvs;
     std::vector<glm::vec3> temp_normals;
-
-	max = glm::vec3(-INFINITY);
-	min = glm::vec3(INFINITY);
+    
+    max = glm::vec3(-INFINITY);
+    min = glm::vec3(INFINITY);
     
     FILE * file;
     file = fopen(path, "r");

@@ -17,6 +17,7 @@
 #include "ParticleSystem.h"
 #include "SphereObj.hpp"
 #include "LightSource.h"
+#include "MainCharacter.hpp"
 
 World* World::worldInstance;
 const float World::WorldBlockSize = 100;
@@ -90,6 +91,11 @@ void World::LoadScene(const char * scene_path) {
                 cube->Load(iss);
                 mModel.push_back(cube);
 				mBuildingModel = cube;
+            }
+            else if (result == "maincharacter"){
+                MainCharacter* mC = new MainCharacter();
+                mC->Load(iss);
+                mModel.push_back(mC);
             }
 			else
 			{

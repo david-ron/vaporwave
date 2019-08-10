@@ -5,7 +5,7 @@
 // Updated by Gary Chang on 14/1/15
 //
 // Copyright (c) 2014-2019 Concordia University. All rights reserved.
-//
+// Hello Poop
 
 //#include "Lights.h"
 #include "Renderer.h"

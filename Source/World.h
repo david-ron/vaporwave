@@ -94,7 +94,6 @@ private:
 
 	
 
-
 	// private functions
 	void checkNeighbors();
 

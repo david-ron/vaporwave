@@ -2,7 +2,7 @@
 
 #include <glm/glm.hpp>
 #include "WorldBlock.h"
-#include "CubeObj.hpp"
+#include "Model.h"
 
 using namespace std;
 using namespace glm;
@@ -55,7 +55,7 @@ private:
 	int DisplayedWBIndex[9];
 
 	std::vector<Model*> mModel;
-	CubeObj* mBuildingModel = nullptr;
+	Model* mBuildingModel = nullptr;
 	vector<vec3> cornerPoint;		// 8 corner points for the model
 	vector<mat4> mBuildingsMw;		// all Buildings' world matrixes in the current 9 blocks
 	std::vector<Animation*> mAnimation;

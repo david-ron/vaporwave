@@ -458,7 +458,9 @@ void World::Draw() {
 	for (int i = 0; i < 9; i++) {
 		mWorldBlock[DisplayedWBIndex[i]]->DrawCurrentShader();
 	}
-    mCharater->Draw(mat4(1.0f));
+
+	if(mCurrentCamera != 0)
+		mCharater->Draw(mat4(1.0f));
 	
 	// path lines shader
 	Renderer::CheckForErrors();
@@ -555,7 +557,7 @@ World::World() {
 
 	mpBillboardList = new BillboardList(2048, billboardTextureID);
 
-	int mcBillboardTextureID = TextureLoader::LoadTexture("../Assets/Textures/Particle2.png");
+	int mcBillboardTextureID = TextureLoader::LoadTexture("../Assets/Textures/Particle3.png");
 	assert(mcBillboardTextureID != 0);
 
 	mcBillboardList = new BillboardList(2048, mcBillboardTextureID);

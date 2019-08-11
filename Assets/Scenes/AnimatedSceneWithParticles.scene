@@ -102,8 +102,8 @@ totalLifetimeRandomness = 0.3
 
 [ParticleDescriptor]
 name        = "Gasy"
-velocity    = -5.0 0.0 -5.0
-velocityAngleRandomness = 15
+velocity    = -10.0 0.0 -10.0
+velocityAngleRandomness = 30
 acceleration = 0.0 0.0 0.0
 initialRotationAngle = 0.0
 initialRotationAngleRandomness = 360.0

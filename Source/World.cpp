@@ -498,9 +498,12 @@ void World::Draw() {
 	Renderer::SetShader(oldShader);
 	Renderer::CheckForErrors();
     
-   
-    Renderer::SetShader(SHADER_PATH_LINES);
+    glDisable(GL_BLEND);
+    Renderer::SetShader(SHADER_SKY);
     glUseProgram(Renderer::GetShaderProgramID());
+  
+	
+
     GLuint VPMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "ViewProjectionTransform");
     // Get a handle for our Transformation Matrices uniform
     //GLuint WorldMatrixID = glGetUniformLocation(Renderer::GetShaderProgramID(), "WorldTransform");
@@ -526,11 +529,8 @@ void World::Draw() {
     //mat4 Projection = mCamera[mCurrentCamera]->GetProjectionMatrix();
     mat4 Projection = World::getWorldInstance()->GetCurrentCamera()->GetProjectionMatrix();
     glUniformMatrix4fv(ProjMatrixID, 1, GL_FALSE, &Projection[0][0]);
-
+    
     mskybox->Draw();
-	glDisable(GL_BLEND);
-
-
 	// Restore previous shader
 	Renderer::SetShader((ShaderType)prevShader);
     glUseProgram(Renderer::GetShaderProgramID());

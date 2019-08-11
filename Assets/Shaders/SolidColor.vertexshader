@@ -5,16 +5,6 @@ layout(location = 0) in vec3 vertexPosition_modelspace;
 layout(location = 1) in vec3 vertexNormal_modelspace;  // You will need this when you do lighting
 layout(location = 2) in vec3 vertexColor; 
 
-// Values that stay constant for the whole mesh.
-uniform mat4 ViewProjectionTransform;
-uniform mat4 WorldTransform;
-//uniform mat4 WBOffsetMatrix;
-
-/*
-// Outputs to fragment shader
-out vec3 normal;  // You will need this when you do per-fragment lighting
-out vec4 v_color;
-*/
 
 // output to Fragment Shader
 out vec4 v_color;
@@ -22,44 +12,23 @@ out vec4 v_color;
 out vec3 normal;          // Transformed normal in View Space
 //light 1
 out vec3 eyeVector;       // Vector from the vertex to the Camera in View Space
-out vec4 lightVector1;     // Vector from the vertex to the Light in View Space
-						  // Length of lightVector is the distance between light and vertex
 
-out vec4 lightVector2;
-out vec4 lightVector3;
-out vec4 lightVector4;
-out vec4 lightVector5;
-out vec4 lightVector6;
-out vec4 lightVector7;
-out vec4 lightVector8;
+out vec4 lightVector[25];
 
 
 
 // Uniform
 // Values that stay constant for the whole mesh.
-//uniform mat4 WorldTransform;
+// Values that stay constant for the whole mesh.
+uniform mat4 ViewProjectionTransform;
+uniform mat4 WorldTransform;
 uniform mat4 ViewTransform;
 uniform mat4 ProjectonTransform;
 
+uniform int lightSize;
 // light position
-//uniform int lightSize;
-uniform vec4 L1Position; // if w = 1: Point light, if w = 0: directional light
-uniform vec4 L2Position;
-uniform vec4 L3Position;
-uniform vec4 L4Position;
-uniform vec4 L5Position;
-uniform vec4 L6Position;
-uniform vec4 L7Position;
-uniform vec4 L8Position;
+uniform vec4 lPosition[25];
 
-uniform int L1Enable;
-uniform int L2Enable;
-uniform int L3Enable;
-uniform int L4Enable;
-uniform int L5Enable;
-uniform int L6Enable;
-uniform int L7Enable;
-uniform int L8Enable;
 
 void main()
 {
@@ -74,7 +43,6 @@ void main()
 	vec3 vertexPosition_viewspace = vec3(MV * vec4(vertexPosition_modelspace,1.0f));
 	vec3 vertexPosition_worldspace = vec3( WorldTransform * vec4(vertexPosition_modelspace,1.0f));
 
-
 	// Prepare Data for Fragment Shader
 	// Should the normal be transformed?
 	normal = (ViewTransform *  WorldTransform * vec4(vertexNormal_modelspace,0)).xyz;
@@ -82,57 +50,13 @@ void main()
 	// eyeVector = ...
 	eyeVector = vec3(0)-vertexPosition_viewspace;
 
-	// light 1
-	if(L1Enable == 1)
-	if(L1Position[3] == 1)
-		lightVector1 = vec4(vec3(ViewTransform * vec4(vec3(L1Position) - vertexPosition_worldspace, 0.0f)),1);
-	else
-		lightVector1 = vec4(vec3(ViewTransform * (L1Position)),0);
+	for (int i=0; i<lightSize; i++)
+		if(lPosition[i].w == 1)
+			lightVector[i] = vec4(vec3(ViewTransform * vec4(vec3(lPosition[i]) - vertexPosition_worldspace, 0.0f)),1);
+		else
+			lightVector[i] = vec4(vec3(ViewTransform * (lPosition[i])),0);
+	
 
-	// light 2
-	if(L2Enable == 1)
-	if(L2Position[3] == 1)
-		lightVector2 = vec4(vec3(ViewTransform * vec4(vec3(L2Position) - vertexPosition_worldspace, 0.0f)),1);
-	else
-		lightVector2 = vec4(vec3(ViewTransform * (L2Position)),0);
-
-// light 3
-	if(L3Enable == 1)
-	if(L3Position[3] == 1)
-		lightVector3 = vec4(vec3(ViewTransform * vec4(vec3(L3Position) - vertexPosition_worldspace, 0.0f)),1);
-	else
-		lightVector3 = vec4(vec3(ViewTransform * (L3Position)),0);
-
-// light 4
-	if(L4Enable == 1)
-	if(L4Position[3] == 1)
-		lightVector4 = vec4(vec3(ViewTransform * vec4(vec3(L4Position) - vertexPosition_worldspace, 0.0f)),1);
-	else
-		lightVector4 = vec4(vec3(ViewTransform * (L4Position)),0);
-// light 5
-	if(L5Enable == 1)
-	if(L5Position[3] == 1)
-		lightVector5 = vec4(vec3(ViewTransform * vec4(vec3(L5Position) - vertexPosition_worldspace, 0.0f)),1);
-	else
-		lightVector5 = vec4(vec3(ViewTransform * (L5Position)),0);
-// light 6
-	if(L6Enable == 1)
-	if(L6Position[3] == 1)
-		lightVector6 = vec4(vec3(ViewTransform * vec4(vec3(L6Position) - vertexPosition_worldspace, 0.0f)),1);
-	else
-		lightVector6 = vec4(vec3(ViewTransform * (L6Position)),0);
-// light 7
-	if(L7Enable == 1)
-	if(L7Position[3] == 1)
-		lightVector7 = vec4(vec3(ViewTransform * vec4(vec3(L7Position) - vertexPosition_worldspace, 0.0f)),1);
-	else
-		lightVector7 = vec4(vec3(ViewTransform * (L7Position)),0);
-// light 8
-	if(L8Enable == 1)
-	if(L8Position[3] == 1)
-		lightVector8 = vec4(vec3(ViewTransform * vec4(vec3(L8Position) - vertexPosition_worldspace, 0.0f)),1);
-	else
-		lightVector8 = vec4(vec3(ViewTransform * (L8Position)),0);
 
 }
 

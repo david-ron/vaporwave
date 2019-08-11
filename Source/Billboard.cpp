@@ -16,6 +16,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/common.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include <glm/gtx/string_cast.hpp>
 #include <iostream>
@@ -291,6 +292,23 @@ void BillboardList::Draw(glm::mat4 offsetMatrix)
 	int lightSize = mWorld->getLightSize();
 	LightSource lightSource;/// = mWorld->getLightSourceAt(0);
 
+	int lSize = World::getWorldInstance()->getLightSize();
+	GLuint LightSizeID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightSize");
+	glUniform1i(LightSizeID, lSize);
+
+
+	vec4 LightPositions[25];
+	vec3 LightColor[25];
+	for (int i = 0; i < lSize; i++) {
+		LightPositions[i] = World::getWorldInstance()->getLightSourceAt(i).getPosition();
+		LightColor[i] = World::getWorldInstance()->getLightSourceAt(i).getColor();
+	}
+
+	GLuint LightPositionID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lPosition");
+	GLuint LightColorID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lColor");
+
+	glUniform4fv(LightPositionID, lSize, value_ptr(LightPositions[0]));
+	glUniform3fv(LightColorID, lSize, value_ptr(LightColor[0]));
 
 	// Light 1
 	enabled = 0;

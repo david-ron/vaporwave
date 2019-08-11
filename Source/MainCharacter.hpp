@@ -45,7 +45,7 @@ private:
     unsigned int mVAO;
     unsigned int mVBO;
     unsigned int vertexCount;
-    
+    unsigned int textureID;
     glm::vec3 max;
     glm::vec3 min;
     

@@ -19,7 +19,7 @@
 #include "SphereObj.hpp"
 #include "LightSource.h"
 #include "MainCharacter.hpp"
-
+#include "SkyBox.hpp"
 World* World::worldInstance;
 const float World::WorldBlockSize = 100;
 
@@ -165,7 +165,8 @@ void World::LoadScene(const char * scene_path) {
 		
 
 	} while (!allGood);
-
+    
+    mskybox = new SkyBox();
 	mcPositionInitial = mcPosition;
 	mCamera[mCurrentCamera]->Update(0.1);
 
@@ -265,7 +266,7 @@ void World::Update(float dt) {
 		sDirection = cross(mSideVector, groundNormal);
 		sDirection = normalize(sDirection);
 	}
-
+   
 	// Building colision
 	vector<vec3> cbCorner;
 	vec3 axisLength;
@@ -454,7 +455,7 @@ void World::Draw() {
 	// Set shader to use
 	glUseProgram(Renderer::GetShaderProgramID());
 	Renderer::CheckForErrors();
-
+    
 	for (int i = 0; i < 9; i++) {
 		mWorldBlock[DisplayedWBIndex[i]]->DrawCurrentShader();
 	}
@@ -491,18 +492,48 @@ void World::Draw() {
 	}
 
 	mcBillboardList->Draw(mat4(1.0));
-
+    Renderer::SetShader(SHADER_TEXTURED);
 
 	Renderer::CheckForErrors();
 	Renderer::SetShader(oldShader);
 	Renderer::CheckForErrors();
+    
+   
+    Renderer::SetShader(SHADER_PATH_LINES);
+    glUseProgram(Renderer::GetShaderProgramID());
+    GLuint VPMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "ViewProjectionTransform");
+    // Get a handle for our Transformation Matrices uniform
+    //GLuint WorldMatrixID = glGetUniformLocation(Renderer::GetShaderProgramID(), "WorldTransform");
+    GLuint ViewMatrixID = glGetUniformLocation(Renderer::GetShaderProgramID(), "ViewTransform");
+    GLuint ProjMatrixID = glGetUniformLocation(Renderer::GetShaderProgramID(), "ProjectionTransform");
+    
+    
+    
+    //// Get a handle for Material Attributes uniform
+    //GLuint MaterialID = glGetUniformLocation(Renderer::GetShaderProgramID(), "materialCoefficients");
+    
+    // Send the view projection constants to the shader
+    // VP
+    //mat4 VP = mCamera[mCurrentCamera]->GetViewProjectionMatrix();
+    mat4 VP = World::getWorldInstance()->GetCurrentCamera()->GetViewProjectionMatrix();
+    glUniformMatrix4fv(VPMatrixLocation, 1, GL_FALSE, &VP[0][0]);
+    
+    // viewTransform
+    //mat4 View = mCamera[mCurrentCamera]->GetViewMatrix();
+    mat4 View = World::getWorldInstance()->GetCurrentCamera()->GetViewMatrix();
+    glUniformMatrix4fv(ViewMatrixID, 1, GL_FALSE, &View[0][0]);
+    // projectionMatrix
+    //mat4 Projection = mCamera[mCurrentCamera]->GetProjectionMatrix();
+    mat4 Projection = World::getWorldInstance()->GetCurrentCamera()->GetProjectionMatrix();
+    glUniformMatrix4fv(ProjMatrixID, 1, GL_FALSE, &Projection[0][0]);
 
+    mskybox->Draw();
 	glDisable(GL_BLEND);
 
 
 	// Restore previous shader
 	Renderer::SetShader((ShaderType)prevShader);
-
+    glUseProgram(Renderer::GetShaderProgramID());
 	Renderer::EndFrame();
 }
 
@@ -559,7 +590,7 @@ World::World() {
 	assert(mcBillboardTextureID != 0);
 
 	mcBillboardList = new BillboardList(2048, mcBillboardTextureID);
-
+    
 
 }
 

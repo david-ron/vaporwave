@@ -74,7 +74,7 @@ SkyBox::SkyBox(){
 #endif
     
     faces.push_back(skyboxprefix + "purplevalley_rt.tga");
-    faces.push_back(skyboxprefix + "purplevalley_lt.tga");
+    faces.push_back(skyboxprefix + "purplevalley_lf.tga");
     faces.push_back(skyboxprefix + "purplevalley_up.tga");
     faces.push_back(skyboxprefix + "purplevalley_dn.tga" );
     faces.push_back(skyboxprefix + "purplevalley_bk.tga" );

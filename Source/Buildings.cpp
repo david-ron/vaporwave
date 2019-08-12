@@ -1,11 +1,12 @@
 #include "Buildings.h"
 #include "EventManager.h"
 #include <random>
+#include "World.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <GLFW/glfw3.h>
 
 vec3 Buildings::BuildingDefaultSize = vec3(2,10,2);
-float Buildings::ShapeEscapeChance = 0.1;
+float Buildings::ShapeEscapeChance = 0.2;
 
 mat4 Buildings::getBuildingOffsetMatrixAt(int index) {
 	mat4 t = glm::translate(mat4(1.0f), mPosition[index]);
@@ -50,7 +51,7 @@ void Buildings::ClusterShape() {
 	// check if there are enough building
 	if (cBuildingAmo >= BuildingAmo) return;
 	// center of the cluster
-	mPosition.push_back(vec3(EventManager::GetRandomFloat(-45, 45), 0, EventManager::GetRandomFloat(-45, 45)));
+	mPosition.push_back(vec3(EventManager::GetRandomFloat(-World::WorldBlockSize/2-5, World::WorldBlockSize / 2 - 5), 0, EventManager::GetRandomFloat(-45, 45)));
 	float temp[3];
 	for (int i = 0; i < 3; i++) {
 		temp[i] = ScalingGenerator(generator);
@@ -106,7 +107,7 @@ void Buildings::WallShape() {
 	// check if there are enough building
 	if (cBuildingAmo >= BuildingAmo) return;
 	// center of the cluster
-	mPosition.push_back(vec3(EventManager::GetRandomFloat(-45, 45), 0, EventManager::GetRandomFloat(-45, 45)));
+	mPosition.push_back(vec3(EventManager::GetRandomFloat(-World::WorldBlockSize / 2 - 5, World::WorldBlockSize / 2 - 5), 0, EventManager::GetRandomFloat(-45, 45)));
 	float temp[3];
 	for (int i = 0; i < 3; i++) {
 		temp[i] = ScalingGenerator(generator);

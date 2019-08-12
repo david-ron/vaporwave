@@ -68,7 +68,7 @@ key      = "KeyCycle1"  time = 8.0f
 
 [Cube]
 name     = "Ground"
-scaling  = 100.0 100.0 100.0
+scaling  = 225.0 225.0 100.0
 position = 0.0 -50 0.0
 rotation = 1.0 0.0 0.0 90.0
 properties = 0.4 0.5 0.2 50

@@ -23,7 +23,7 @@
 #include "WillMath.h"
 
 World* World::worldInstance;
-const float World::WorldBlockSize = 100;
+const float World::WorldBlockSize = 225;
 
 void World::LoadScene(const char * scene_path) {
 	//mWorldBlock->LoadScene(scene_path);
@@ -417,8 +417,8 @@ void World::Update(float dt) {
 
 
 	// check for the center block
-	int x = floor((mcPosition.x + 50) / 100);
-	int z = floor((mcPosition.z + 50) / 100);
+	int x = floor((mcPosition.x + WorldBlockSize/2) / WorldBlockSize);
+	int z = floor((mcPosition.z + WorldBlockSize/2) / WorldBlockSize);
 	vec2 newCenter = vec2(x, z);
 	if (newCenter != CenterBlock) {
 		CenterBlock = newCenter;

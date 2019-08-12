@@ -115,7 +115,7 @@ vec3* bmpReader::LoadBitmapHeightMap(std::string m_terrainFilename )
 			height = bitmapImage[k];
 
 			// Store the pixel value as the height at this point in the height map array.
-			m_heightMap[index].y = (float)height;
+			m_heightMap[index].y = (float)height / 6;
 
 			// Increment the bitmap image data index.
 			k += 3;

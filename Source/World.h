@@ -84,7 +84,7 @@ private:
 	vec3 mcSideVector;
 	vec3 cLookAt;
 	vec3 cSideVector;
-	const float mCharacterDefaultSpeed = 5.0f;
+	const float mCharacterDefaultSpeed = 10.0f;
 	const float mCharacterSpeedUpRate = 5.0f;
 	const float mAngularSpeed = 2.5f;
 	float mVerticalAngle = 0.0f;

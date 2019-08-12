@@ -8,7 +8,6 @@
 //
 
 #include "Terrain/Terrain.h"
-#include "Terrain/Pixel.h"
 #include "WorldBlock.h"
 #include "Renderer.h"
 #include "ParsingHelper.h"
@@ -312,8 +311,6 @@ void WorldBlock::DrawCurrentLightSources() {
 
 	GLuint LightAttenuationID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightAttenuation");
 	glUniform3f(LightAttenuationID, 0.0f, 0.0f, 1.0f);
-
-
 
 	GLuint LightPositionID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lPosition");
 	GLuint LightColorID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lColor");

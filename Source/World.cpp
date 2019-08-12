@@ -19,7 +19,9 @@
 #include "SphereObj.hpp"
 #include "LightSource.h"
 #include "MainCharacter.hpp"
+#include "Terrain/Terrain.h"
 #include "WillMath.h"
+
 World* World::worldInstance;
 const float World::WorldBlockSize = 100;
 
@@ -100,6 +102,11 @@ void World::LoadScene(const char * scene_path) {
                 //mModel.push_back(mC);
 				
             }
+			else if (result == "terrain") {
+				Terrain* terrain = new Terrain();
+				terrain->Load(iss);
+				mModel.push_back(terrain);
+			}
 			else
 			{
 				fprintf(stderr, "Error loading scene file... !");
@@ -183,7 +190,9 @@ void World::setupWorldBlock(WorldBlock* WB) {
 	
 	WB->setLightSource(lightSource);
 	WB->setBillboardList(mpBillboardList);
+
 	WB->setSphereIndex(SphereIndex);
+
 }
 
 void World::Update(float dt) {
@@ -481,12 +490,10 @@ void World::Draw() {
 	// Set shader to use
 	glUseProgram(Renderer::GetShaderProgramID());
 	Renderer::CheckForErrors();
-
+	//terrain->Draw(mat4(1.0f));
 	for (int i = 0; i < 9; i++) {
 		mWorldBlock[DisplayedWBIndex[i]]->DrawCurrentShader();
 	}
-
-
 	if(mCurrentCamera != 0)
  		mCharater->Draw(mat4(1.0f));
 

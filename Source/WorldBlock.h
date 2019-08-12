@@ -77,11 +77,14 @@ public:
 	void setLightSource(std::vector<LightSource*> lightSource);
 	void setBillboardList(BillboardList* mpBillboardList);
 	void setOnThis(bool o) { onThis = o; }
+
 	void setIsLightSphere(bool LS) { isLightSphere = LS; }
 	void setSphereIndex(int i) { SphereIndex = i; }
+
     
 private:
     
+	//Terrain * terrain;
 	std::vector<Model*> mModel;
 	int SphereIndex;
     std::vector<Animation*> mAnimation;

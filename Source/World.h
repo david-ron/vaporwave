@@ -4,7 +4,7 @@
 #include "WorldBlock.h"
 #include "Model.h"
 #include "MainCharacter.hpp"
-
+#include "Terrain\Terrain.h"
 using namespace std;
 using namespace glm;
 //->getWorldBlock()
@@ -75,7 +75,7 @@ private:
 	std::vector<ParticleDescriptor*> mParticleDescriptorList;
 	
 	unsigned int mCurrentCamera;
-
+	/*Terrain* terrain;*/
 	MainCharacter* mCharater;
 	vec3 mcPositionInitial; 
 	vec3 mcPosition;		// my character's position

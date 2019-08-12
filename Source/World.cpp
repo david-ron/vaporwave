@@ -467,10 +467,10 @@ void World::Update(float dt) {
 	{
 		Renderer::SetShader(SHADER_SOLID_COLOR);
 	}
-	else if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_9) == GLFW_PRESS)
-	{
-		Renderer::SetShader(SHADER_BLUE);
-	}
+	//else if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_9) == GLFW_PRESS)
+	//{
+	//	Renderer::SetShader(SHADER_BLUE);
+	//}
 
 	for (vector<ParticleSystem*>::iterator it = mParticleSystemList.begin(); it != mParticleSystemList.end(); ++it)
 	{

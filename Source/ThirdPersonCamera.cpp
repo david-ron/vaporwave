@@ -33,14 +33,19 @@ ThirdPersonCamera::~ThirdPersonCamera()
 void ThirdPersonCamera::Update(float dt)
 {
 	
-	if (!leftKeyPressed) {
-		mLookAt = World::getWorldInstance()->getMClookAt();
-		mPosition = World::getWorldInstance()->getMCposition();
-		mSideVector = World::getWorldInstance()->getMCsideVector();
-	}
-	//newPosition = mPosition -vec3(radius*cosf(phi)*cosf(theta), 
-	//								radius*sinf(phi), 
-	//								-radius * cosf(phi)*sinf(theta));
+	/*if (!leftKeyPressed) {
+		
+	}*/
+
+
+	mLookAt = World::getWorldInstance()->getMClookAt();
+	mPosition = World::getWorldInstance()->getMCposition();
+	mSideVector = World::getWorldInstance()->getMCsideVector();
+
+
+	newPosition = mPosition -vec3(radius*cosf(phi)*cosf(theta), 
+									radius*sinf(phi), 
+									-radius * cosf(phi)*sinf(theta));
 
 	newPosition = mPosition - mLookAt * 20.0f;
 }

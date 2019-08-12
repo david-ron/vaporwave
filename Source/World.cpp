@@ -95,9 +95,10 @@ void World::LoadScene(const char * scene_path) {
 				mBuildingModel = cube;
             }
             else if (result == "maincharacter"){
-                MainCharacter* mC = new MainCharacter();
-                mC->Load(iss);
-                mModel.push_back(mC);
+				mCharater = new MainCharacter();
+                mCharater->Load(iss);
+                //mModel.push_back(mC);
+				
             }
 			else
 			{
@@ -196,9 +197,9 @@ void World::Update(float dt) {
 	// - You can access the mouse motion with EventManager::GetMouseMotionXY()
 	// - For mapping A S D W, you can look in WorldBlock.cpp for an example of accessing key states
 	// - Don't forget to use dt to control the speed of the camera motion
-	Camera* cam = GetCurrentCamera();
-	if (dynamic_cast<ThirdPersonCamera*>(cam) != nullptr)
-		dynamic_cast<ThirdPersonCamera*>(GetCurrentCamera())->setleftKeyPressed(false);
+	//Camera* cam = GetCurrentCamera();
+	//if (dynamic_cast<ThirdPersonCamera*>(cam) != nullptr)
+	//	dynamic_cast<ThirdPersonCamera*>(GetCurrentCamera())->setleftKeyPressed(false);
 	if (glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_2) == GLFW_PRESS) {
 		// Mouse motion to get the variation in angle
 		mHorizontalAngle -= EventManager::GetMouseMotionX() * mAngularSpeed * dt;
@@ -207,21 +208,21 @@ void World::Update(float dt) {
 	}
 	//mouse left click and hold to change the camera position and angle
 	
-	if (glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS && dynamic_cast<ThirdPersonCamera*>(cam) != nullptr) {
-		ThirdPersonCamera* cam = dynamic_cast<ThirdPersonCamera*>(GetCurrentCamera());
-		float mCameraHorizontalAngle = cam->getmHorizontalAngle();
-		float mCameraVerticalAngle = cam->getmVerticalAngle();
-		mCameraHorizontalAngle -= EventManager::GetMouseMotionX() * mAngularSpeed * dt;
-		mCameraVerticalAngle -= EventManager::GetMouseMotionY() * mAngularSpeed * dt;
+	//if (glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS && dynamic_cast<ThirdPersonCamera*>(cam) != nullptr) {
+	//	ThirdPersonCamera* cam = dynamic_cast<ThirdPersonCamera*>(GetCurrentCamera());
+	//	float mCameraHorizontalAngle = cam->getmHorizontalAngle();
+	//	float mCameraVerticalAngle = cam->getmVerticalAngle();
+	//	mCameraHorizontalAngle -= EventManager::GetMouseMotionX() * mAngularSpeed * dt;
+	//	mCameraVerticalAngle -= EventManager::GetMouseMotionY() * mAngularSpeed * dt;
 
-		cLookAt = calculateLookAt(mCameraHorizontalAngle, mCameraVerticalAngle);
-		vec3 groundNormal = vec3(0.0f, 1.0f, 0.0f);
-		cSideVector = glm::cross(mcLookAt, groundNormal);
-		glm::normalize(mcSideVector);
-		cam->setLookAt(cLookAt);
-		cam->setSideVector(cSideVector);
-		cam->setleftKeyPressed(true);
-	}
+	//	cLookAt = calculateLookAt(mCameraHorizontalAngle, mCameraVerticalAngle);
+	//	vec3 groundNormal = vec3(0.0f, 1.0f, 0.0f);
+	//	cSideVector = glm::cross(mcLookAt, groundNormal);
+	//	glm::normalize(mcSideVector);
+	//	cam->setLookAt(cLookAt);
+	//	cam->setSideVector(cSideVector);
+	//	cam->setleftKeyPressed(true);
+	//}
 	//else
 	//{
 
@@ -237,7 +238,10 @@ void World::Update(float dt) {
 		mHorizontalAngle += 360;
 	}
 
-	mcLookAt = calculateLookAt(mHorizontalAngle, mVerticalAngle);
+	float theta = radians(mHorizontalAngle);
+	float phi = radians(mVerticalAngle);
+
+	mcLookAt = vec3(cosf(phi)*cosf(theta), sinf(phi), -cosf(phi)*sinf(theta));
 	vec3 groundNormal = vec3(0.0f, 1.0f, 0.0f);
 	mcSideVector = glm::cross(mcLookAt, groundNormal);
 	glm::normalize(mcSideVector);
@@ -396,6 +400,10 @@ void World::Update(float dt) {
 			glfwGetKey(EventManager::GetWindow(), GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
 			mcPosition = mcPositionInitial;
 	}
+
+
+	mCharater->Update(0.1);
+
 	// update charater ends --------------------------------------------------------------
 
 
@@ -414,9 +422,6 @@ void World::Update(float dt) {
 		checkNeighbors();
 	}
 	
-
-
-
 
 	// User Inputs
 	// 0 1 2 to change the Camera
@@ -488,7 +493,7 @@ void World::Draw() {
 
 
 	if(mCurrentCamera != 0)
-		mCharater->Draw(mat4(1.0f));
+ 		mCharater->Draw(mat4(1.0f));
 
 	
 	// path lines shader

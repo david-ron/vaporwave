@@ -62,6 +62,7 @@ private:
 
 	
 	std::vector<Model*> mModel;
+	int SphereIndex;
 	Model* mBuildingModel = nullptr;
 	vector<vec3> cornerPoint;		// 8 corner points for the model
 	vector<mat4> mBuildingsMw;		// all Buildings' world matrixes in the current 9 blocks

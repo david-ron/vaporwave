@@ -81,6 +81,8 @@ WorldBlock::WorldBlock(vec2 coor)
 
     mpBillboardList = new BillboardList(2048, billboardTextureID);
 
+
+	isLightSphere = false;
 }
 
 WorldBlock::~WorldBlock()
@@ -208,10 +210,6 @@ void WorldBlock::DrawCurrentShader() {
 	glUniform3f(LightAttenuationID, 0.0f, 0.0f, 1.0f);
 
 
-	// glUniform3f(LightColorID, lightColor.r, lightColor.g, lightColor.b);
-	//glUniform3f(LightColorID, 1.0f, 1.0f, 1.0f);
-	// glUniform3f(LightAttenuationID, lightKc, lightKl, lightKq);
-
 	int lSize = lightSource.size();
 	GLuint LightSizeID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightSize");
 	glUniform1i(LightSizeID, lSize);
@@ -234,6 +232,8 @@ void WorldBlock::DrawCurrentShader() {
 	// Draw models
 	for (vector<Model*>::iterator it = mModel.begin(); it < mModel.end(); ++it)
 	{
+		if (isLightSphere && (*it)->GetName() == "\"Sphere\"")
+			continue;
 		
 		mProperties = (*it)->getProperties();
 		GLuint materialCoefficientsID = glGetUniformLocation(Renderer::GetShaderProgramID(), "materialCoefficients");
@@ -246,10 +246,78 @@ void WorldBlock::DrawCurrentShader() {
 			}
 	}
 
+	Renderer::CheckForErrors();
+}
 
+void WorldBlock::DrawCurrentLightSources() {
+
+	if (!isLightSphere) return;
+	Renderer::CheckForErrors();
+
+	// This looks for the MVP Uniform variable in the Vertex Program
+	GLuint VPMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "ViewProjectionTransform");
+	// Get a handle for our Transformation Matrices uniform
+	//GLuint WorldMatrixID = glGetUniformLocation(Renderer::GetShaderProgramID(), "WorldTransform");
+	GLuint ViewMatrixID = glGetUniformLocation(Renderer::GetShaderProgramID(), "ViewTransform");
+	GLuint ProjMatrixID = glGetUniformLocation(Renderer::GetShaderProgramID(), "ProjectonTransform");
+
+
+
+	//// Get a handle for Material Attributes uniform
+	//GLuint MaterialID = glGetUniformLocation(Renderer::GetShaderProgramID(), "materialCoefficients");
+
+	// Send the view projection constants to the shader
+	// VP
+	//mat4 VP = mCamera[mCurrentCamera]->GetViewProjectionMatrix();
+	mat4 VP = World::getWorldInstance()->GetCurrentCamera()->GetViewProjectionMatrix();
+	glUniformMatrix4fv(VPMatrixLocation, 1, GL_FALSE, &VP[0][0]);
+
+	// viewTransform
+	//mat4 View = mCamera[mCurrentCamera]->GetViewMatrix();
+	mat4 View = World::getWorldInstance()->GetCurrentCamera()->GetViewMatrix();
+	glUniformMatrix4fv(ViewMatrixID, 1, GL_FALSE, &View[0][0]);
+	// projectionMatrix
+	//mat4 Projection = mCamera[mCurrentCamera]->GetProjectionMatrix();
+	mat4 Projection = World::getWorldInstance()->GetCurrentCamera()->GetProjectionMatrix();
+	glUniformMatrix4fv(ProjMatrixID, 1, GL_FALSE, &Projection[0][0]);
+
+
+	GLuint LightAttenuationID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightAttenuation");
+	glUniform3f(LightAttenuationID, 0.0f, 0.0f, 1.0f);
+
+
+
+	GLuint LightPositionID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lPosition");
+	GLuint LightColorID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lColor");
+
+	
+	vec3 lPosition = WB_OffsetMatrix * vec4(mModel[SphereIndex]->GetPosition(), 1.0f);
+	glUniform3f(LightPositionID, lPosition.x, lPosition.y, lPosition.z);
+	glUniform3f(LightColorID, 1.0f, 1.0f, 1.0f);
+	
+	mModel[SphereIndex]->Draw(WB_OffsetMatrix);
+
+	//vec4 mProperties;
+	//// Draw models
+	//for (vector<Model*>::iterator it = mModel.begin(); it < mModel.end(); ++it)
+	//{
+	//	if (isLightSphere && (*it)->GetName() != "\"Sphere\"")
+	//		continue;
+
+	//	mProperties = (*it)->getProperties();
+	//	GLuint materialCoefficientsID = glGetUniformLocation(Renderer::GetShaderProgramID(), "materialCoefficients");
+	//	glUniform4f(materialCoefficientsID, mProperties.x, mProperties.y, mProperties.z, mProperties.w);
+	//	if ((*it)->GetName() != "\"Building\"")
+	//		(*it)->Draw(WB_OffsetMatrix);
+	//	else
+	//		for (int i = 0; i < BuildingAmo; i++) {
+	//			(*it)->Draw(WB_OffsetMatrix * mBuildings->getBuildingOffsetMatrixAt(i));
+	//		}
+	//}
 
 	Renderer::CheckForErrors();
 }
+
 
 void WorldBlock::DrawPathLinesShader() {
 	Renderer::CheckForErrors();

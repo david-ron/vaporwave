@@ -116,7 +116,7 @@ void MainCharacter::Draw(glm::mat4 offsetMatrix)
 	//	RotationAngle =360-RotationAngle;
 	//}
 	
-	cout << RotationAngle << endl;
+	//cout << RotationAngle << endl;
 
 	mat4 rotationMatrix = rotate(mat4(1.0f),RotationAngle,vec3(0.0f,-1.0f,0.0f));
 	//mat4 rotationMatrix = mat4(1.0f);
@@ -141,8 +141,9 @@ void MainCharacter::Update(float dt)
     // mRotationAngleInDegrees += 90 * dt; // spins by 90 degrees per second
     
     //Model::Update(dt);
-
+	// if !leftkeypressed
 	mPosition = World::getWorldInstance()->getMCposition();
+
 	mLookAt = World::getWorldInstance()->getMClookAt();
 
 }

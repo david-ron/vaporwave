@@ -239,11 +239,38 @@ void WorldBlock::DrawCurrentShader() {
 		mProperties = (*it)->getProperties();
 		GLuint materialCoefficientsID = glGetUniformLocation(Renderer::GetShaderProgramID(), "materialCoefficients");
 		glUniform4f(materialCoefficientsID, mProperties.x, mProperties.y, mProperties.z, mProperties.w);
-		if ((*it)->GetName() != "\"Building\"")
+		if ((*it)->GetName() != "\"Building\"") {
+			
 			(*it)->Draw(WB_OffsetMatrix);
+		}
 		else
 			for (int i = 0; i < BuildingAmo; i++) {
+
+				mat4 offSet = mBuildings->getBuildingOffsetMatrixAt(i);
+
+				vec3 vColor;
+				float temp = offSet[0][0];
+				temp -= floor(temp);
+				temp *= 100;
+
+				if (temp < 33)
+					vColor = vec3(0.345, 0.08, 0.58);
+				else if (temp < 66)
+					vColor = vec3(0.81, 0.188, 0.72);
+				else
+					vColor = vec3(1, 0.45, 0.8);
+				
+
+
+				GLuint mVertexColorID = glGetUniformLocation(Renderer::GetShaderProgramID(), "mVertexColor");
+				glUniform3f(mVertexColorID, vColor.x, vColor.y, vColor.z);
+				GLuint mVertexColorEnableID = glGetUniformLocation(Renderer::GetShaderProgramID(), "mVertexColorEnable");
+				glUniform1i(mVertexColorEnableID, 1);
+
 				(*it)->Draw(WB_OffsetMatrix * mBuildings->getBuildingOffsetMatrixAt(i));
+
+				//GLuint mVertexColorEnableID = glGetUniformLocation(Renderer::GetShaderProgramID(), "mVertexColorEnable");
+				glUniform1i(mVertexColorEnableID, 0);
 			}
 	}
 

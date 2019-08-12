@@ -191,7 +191,7 @@ lightAttenuation = 0.0 0.0 1.0
 [Light]
 name = "light8"
 position = 0.3 0.3 -0.3 0.0
-color = 0.7 0.7 0.7
+color = 1 1 1
 lightAttenuation = 0.0 0.0 1.0
 
 [maincharacter]

@@ -29,6 +29,8 @@ uniform int lightSize;
 // light position
 uniform vec4 lPosition[8];
 
+uniform vec3 mVertexColor;
+uniform int mVertexColorEnable;
 
 void main()
 {
@@ -38,7 +40,10 @@ void main()
 	mat4 MV = ViewTransform *  WorldTransform;
 	//normal = vertexNormal_modelspace; // Does this need to be transformed when we pass it to the fragment shader?
 	
-	v_color = vec4(vertexColor,1);
+	if(mVertexColorEnable>0)
+		v_color = vec4(mVertexColor,1);
+	else
+		v_color = vec4(vertexColor,1);
 
 	vec3 vertexPosition_viewspace = vec3(MV * vec4(vertexPosition_modelspace,1.0f));
 	vec3 vertexPosition_worldspace = vec3( WorldTransform * vec4(vertexPosition_modelspace,1.0f));

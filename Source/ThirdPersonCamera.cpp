@@ -72,6 +72,7 @@ void ThirdPersonCamera::Update(float dt)
 
 	//newPosition = mPosition - mLookAt * 20.0f;
 	newPosition = mPosition - mCamLookat * 20.0f;
+
 }
 
 void ThirdPersonCamera::addExtraCamAngle(float H, float V) {

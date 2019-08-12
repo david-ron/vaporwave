@@ -190,8 +190,6 @@ void World::Update(float dt) {
 
 	// update charater --------------------------------------------------------------
 	// Prevent from having the camera move only when the cursor is within the windows
-	
-
 
 	// The Camera moves based on the User inputs
 	// - You can access the mouse motion with EventManager::GetMouseMotionXY()
@@ -225,26 +223,7 @@ void World::Update(float dt) {
 	}
 
 	//mouse left click and hold to change the camera position and angle
-	
-	//if (glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS && dynamic_cast<ThirdPersonCamera*>(cam) != nullptr) {
-	//	ThirdPersonCamera* cam = dynamic_cast<ThirdPersonCamera*>(GetCurrentCamera());
-	//	float mCameraHorizontalAngle = cam->getmHorizontalAngle();
-	//	float mCameraVerticalAngle = cam->getmVerticalAngle();
-	//	mCameraHorizontalAngle -= EventManager::GetMouseMotionX() * mAngularSpeed * dt;
-	//	mCameraVerticalAngle -= EventManager::GetMouseMotionY() * mAngularSpeed * dt;
 
-	//	cLookAt = calculateLookAt(mCameraHorizontalAngle, mCameraVerticalAngle);
-	//	vec3 groundNormal = vec3(0.0f, 1.0f, 0.0f);
-	//	cSideVector = glm::cross(mcLookAt, groundNormal);
-	//	glm::normalize(mcSideVector);
-	//	cam->setLookAt(cLookAt);
-	//	cam->setSideVector(cSideVector);
-	//	cam->setleftKeyPressed(true);
-	//}
-	//else
-	//{
-
-	//}
 	// Clamp vertical angle to [-85, 85] degrees
 	mVerticalAngle = std::max(-85.0f, std::min(85.0f, mVerticalAngle));
 	if (mHorizontalAngle > 360)
@@ -377,18 +356,11 @@ void World::Update(float dt) {
 			}
 
 			if (dot(sDirection, mNormal) < 0.0f) {
-				//if (firstNormal == vec3(0.0f)) {
-				//	firstNormal = mNormal;
-					vec3 mSideVector = cross(mNormal, sDirection);
-					sDirection = cross(mSideVector, mNormal);
-					//if(sDirection == vec3(0.0f))
-					//	cout << "Huh" << endl;
-					sDirection = normalize(sDirection);
-				//}
-				//else if (firstNormal != mNormal) {
-				//		sDirection = vec3(0.0f);
-				//		break;
-				//}
+
+				vec3 mSideVector = cross(mNormal, sDirection);
+				sDirection = cross(mSideVector, mNormal);
+
+				sDirection = normalize(sDirection);
 			}
 
 		}

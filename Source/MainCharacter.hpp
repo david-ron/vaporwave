@@ -51,6 +51,11 @@ private:
     glm::vec3 mLookAt;
     std::vector<glm::vec3> CornerPoint;
     
+	float breakTime = 120;
+	float aniTime = 60;
+	float timer = 0;
+	glm::mat4 HeadMatrix;
+
 };
 
 

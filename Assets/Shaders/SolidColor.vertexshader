@@ -13,7 +13,7 @@ out vec3 normal;          // Transformed normal in View Space
 //light 1
 out vec3 eyeVector;       // Vector from the vertex to the Camera in View Space
 
-out vec4 lightVector[25];
+out vec4 lightVector[8];
 
 
 
@@ -27,7 +27,7 @@ uniform mat4 ProjectonTransform;
 
 uniform int lightSize;
 // light position
-uniform vec4 lPosition[25];
+uniform vec4 lPosition[8];
 
 
 void main()

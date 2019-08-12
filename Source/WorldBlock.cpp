@@ -214,8 +214,9 @@ void WorldBlock::DrawCurrentShader() {
 	GLuint LightSizeID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightSize");
 	glUniform1i(LightSizeID, lSize);
 
-	vec4 LightPositions[25];
-	vec3 LightColor[25];
+	vec4 LightPositions[8];
+	vec3 LightColor[8];
+
 	for (int i = 0; i < lSize; i++) {
 		LightPositions[i] = lightSource[i]->getPosition();
 		LightColor[i] = lightSource[i]->getColor();

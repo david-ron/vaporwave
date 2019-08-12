@@ -5,7 +5,7 @@ uniform vec4 materialCoefficients; // x: ambient   y: diffuse   z: specular   w:
 
 uniform int lightSize;
 
-uniform vec3 lColor[25];
+uniform vec3 lColor[8];
 
 
 uniform vec3 lightAttenuation; // x: kC  y: kL  z: kQ
@@ -15,7 +15,7 @@ in vec4 v_color;		 // vertex color: also diffuse color
 
 in vec3 normal;          // Transformed normal in View Space
 in vec3 eyeVector;       // Vector from the vertex to the Camera in View Space
-in vec4 lightVector[25];	// Vector from the vertex to the Light in View Space
+in vec4 lightVector[8];	// Vector from the vertex to the Light in View Space
 						// Length of lightVector is the distance between light and vertex
 						 // if w = 1: Point light, if w = 0: directional light
 

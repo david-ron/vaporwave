@@ -4,10 +4,10 @@
 in vec2 UV;
 in vec4 v_color;
 
-in vec4 lightVector[25];
+in vec4 lightVector[8];
 
 
-uniform vec3 lColor[25];
+uniform vec3 lColor[8];
 
 
 uniform int lightSize;

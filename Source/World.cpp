@@ -245,7 +245,7 @@ void World::Update(float dt) {
 
 
 	vec3 sDirection(0.0f);
-
+	//bool SpacePressed = false;
 
 	// A S D W for motion along the camera basis vectors
 	// Forward
@@ -273,7 +273,12 @@ void World::Update(float dt) {
 	// Up
 	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_SPACE) == GLFW_PRESS)
 	{
-		sDirection += vec3(0,1,0);
+
+		sDirection += vec3(0, 1, 0);
+	}
+	else
+	{
+		sDirection += vec3(0, -0.1, 0);
 	}
 	// Speed
 	float mSpeed = mCharacterDefaultSpeed * mCharacterSpeedUpRate;;
@@ -374,12 +379,11 @@ void World::Update(float dt) {
 	else if (length(sDirection) > 0) {
 		sDirection = normalize(sDirection);
 	}
-	
-	
 
+	if(sDirection.y<0)
+		sDirection *= vec3(1.0f, 0.3f, 1.0f);
 
 	// new charater position
-	
 	mcPosition += sDirection * dt * mSpeed;
 
 

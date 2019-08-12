@@ -102,7 +102,7 @@ void MainCharacter::Draw(glm::mat4 offsetMatrix)
     
     GLuint WorldMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "WorldTransform");
     //glm::mat4 WorldMatrix = offsetMatrix * GetWorldMatrix();
-	mat4 modelSpaceMatrix = translate(mat4(1.0f), vec3(0.0f, -5.0f, 0.0));
+	mat4 modelSpaceMatrix = translate(mat4(1.0f), vec3(0.0f, -6.1f, 0.0));
 	 modelSpaceMatrix = rotate(modelSpaceMatrix, radians(90.0f), vec3(0, 1, 0));
 	//rotate the main character along the lookAt vector
 	

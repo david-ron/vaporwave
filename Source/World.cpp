@@ -55,6 +55,7 @@ void World::LoadScene(const char * scene_path) {
 			}
 			else if (result == "sphere")
 			{
+				SphereIndex = mModel.size();
 				SphereObj* sphere = new SphereObj();
 				sphere->Load(iss);
 				mModel.push_back(sphere);
@@ -181,7 +182,7 @@ void World::setupWorldBlock(WorldBlock* WB) {
 	
 	WB->setLightSource(lightSource);
 	WB->setBillboardList(mpBillboardList);
-
+	WB->setSphereIndex(SphereIndex);
 }
 
 void World::Update(float dt) {
@@ -435,7 +436,17 @@ void World::Update(float dt) {
 
 	mWorldBlock[0]->Update(dt);
 
+	if (!mWorldBlock[DisplayedWBIndex[8]]->IsLightSphere()) {
+		vec3 sPosition = mModel[SphereIndex]->GetPosition();
+		mat4 offSet = mWorldBlock[DisplayedWBIndex[8]]->getWBOffsetMatrix();
 
+		sPosition = vec3(offSet * vec4(sPosition, 1.0f));
+
+		vec3 diffVec = sPosition - mcPosition;
+		if (length(diffVec) < mcRadius + 2.0f) {
+			mWorldBlock[DisplayedWBIndex[8]]->setIsLightSphere(true);
+		}
+	}
 }
 
 
@@ -457,6 +468,19 @@ void World::Draw() {
 	// path lines shader
 	Renderer::CheckForErrors();
 	unsigned int prevShader = Renderer::GetCurrentShader();
+
+	Renderer::SetShader(SHADER_LIGHTSOURCE);
+	glUseProgram(Renderer::GetShaderProgramID());
+	Renderer::CheckForErrors();
+
+	for (int i = 0; i < 9; i++) {
+		//mWorldBlock[DisplayedWBIndex[i]]->DrawPathLinesShader();
+		mWorldBlock[DisplayedWBIndex[i]]->DrawCurrentLightSources();
+	}
+
+
+	Renderer::CheckForErrors();
+
 	Renderer::SetShader(SHADER_PATH_LINES);
 	glUseProgram(Renderer::GetShaderProgramID());
 	Renderer::CheckForErrors();
@@ -464,8 +488,6 @@ void World::Draw() {
 	for (int i = 0; i < 9; i++) {
 		mWorldBlock[DisplayedWBIndex[i]]->DrawPathLinesShader();
 	}
-
-
 
 	Renderer::CheckForErrors();
 	glEnable(GL_BLEND);

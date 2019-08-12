@@ -91,6 +91,10 @@ void Renderer::Initialize()
                                LoadShaders(shaderPathPrefix + "Texture.vertexshader",
                                            shaderPathPrefix + "Texture.fragmentshader")
                                );
+	sShaderProgramID.push_back(
+								LoadShaders(shaderPathPrefix + "LightSource.vertexshader",
+											shaderPathPrefix + "LightSource.fragmentshader")
+	);
 
 	sCurrentShader = 0;
 

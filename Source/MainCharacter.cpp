@@ -150,9 +150,12 @@ void MainCharacter::Update(float dt)
     
     //Model::Update(dt);
 	// if !leftkeypressed
+	vec3 oldPos = mPosition;
 	mPosition = World::getWorldInstance()->getMCposition();
-
 	mLookAt = World::getWorldInstance()->getMClookAt();
+
+	if (length(oldPos - mPosition) > 0.1)
+		timer = 0;
 
 	timer += dt;
 	if (timer > breakTime + aniTime)

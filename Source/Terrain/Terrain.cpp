@@ -125,11 +125,16 @@ bool Terrain::BuildTerrainModel()
 
 	index = 0;
 	
+	int it = 0;
+	int step = 16;
 	vector<vec3> testPostion; 
 	for (j = 0; j < (m_terrainHeight - 1); j++)
 	{
+		//if(j%step == (step / 2)-4)
+		//	it += 1;
 		for (i = 0; i < (m_terrainWidth - 1); i++)
 		{
+			
 			// Get the indexes to the four points of the quad.
 			index1 = (m_terrainWidth * j) + i;          // Upper left.
 			index2 = (m_terrainWidth * j) + (i + 1);      // Upper right.
@@ -142,7 +147,12 @@ bool Terrain::BuildTerrainModel()
 			glm::vec3 normalTriangle2 = glm::triangleNormal(m_heightMap[index3],
 				m_heightMap[index2], m_heightMap[index4]);
 
-			glm::vec3 color = glm::vec3(0.7f, 0.0f, 0.9f);
+			glm::vec3 color;
+			
+			if(it++%step<step/2)
+				color = glm::vec3(0.7f, 0.0f, 0.9f);
+			else
+				color = glm::vec3(0.7f, 0.7f, 1.0f);
 
 			// Now create two triangles for that quad.
 			// Triangle 1 - Upper left.

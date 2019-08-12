@@ -74,10 +74,12 @@ public:
 	void setLightSource(std::vector<LightSource*> lightSource);
 	void setBillboardList(BillboardList* mpBillboardList);
 	void setOnThis(bool o) { onThis = o; }
+	//void setTerrain(Terrain*) {ter}
 	
     
 private:
     
+	//Terrain * terrain;
 	std::vector<Model*> mModel;
     std::vector<Animation*> mAnimation;
     std::vector<AnimationKey*> mAnimationKey;

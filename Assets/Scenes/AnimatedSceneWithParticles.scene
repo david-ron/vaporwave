@@ -203,9 +203,6 @@ position = 0.3 0.3 -0.3 0.0
 color = 0.5 0.5 0.5
 lightAttenuation = 0.0 0.0 1.0
 
-
-
-
 [maincharacter]
 name     = "MainCharacter"
 particleEmitter = "Gasy"

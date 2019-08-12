@@ -403,7 +403,7 @@ void World::Update(float dt) {
 
 
 	mCharater->Update(0.1);
-
+	
 	// update charater ends --------------------------------------------------------------
 
 
@@ -460,7 +460,8 @@ void World::Update(float dt) {
 	}
 
 	mpBillboardList->Update(dt);
-
+	mcBillboardList->Update(dt);
+	mcParticleSystem->Update(dt, true);
 	mWorldBlock[0]->Update(dt);
 
 	if (!mWorldBlock[DisplayedWBIndex[8]]->IsLightSphere()) {
@@ -537,6 +538,7 @@ void World::Draw() {
 		mWorldBlock[DisplayedWBIndex[i]]->DrawTextureShader();
 	}
 
+	mcBillboardList->Draw(mat4(1.0));
 
 
 	Renderer::CheckForErrors();
@@ -595,7 +597,7 @@ World::World() {
 	int billboardTextureID = TextureLoader::LoadTexture("Textures/Particle.png");
 #else
 	//    int billboardTextureID = TextureLoader::LoadTexture("../Assets/Textures/BillboardTest.bmp");
-	int billboardTextureID = TextureLoader::LoadTexture("../Assets/Textures/Particle.png");
+	int billboardTextureID = TextureLoader::LoadTexture("../Assets/Textures/Particle3.png");
 #endif
 	assert(billboardTextureID != 0);
 

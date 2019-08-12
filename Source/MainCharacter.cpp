@@ -11,6 +11,7 @@
 #include "ObjLoader.hpp"
 #include "World.h"
 #include <glm/gtc/matrix_transform.hpp>
+#include <cmath>
 
 using namespace glm;
 using namespace std;
@@ -102,7 +103,25 @@ void MainCharacter::Draw(glm::mat4 offsetMatrix)
     GLuint WorldMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "WorldTransform");
     //glm::mat4 WorldMatrix = offsetMatrix * GetWorldMatrix();
 	mat4 modelSpaceMatrix = translate(mat4(1.0f), vec3(0.0f, -5.0f, 0.0));
-	glm::mat4 WorldMatrix = GetWorldMatrix() * modelSpaceMatrix;
+	 modelSpaceMatrix = rotate(modelSpaceMatrix, radians(90.0f), vec3(0, 1, 0));
+	//rotate the main character along the lookAt vector
+	
+	//cos theta= lookAt*(1,0,0)/magnitude of lookAt*
+	double dotProduct = dot(mLookAt,vec3(1.0f,0.0f,0.0f));
+	float RotationAngle = acos(dotProduct);
+	if (mLookAt.z < 0)
+		RotationAngle = 2 * 3.1416 - RotationAngle;
+
+	//if (RotationAngle < 0) {
+	//	RotationAngle =360-RotationAngle;
+	//}
+	
+	cout << RotationAngle << endl;
+
+	mat4 rotationMatrix = rotate(mat4(1.0f),RotationAngle,vec3(0.0f,-1.0f,0.0f));
+	//mat4 rotationMatrix = mat4(1.0f);
+	
+	glm::mat4 WorldMatrix = GetWorldMatrix() * rotationMatrix * modelSpaceMatrix;
     glUniformMatrix4fv(WorldMatrixLocation, 1, GL_FALSE, &WorldMatrix[0][0]);
     //glUniformMatrix4fv(WorldMatrixLocation, 1, GL_FALSE, mAnimation->GetAnimationWorldMatrix()[0][0]);
     
@@ -124,7 +143,9 @@ void MainCharacter::Update(float dt)
     //Model::Update(dt);
 	// if !leftkeypressed
 	mPosition = World::getWorldInstance()->getMCposition();
-	
+
+	mLookAt = World::getWorldInstance()->getMClookAt();
+
 }
 bool MainCharacter::ParseLine(const std::vector<ci_string> &token){
     if (token.empty())

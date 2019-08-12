@@ -4,33 +4,15 @@
 in vec2 UV;
 in vec4 v_color;
 
-in vec4 lightVector1;
-in vec4 lightVector2;
-in vec4 lightVector3;
-in vec4 lightVector4;
-in vec4 lightVector5;
-in vec4 lightVector6;
-in vec4 lightVector7;
-in vec4 lightVector8;
+in vec4 lightVector[25];
 
 
-uniform vec3 L1Color;
-uniform vec3 L2Color;
-uniform vec3 L3Color;
-uniform vec3 L4Color;
-uniform vec3 L5Color;
-uniform vec3 L6Color;
-uniform vec3 L7Color;
-uniform vec3 L8Color;
+uniform vec3 lColor[25];
 
-uniform int L1Enable;
-uniform int L2Enable;
-uniform int L3Enable;
-uniform int L4Enable;
-uniform int L5Enable;
-uniform int L6Enable;
-uniform int L7Enable;
-uniform int L8Enable;
+
+uniform int lightSize;
+
+
 
 // Ouput data
 out vec4 color;
@@ -46,103 +28,15 @@ void main()
 
 	vec3 iTotal = vec3(0.1f);
 
-	//light 1
-if(L1Enable > 0){
-	d = length(vec3(lightVector1));
-	if(lightVector1[3] > 0)
-		//f_att = 1.0/(lightAttenuation.x + lightAttenuation.y * d + lightAttenuation.z * d * d);
-		f_att = 1.0/(d*d);
-	else
-		f_att = 1;
+	for(int i=0;i<lightSize;i++){
+		d = length(vec3(lightVector[i]));
+		if(lightVector[i].w > 0)
+			f_att = 1.0/(d*d);
+		else
+			f_att = 1;
 
-	iTotal += 0.8 * f_att * L1Color;
-}
-
-//light 2
-if(L2Enable > 0){
-	d = length(vec3(lightVector2));
-	if(lightVector2[3] > 0)
-		//f_att = 1.0/(lightAttenuation.x + lightAttenuation.y * d + lightAttenuation.z * d * d);
-		f_att = 1.0/(d*d);
-	else
-		f_att = 1;
-
-	iTotal += 0.8 * f_att * L2Color;
-}
-
-//light 3
-if(L3Enable > 0){
-	d = length(vec3(lightVector3));
-	if(lightVector3[3] > 0)
-		//f_att = 1.0/(lightAttenuation.x + lightAttenuation.y * d + lightAttenuation.z * d * d);
-		f_att = 1.0/(d*d);
-	else
-		f_att = 1;
-
-	iTotal += 0.8 * f_att * L3Color;
-}
-
-//light 4
-if(L4Enable > 0){
-	d = length(vec3(lightVector4));
-	if(lightVector4[3] > 0)
-		//f_att = 1.0/(lightAttenuation.x + lightAttenuation.y * d + lightAttenuation.z * d * d);
-		f_att = 1.0/(d*d);
-	else
-		f_att = 1;
-
-	iTotal += 0.8 * f_att * L4Color;
-}
-
-//light 5
-if(L5Enable > 0){
-	d = length(vec3(lightVector5));
-	if(lightVector2[3] > 0)
-		//f_att = 1.0/(lightAttenuation.x + lightAttenuation.y * d + lightAttenuation.z * d * d);
-		f_att = 1.0/(d*d);
-	else
-		f_att = 1;
-
-	iTotal += 0.8 * f_att * L5Color;
-}
-
-//light 6
-if(L6Enable > 0){
-	d = length(vec3(lightVector6));
-	if(lightVector6[3] > 0)
-		//f_att = 1.0/(lightAttenuation.x + lightAttenuation.y * d + lightAttenuation.z * d * d);
-		f_att = 1.0/(d*d);
-	else
-		f_att = 1;
-
-	iTotal += 0.8 * f_att * L6Color;
-}
-
-//light 7
-if(L7Enable > 0){
-	d = length(vec3(lightVector7));
-	if(lightVector7[3] > 0)
-		//f_att = 1.0/(lightAttenuation.x + lightAttenuation.y * d + lightAttenuation.z * d * d);
-		f_att = 1.0/(d*d);
-	else
-		f_att = 1;
-
-	iTotal += 0.8 * f_att * L7Color;
-}
-
-//light 8
-if(L8Enable > 0){
-	d = length(vec3(lightVector8));
-	if(lightVector8[3] > 0)
-		//f_att = 1.0/(lightAttenuation.x + lightAttenuation.y * d + lightAttenuation.z * d * d);
-		f_att = 1.0/(d*d);
-	else
-		f_att = 1;
-
-	iTotal += 0.8 * f_att * L8Color;
-}
-
-
+		iTotal += 0.8 * f_att * lColor[i];
+	}
 
 
 

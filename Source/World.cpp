@@ -55,6 +55,7 @@ void World::LoadScene(const char * scene_path) {
 			}
 			else if (result == "sphere")
 			{
+				SphereIndex = mModel.size();
 				SphereObj* sphere = new SphereObj();
 				sphere->Load(iss);
 				mModel.push_back(sphere);
@@ -94,9 +95,9 @@ void World::LoadScene(const char * scene_path) {
 				mBuildingModel = cube;
             }
             else if (result == "maincharacter"){
-                mCharater = new MainCharacter();
-                mCharater->Load(iss);
-                
+                MainCharacter* mC = new MainCharacter();
+                mC->Load(iss);
+                mModel.push_back(mC);
             }
 			else
 			{
@@ -168,7 +169,6 @@ void World::LoadScene(const char * scene_path) {
 
 	mcPositionInitial = mcPosition;
 	mCamera[mCurrentCamera]->Update(0.1);
-
 }
 
 void World::setupWorldBlock(WorldBlock* WB) {
@@ -182,7 +182,7 @@ void World::setupWorldBlock(WorldBlock* WB) {
 	
 	WB->setLightSource(lightSource);
 	WB->setBillboardList(mpBillboardList);
-
+	WB->setSphereIndex(SphereIndex);
 }
 
 void World::Update(float dt) {
@@ -454,16 +454,21 @@ void World::Update(float dt) {
 		(*it)->Update(dt);
 	}
 
-	mCharater->Update(dt);
-
 	mpBillboardList->Update(dt);
-	mcBillboardList->Update(dt);
-
-	mcParticleSystem->Update(dt, true);
 
 	mWorldBlock[0]->Update(dt);
 
+	if (!mWorldBlock[DisplayedWBIndex[8]]->IsLightSphere()) {
+		vec3 sPosition = mModel[SphereIndex]->GetPosition();
+		mat4 offSet = mWorldBlock[DisplayedWBIndex[8]]->getWBOffsetMatrix();
 
+		sPosition = vec3(offSet * vec4(sPosition, 1.0f));
+
+		vec3 diffVec = sPosition - mcPosition;
+		if (length(diffVec) < mcRadius + 2.0f) {
+			mWorldBlock[DisplayedWBIndex[8]]->setIsLightSphere(true);
+		}
+	}
 }
 
 
@@ -481,12 +486,27 @@ void World::Draw() {
 		mWorldBlock[DisplayedWBIndex[i]]->DrawCurrentShader();
 	}
 
+
 	if(mCurrentCamera != 0)
 		mCharater->Draw(mat4(1.0f));
+
 	
 	// path lines shader
 	Renderer::CheckForErrors();
 	unsigned int prevShader = Renderer::GetCurrentShader();
+
+	Renderer::SetShader(SHADER_LIGHTSOURCE);
+	glUseProgram(Renderer::GetShaderProgramID());
+	Renderer::CheckForErrors();
+
+	for (int i = 0; i < 9; i++) {
+		//mWorldBlock[DisplayedWBIndex[i]]->DrawPathLinesShader();
+		mWorldBlock[DisplayedWBIndex[i]]->DrawCurrentLightSources();
+	}
+
+
+	Renderer::CheckForErrors();
+
 	Renderer::SetShader(SHADER_PATH_LINES);
 	glUseProgram(Renderer::GetShaderProgramID());
 	Renderer::CheckForErrors();
@@ -494,8 +514,6 @@ void World::Draw() {
 	for (int i = 0; i < 9; i++) {
 		mWorldBlock[DisplayedWBIndex[i]]->DrawPathLinesShader();
 	}
-
-	
 
 	Renderer::CheckForErrors();
 	glEnable(GL_BLEND);
@@ -514,7 +532,6 @@ void World::Draw() {
 		mWorldBlock[DisplayedWBIndex[i]]->DrawTextureShader();
 	}
 
-	mcBillboardList->Draw(mat4(1.0));
 
 
 	Renderer::CheckForErrors();
@@ -579,11 +596,11 @@ World::World() {
 
 	mpBillboardList = new BillboardList(2048, billboardTextureID);
 
+
 	int mcBillboardTextureID = TextureLoader::LoadTexture("../Assets/Textures/Particle3.png");
 	assert(mcBillboardTextureID != 0);
 
 	mcBillboardList = new BillboardList(2048, mcBillboardTextureID);
-
 
 }
 

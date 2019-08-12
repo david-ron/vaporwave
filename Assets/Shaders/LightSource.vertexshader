@@ -13,9 +13,7 @@ out vec3 normal;          // Transformed normal in View Space
 //light 1
 out vec3 eyeVector;       // Vector from the vertex to the Camera in View Space
 
-out vec4 lightVector[25];
-
-
+out vec4 lightVector;
 
 // Uniform
 // Values that stay constant for the whole mesh.
@@ -25,9 +23,9 @@ uniform mat4 WorldTransform;
 uniform mat4 ViewTransform;
 uniform mat4 ProjectonTransform;
 
-uniform int lightSize;
+
 // light position
-uniform vec4 lPosition[25];
+uniform vec3 lPosition;
 
 
 void main()
@@ -49,14 +47,7 @@ void main()
 	
 	// eyeVector = ...
 	eyeVector = vec3(0)-vertexPosition_viewspace;
-
-	for (int i=0; i<lightSize; i++)
-		if(lPosition[i].w == 1)
-			lightVector[i] = vec4(vec3(ViewTransform * vec4(vec3(lPosition[i]) - vertexPosition_worldspace, 0.0f)),1);
-		else
-			lightVector[i] = vec4(vec3(ViewTransform * (lPosition[i])),0);
-	
-
+	lightVector = vec4(vec3(ViewTransform * vec4(vec3(lPosition) - vertexPosition_worldspace, 0.0f)),1);
 
 }
 

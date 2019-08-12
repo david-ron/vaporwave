@@ -48,7 +48,7 @@ private:
     
     glm::vec3 max;
     glm::vec3 min;
-    
+    glm::vec3 mLookAt;
     std::vector<glm::vec3> CornerPoint;
     
 };

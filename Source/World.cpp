@@ -190,7 +190,7 @@ void World::Update(float dt) {
 
 	// update charater --------------------------------------------------------------
 	// Prevent from having the camera move only when the cursor is within the windows
-	EventManager::DisableMouseCursor();
+	
 
 
 	// The Camera moves based on the User inputs
@@ -201,11 +201,29 @@ void World::Update(float dt) {
 	//if (dynamic_cast<ThirdPersonCamera*>(cam) != nullptr)
 	//	dynamic_cast<ThirdPersonCamera*>(GetCurrentCamera())->setleftKeyPressed(false);
 	if (glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_2) == GLFW_PRESS) {
+		EventManager::DisableMouseCursor();
+		ThirdPersonCamera* TPC = static_cast<ThirdPersonCamera*>(mCamera[1]);
+		TPC->setleftKeyPressed(false);
 		// Mouse motion to get the variation in angle
 		mHorizontalAngle -= EventManager::GetMouseMotionX() * mAngularSpeed * dt;
 		mVerticalAngle -= EventManager::GetMouseMotionY() * mAngularSpeed * dt;
-
 	}
+	else if(glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS && 
+		mCurrentCamera == 1) {
+		EventManager::DisableMouseCursor();
+		ThirdPersonCamera* TPC = static_cast<ThirdPersonCamera*>(mCamera[1]);
+		TPC->setleftKeyPressed(true);
+		float mCamHorizontalAngle = EventManager::GetMouseMotionX() * mAngularSpeed * dt;
+		float mCamVerticalAngle = EventManager::GetMouseMotionY() * mAngularSpeed * dt;
+		TPC->addExtraCamAngle(mCamHorizontalAngle, mCamVerticalAngle);
+	}
+	else
+	{
+		ThirdPersonCamera* TPC = static_cast<ThirdPersonCamera*>(mCamera[1]);
+		TPC->setleftKeyPressed(false);
+		EventManager::EnableMouseCursor();
+	}
+
 	//mouse left click and hold to change the camera position and angle
 	
 	//if (glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS && dynamic_cast<ThirdPersonCamera*>(cam) != nullptr) {

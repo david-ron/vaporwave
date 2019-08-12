@@ -42,7 +42,7 @@ private:
     
     glm::vec3 max;
     glm::vec3 min;
-    
+	bool isFireFly;
 };
 
 #endif /* SphereObj_hpp */

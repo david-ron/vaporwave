@@ -32,6 +32,7 @@ uniform vec4 lPosition[8];
 uniform vec3 mVertexColor;
 uniform int mVertexColorEnable;
 
+uniform int mLightDirectionIgnore;
 uniform int IsChara;
 uniform mat4 HeadMatrix;
 

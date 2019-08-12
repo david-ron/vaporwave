@@ -17,6 +17,7 @@
 #include "Buildings.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/common.hpp>
+#include <random>
 
 using namespace std;
 using namespace glm;
@@ -84,10 +85,21 @@ bool Model::ParseLine(const std::vector<ci_string> &token)
 		{
 			assert(token.size() > 4);
 			assert(token[1] == "=");
-
+			
 			mPosition.x = static_cast<float>(atof(token[2].c_str()));
 			mPosition.y = static_cast<float>(atof(token[3].c_str()));
 			mPosition.z = static_cast<float>(atof(token[4].c_str()));
+			if (GetName() == "\"fly\"") {
+				std::default_random_engine generator;
+				float MidRange = mPosition.y;
+				float c = 20 ;
+				std::normal_distribution<double> distribution(MidRange, c);
+				int val = round(distribution(generator));
+				mPosition.x += val;
+				mPosition.y += val;
+				mPosition.z += val;
+			}
+			
 		}
 		else if (token[0] == "rotation")
 		{

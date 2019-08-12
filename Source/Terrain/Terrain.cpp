@@ -126,12 +126,12 @@ bool Terrain::BuildTerrainModel()
 	index = 0;
 	
 	int it = 0;
-	int step = 16;
+	int step = 8;
 	vector<vec3> testPostion; 
 	for (j = 0; j < (m_terrainHeight - 1); j++)
 	{
-		//if(j%step == (step / 2)-4)
-		//	it += 1;
+		if(j%step == 0)
+			it += step;
 		for (i = 0; i < (m_terrainWidth - 1); i++)
 		{
 			
@@ -149,11 +149,15 @@ bool Terrain::BuildTerrainModel()
 
 			glm::vec3 color;
 			
-			if(it++%step<step/2)
+			if(it%(2*step)<step)
 				color = glm::vec3(0.7f, 0.0f, 0.9f);
 			else
 				color = glm::vec3(0.7f, 0.7f, 1.0f);
 
+			if (it % step == 0 || j % step == 0)
+				color = glm::vec3(0.4, 0.8, 0.4);
+
+			it++;
 			// Now create two triangles for that quad.
 			// Triangle 1 - Upper left.
 
@@ -180,21 +184,21 @@ bool Terrain::BuildTerrainModel()
 			// Triangle 2 - Bottom left.
 			m_terrainModel[index].position = m_heightMap[index3] - vec3(World::WorldBlockSize / 2, 0, World::WorldBlockSize / 2);
 			testPostion.push_back(m_terrainModel[index].position);
-			m_terrainModel[index].normal = normalTriangle1;
+			m_terrainModel[index].normal = normalTriangle2;
 			m_terrainModel[index].color = color;
 			index++;
 
 			// Triangle 2 - Upper right.
 			m_terrainModel[index].position = m_heightMap[index2] - vec3(World::WorldBlockSize / 2, 0, World::WorldBlockSize / 2);
 			testPostion.push_back(m_terrainModel[index].position);
-			m_terrainModel[index].normal = normalTriangle1;
+			m_terrainModel[index].normal = normalTriangle2;
 			m_terrainModel[index].color = color;
 			index++;
 
 			// Triangle 2 - Bottom right.
 			m_terrainModel[index].position = m_heightMap[index4] - vec3(World::WorldBlockSize / 2, 0, World::WorldBlockSize / 2);
 			testPostion.push_back(m_terrainModel[index].position);
-			m_terrainModel[index].normal = normalTriangle1;
+			m_terrainModel[index].normal = normalTriangle2;
 			m_terrainModel[index].color = color;
 			index++;
 		}

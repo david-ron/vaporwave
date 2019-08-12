@@ -107,56 +107,56 @@ void ParticleSystem::Update(float dt, bool isCharater)
         // ...
     }
     
-    
-    for (std::list<Particle*>::iterator it = mParticleList.begin(); it != mParticleList.end(); it++)
-    {
-        Particle* p = *it;
-		p->currentTime += dt;
-        p->billboard.position += p->velocity * dt;
+    if(mParticleList.size() != 0)
+		for (std::list<Particle*>::iterator it = mParticleList.begin(); it != mParticleList.end(); it++)
+		{
+			Particle* p = *it;
+			p->currentTime += dt;
+			p->billboard.position += p->velocity * dt;
         
-        // @TODO 6 - Update each particle parameters
-        //
-        // Update the velocity of the particle from the acceleration in the descriptor
-		p->velocity += mpDescriptor->acceleration * dt;
+			// @TODO 6 - Update each particle parameters
+			//
+			// Update the velocity of the particle from the acceleration in the descriptor
+			p->velocity += mpDescriptor->acceleration * dt;
 
-        // Update the size of the particle according to its growth
-		p->billboard.size += mpDescriptor->sizeGrowthVelocity * dt;
+			// Update the size of the particle according to its growth
+			p->billboard.size += mpDescriptor->sizeGrowthVelocity * dt;
 
-        // Update The color is also updated in 3 phases
-        //
-        //
-        // Phase 1 - Initial: from t = [0, fadeInTime] - Linearly interpolate between initial color and mid color
-		if (0<=p->currentTime & p->currentTime <= mpDescriptor->fadeInTime) {
-			p->billboard.color = mix(mpDescriptor->initialColor, mpDescriptor->midColor, p->currentTime / mpDescriptor->fadeInTime);
-		}
-        // Phase 2 - Mid:     from t = [fadeInTime, lifeTime - fadeOutTime] - color is mid color
-		if (mpDescriptor->fadeInTime < p->currentTime & p->currentTime <= p->lifeTime - mpDescriptor->fadeOutTime) {
-			p->billboard.color = mpDescriptor->midColor;
-		}
-        // Phase 3 - End:     from t = [lifeTime - fadeOutTime, lifeTimdoun
-		if (p->lifeTime - mpDescriptor->fadeOutTime < p->currentTime & p->currentTime <= p->lifeTime) {
-			p->billboard.color = mix(mpDescriptor->midColor, mpDescriptor->endColor, (p->currentTime - (p->lifeTime - mpDescriptor->fadeOutTime)) / mpDescriptor->fadeOutTime);
-		}
+			// Update The color is also updated in 3 phases
+			//
+			//
+			// Phase 1 - Initial: from t = [0, fadeInTime] - Linearly interpolate between initial color and mid color
+			if (0<=p->currentTime & p->currentTime <= mpDescriptor->fadeInTime) {
+				p->billboard.color = mix(mpDescriptor->initialColor, mpDescriptor->midColor, p->currentTime / mpDescriptor->fadeInTime);
+			}
+			// Phase 2 - Mid:     from t = [fadeInTime, lifeTime - fadeOutTime] - color is mid color
+			if (mpDescriptor->fadeInTime < p->currentTime & p->currentTime <= p->lifeTime - mpDescriptor->fadeOutTime) {
+				p->billboard.color = mpDescriptor->midColor;
+			}
+			// Phase 3 - End:     from t = [lifeTime - fadeOutTime, lifeTimdoun
+			if (p->lifeTime - mpDescriptor->fadeOutTime < p->currentTime & p->currentTime <= p->lifeTime) {
+				p->billboard.color = mix(mpDescriptor->midColor, mpDescriptor->endColor, (p->currentTime - (p->lifeTime - mpDescriptor->fadeOutTime)) / mpDescriptor->fadeOutTime);
+			}
         
-        // ...
-        //p->billboard.color = vec4(1.0f, 1.0f, 1.0f, 1.0f); // wrong... check required implementation above
-        // ...
+			// ...
+			//p->billboard.color = vec4(1.0f, 1.0f, 1.0f, 1.0f); // wrong... check required implementation above
+			// ...
         
-        // Do not touch code below...
+			// Do not touch code below...
         
-        // Particles are destroyed if expired
-        // Move from the particle to inactive list
-        // Remove the billboard from the world
-        if (p->currentTime > p->lifeTime)
-        {
-            mInactiveParticles.push_back(*it);
+			// Particles are destroyed if expired
+			// Move from the particle to inactive list
+			// Remove the billboard from the world
+			if (p->currentTime > p->lifeTime)
+			{
+				mInactiveParticles.push_back(*it);
             
-            //World::getWorldInstance()->getWorldBlock()->RemoveBillboard(&(p->billboard));
-			if (isCharater)
-				World::getWorldInstance()->RemoveMCBillboard(&(p->billboard));
-			else
-				World::getWorldInstance()->RemoveBillboard(&(p->billboard));
-            mParticleList.remove(*it++);
-        }
-    }
+				//World::getWorldInstance()->getWorldBlock()->RemoveBillboard(&(p->billboard));
+				if (isCharater)
+					World::getWorldInstance()->RemoveMCBillboard(&(p->billboard));
+				else
+					World::getWorldInstance()->RemoveBillboard(&(p->billboard));
+				mParticleList.remove(*it++);
+			}
+		}
 }

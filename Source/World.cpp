@@ -489,7 +489,7 @@ void World::Update(float dt) {
 		sPosition = vec3(offSet * vec4(sPosition, 1.0f));
 
 		vec3 diffVec = sPosition - mcPosition;
-		if (length(diffVec) < mcRadius + 2.0f) {
+		if (length(diffVec) < mcRadius) {
 			mWorldBlock[DisplayedWBIndex[8]]->setIsLightSphere(true);
 		}
 	}

@@ -3,6 +3,9 @@
 #include "../Renderer.h"
 #include "../Model.h"
 
+using namespace std;
+using namespace glm;
+
 class Terrain : public Model
 {
 public:
@@ -12,6 +15,7 @@ public:
 	void Update(float dt);
 	void Draw(glm::mat4 offsetMatrix);
 
+	void getHightAndNormal(const vec3 coor, float& hight, vec3& normal);
 
 protected:
 	virtual bool ParseLine(const std::vector<ci_string> &token);

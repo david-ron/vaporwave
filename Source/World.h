@@ -40,6 +40,7 @@ public:
 	vec3 getCharacterPosition() const { return mcPosition; }
 	vec3 getMCpositionInitial() const { return mcPositionInitial; }
 	vec3 getMCsideVector() const { return mcSideVector; }
+	Camera* getTCP() { return mCamera[1]; }
 
 	vec3 getMClookAt() { return mcLookAt; }
 	vec3 getMCposition() { return mcPosition; }
@@ -47,6 +48,7 @@ public:
 	float getVerticalAngle() { return mVerticalAngle; }
 	float getHorizontalAngle() { return mHorizontalAngle; }
 
+	static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
 	static const float WorldBlockSize;
 
@@ -65,6 +67,7 @@ private:
 	
 	std::vector<Model*> mModel;
 	int SphereIndex;
+	Terrain* mTerrain;
 	Model* mBuildingModel = nullptr;
 	vector<vec3> cornerPoint;		// 8 corner points for the model
 	vector<mat4> mBuildingsMw;		// all Buildings' world matrixes in the current 9 blocks
@@ -75,7 +78,6 @@ private:
 	std::vector<ParticleDescriptor*> mParticleDescriptorList;
 	
 	unsigned int mCurrentCamera;
-	/*Terrain* terrain;*/
 	MainCharacter* mCharater;
 	vec3 mcPositionInitial; 
 	vec3 mcPosition;		// my character's position

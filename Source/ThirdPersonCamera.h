@@ -31,6 +31,7 @@ public:
 	void setmHorizontalAngle(float HorizontalAngle) { mHorizontalAngle = HorizontalAngle; };
 	void setmVerticalAngle(float VerticalAngle) { mVerticalAngle = VerticalAngle; };
 	void setleftKeyPressed(bool keyPressed) { leftKeyPressed = keyPressed; };
+	void setDistance(float);
 
 	void addExtraCamAngle(float, float);
 private:
@@ -57,5 +58,6 @@ private:
 
 	bool leftKeyPressed;
 
+	float distance = 20;
 
 };

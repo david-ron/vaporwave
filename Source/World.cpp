@@ -21,9 +21,10 @@
 #include "MainCharacter.hpp"
 #include "Terrain/Terrain.h"
 #include "WillMath.h"
+//#include <openglut.h>
 
 World* World::worldInstance;
-const float World::WorldBlockSize = 225;
+const float World::WorldBlockSize = 224;
 
 void World::LoadScene(const char * scene_path) {
 	//mWorldBlock->LoadScene(scene_path);
@@ -103,9 +104,9 @@ void World::LoadScene(const char * scene_path) {
 				
             }
 			else if (result == "terrain") {
-				Terrain* terrain = new Terrain();
-				terrain->Load(iss);
-				mModel.push_back(terrain);
+				mTerrain = new Terrain();
+				mTerrain->Load(iss);
+				mModel.push_back(mTerrain);
 			}
 			else
 			{
@@ -135,45 +136,6 @@ void World::LoadScene(const char * scene_path) {
 	vec3 axisLength;
 	vec3 centerPoint;
 	mat4 buildingModelMatrix = mBuildingModel->GetWorldMatrix();
-	bool allGood;
-	do {
-		allGood = true;
-		for (int b = 0; b < mBuildingsMw.size(); b++) { // b for building
-
-			// get the corner point for the current building in world space
-			cbCorner.clear();
-			for (int c = 0; c < 8; c++) { // c for corners	
-				cbCorner.push_back(vec3(mBuildingsMw[b] * buildingModelMatrix * vec4(cornerPoint[c], 1.0f)));
-				//diffVecSum += cbCorner[c] - mcPosition;
-			}
-			assert(cbCorner.size() == 8);
-			// length of the building on x, y & z axis
-			axisLength = cbCorner[2] - cbCorner[4];
-			centerPoint = (cbCorner[2] + cbCorner[4]) / 2.0f;
-
-			vec3 refVector = mcPosition - centerPoint;
-			//vec3 nRefVector = normalize();
-			normalize(refVector);
-			//assert(length(refVector) > 1.1);
-			refVector -= (mcRadius) * normalize(refVector);
-
-
-			// not close to this building, continue the loop
-			if (abs(refVector.x) > 0.5f*axisLength.x ||
-				abs(refVector.y) > 0.5f*axisLength.y ||
-				abs(refVector.z) > 0.5f*axisLength.z)
-				continue;
-			// too close to a building
-			allGood = false;
-			break;
-		}
-		float x = EventManager::GetRandomFloat(-45, 45);
-		float y = EventManager::GetRandomFloat(mcRadius, 20);
-		float z = EventManager::GetRandomFloat(-45, 45);
-		mcPosition = vec3(x,y,z);
-		
-
-	} while (!allGood);
 
 	mcPositionInitial = mcPosition;
 	mCamera[mCurrentCamera]->Update(0.1);
@@ -249,8 +211,17 @@ void World::Update(float dt) {
 
 	mcLookAt = vec3(cosf(phi)*cosf(theta), sinf(phi), -cosf(phi)*sinf(theta));
 	vec3 groundNormal = vec3(0.0f, 1.0f, 0.0f);
-	mcSideVector = glm::cross(mcLookAt, groundNormal);
-	glm::normalize(mcSideVector);
+
+
+	vec3 RelativeCoor = vec3(mcPosition.x - CenterBlock.x * World::WorldBlockSize , 0.0, mcPosition.z - CenterBlock.y * World::WorldBlockSize);
+
+	float groundHight = 0;
+	mTerrain->getHightAndNormal(RelativeCoor, groundHight, groundNormal);
+
+	
+
+	mcSideVector = glm::cross(mcLookAt, vec3(0.0f, 1.0f, 0.0f));
+   	glm::normalize(mcSideVector);
 
 
 	vec3 sDirection(0.0f);
@@ -285,7 +256,7 @@ void World::Update(float dt) {
 
 		sDirection += vec3(0, 1, 0);
 	}
-	else
+	else if ((mcPosition.y - mcRadius) > groundHight + 2)
 	{
 		sDirection += vec3(0, -0.1, 0);
 	}
@@ -295,13 +266,16 @@ void World::Update(float dt) {
 
 		
 
+
 	// Ground collision
-	if ((mcPosition.y - mcRadius) <= 0 && dot(sDirection, groundNormal) < 0.0f) {
+	if ((mcPosition.y - mcRadius) <= groundHight + 1 && dot(sDirection, groundNormal) < 0.0f) {
 
 		vec3 mSideVector = cross(groundNormal, sDirection);
 		sDirection = cross(mSideVector, groundNormal);
 		sDirection = normalize(sDirection);
 	}
+	
+
 
 	// Building colision
 	vector<vec3> cbCorner;
@@ -446,6 +420,8 @@ void World::Update(float dt) {
 			mCurrentCamera = 2;
 		}
 	}
+	
+	//if(glfwgetMous)
 
 	// Spacebar to change the shader
 	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_0) == GLFW_PRESS)
@@ -494,6 +470,7 @@ void World::Draw() {
 	for (int i = 0; i < 9; i++) {
 		mWorldBlock[DisplayedWBIndex[i]]->DrawCurrentShader();
 	}
+	//mWorldBlock[DisplayedWBIndex[8]]->DrawCurrentShader();
 	if(mCurrentCamera != 0)
  		mCharater->Draw(mat4(1.0f));
 
@@ -573,7 +550,7 @@ World* World::getWorldInstance() {
 World::World() {
 
 	//mcPosition = vec3(3.0f, 5.0f, 20.0f);
-	mcPosition = vec3(0.0f, 5.0f, 0.0f);
+	mcPosition = vec3(0.0f, 100.0f, 0.0f);
 	mcPositionInitial = mcPosition;
 	mcLookAt = vec3(0.0f, 0.0f, -1.0f);
 
@@ -588,6 +565,9 @@ World::World() {
 	//mCamera.push_back(new FirstPersonCamera(vec3(3.0f, 5.0f, 20.0f)));
 	mCamera.push_back(new FirstPersonCamera(mcPosition, mcLookAt));
 	mCamera.push_back(new ThirdPersonCamera(mcPosition,mcLookAt));
+
+	glfwSetScrollCallback(EventManager::GetWindow(), scroll_callback);
+
 	//mCamera.push_back
 	//mCamera.push_back(new StaticCamera(vec3(3.0f, 30.0f, 5.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f)));
 	//mCamera.push_back(new StaticCamera(vec3(0.5f, 0.5f, 5.0f), vec3(0.0f, 0.5f, 0.0f), vec3(0.0f, 1.0f, 0.0f)));
@@ -610,8 +590,15 @@ World::World() {
 
 	mcBillboardList = new BillboardList(2048, mcBillboardTextureID);
 
+	//glutMouseWheelFunc(mouseWheel);
+
+
 }
 
+void World::scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
+	ThirdPersonCamera* mCam = static_cast<ThirdPersonCamera*> (World::getWorldInstance()->getTCP());
+	mCam->setDistance(yoffset);
+}
 
 World::~World() {
 	//delete mWorldBlock0;

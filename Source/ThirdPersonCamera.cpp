@@ -71,7 +71,9 @@ void ThirdPersonCamera::Update(float dt)
 	mCamLookat = vec3(cosf(phi)*cosf(theta), sinf(phi), -cosf(phi)*sinf(theta));
 
 	//newPosition = mPosition - mLookAt * 20.0f;
-	newPosition = mPosition - mCamLookat * 20.0f;
+	//newPosition = mPosition - mCamLookat * 20.0f;
+	newPosition = mPosition - mCamLookat * distance;
+	//newPosition = mPosition - vec3(0.0,3.0,0.0) - (mCamLookat - vec3(0.0,0.2,0.0)) * distance;
 
 }
 
@@ -100,4 +102,11 @@ glm::mat4 ThirdPersonCamera::GetViewMatrix() const
 
 	return glm::lookAt(	newPosition , mPosition , vec3(0.0f, 1.0f, 0.0f));
 	
+}
+
+void ThirdPersonCamera::setDistance(float diff) {
+	distance += diff;
+
+	distance = std::max(0.1f, std::min(30.0f, distance));
+
 }

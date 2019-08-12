@@ -2,6 +2,7 @@
 #include <windows.h>
 #include <glm/gtx/normal.hpp>
 #include "bmpReader.h"
+#include "../World.h"
 
 using namespace glm;
 using namespace std;
@@ -146,42 +147,42 @@ bool Terrain::BuildTerrainModel()
 			// Now create two triangles for that quad.
 			// Triangle 1 - Upper left.
 
-			m_terrainModel[index].position = m_heightMap[index1];
+			m_terrainModel[index].position = m_heightMap[index1] - vec3(World::WorldBlockSize / 2, 0, World::WorldBlockSize / 2);
 			testPostion.push_back(m_terrainModel[index].position);
 			m_terrainModel[index].normal = normalTriangle1;
 			m_terrainModel[index].color = color;
 			index++;
 
 			// Triangle 1 - Upper right.
-			m_terrainModel[index].position = m_heightMap[index2];
+			m_terrainModel[index].position = m_heightMap[index2] - vec3(World::WorldBlockSize / 2, 0, World::WorldBlockSize / 2);
 			testPostion.push_back(m_terrainModel[index].position);
 			m_terrainModel[index].normal = normalTriangle1;
 			m_terrainModel[index].color = color;
 			index++;
 
 			// Triangle 1 - Bottom left.
-			m_terrainModel[index].position = m_heightMap[index3];
+			m_terrainModel[index].position = m_heightMap[index3] - vec3(World::WorldBlockSize / 2, 0, World::WorldBlockSize / 2);
 			testPostion.push_back(m_terrainModel[index].position);
 			m_terrainModel[index].normal = normalTriangle1;
 			m_terrainModel[index].color = color;
 			index++;
 
 			// Triangle 2 - Bottom left.
-			m_terrainModel[index].position = m_heightMap[index3];
+			m_terrainModel[index].position = m_heightMap[index3] - vec3(World::WorldBlockSize / 2, 0, World::WorldBlockSize / 2);
 			testPostion.push_back(m_terrainModel[index].position);
 			m_terrainModel[index].normal = normalTriangle1;
 			m_terrainModel[index].color = color;
 			index++;
 
 			// Triangle 2 - Upper right.
-			m_terrainModel[index].position = m_heightMap[index2];
+			m_terrainModel[index].position = m_heightMap[index2] - vec3(World::WorldBlockSize / 2, 0, World::WorldBlockSize / 2);
 			testPostion.push_back(m_terrainModel[index].position);
 			m_terrainModel[index].normal = normalTriangle1;
 			m_terrainModel[index].color = color;
 			index++;
 
 			// Triangle 2 - Bottom right.
-			m_terrainModel[index].position = m_heightMap[index4];
+			m_terrainModel[index].position = m_heightMap[index4] - vec3(World::WorldBlockSize / 2, 0, World::WorldBlockSize / 2);
 			testPostion.push_back(m_terrainModel[index].position);
 			m_terrainModel[index].normal = normalTriangle1;
 			m_terrainModel[index].color = color;
@@ -251,3 +252,33 @@ void Terrain::ShutdownTerrainModel()
 	return;
 }
 
+
+void Terrain::getHightAndNormal(const vec3 coor, float& hight, vec3& normal) {
+	float minDistance = INFINITY;
+	float cDistance;
+	float cHight;
+	vec3 cNormal;
+
+	vec2 mcPosition = vec2(coor.x, coor.z);
+	vec2 vPosition;
+
+	for (int i = 0; i < m_vertexCount; i++) {
+		// change the coordinate to 2d vec2
+		vPosition = vec2(m_terrainModel[i].position.x, m_terrainModel[i].position.z);
+		// if the current vertex is further then what have already found
+		cDistance = length(vPosition - mcPosition);
+		if (cDistance >= minDistance)
+			continue;// we dont care
+
+		minDistance = cDistance;
+		cHight = m_terrainModel[i].position.y;
+		cNormal = m_terrainModel[i].normal;
+ 	}
+
+
+
+	hight = cHight;
+	normal = cNormal;
+
+	//cout << "(" << coor.x << " ," << coor.z << ") :" << cHight << endl;
+}

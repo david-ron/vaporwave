@@ -96,13 +96,13 @@ void ParticleSystem::Update(float dt, bool isCharater)
 		vec3 originalVelocity = newParticle->velocity;
 
         // Step 1 : You can rotate the velocity vector by a random number between 0 and
-        //          mpDescriptor->velocityAngleRandomness.
+        //          mpDescriptor->velocityAngleRandomness.3
 		newParticle->velocity = rotate(newParticle->velocity, radians( EventManager::GetRandomFloat(0.0f, mpDescriptor->velocityAngleRandomness)), vec3(0.0, 0.0, 1.0));
 
 
         // Step 2 : You can rotate the result in step 1 by an random angle from 0 to
         //          360 degrees about the original velocity vector
-		newParticle->velocity = rotate(newParticle->velocity, radians( EventManager::GetRandomFloat(0.0f, 360.0f)), originalVelocity);
+		newParticle->velocity = rotate(newParticle->velocity, radians(360.0f), originalVelocity);
 
         // ...
     }

@@ -20,6 +20,7 @@
 #include "LightSource.h"
 #include "MainCharacter.hpp"
 #include "Terrain/Terrain.h"
+#include "WillMath.h"
 
 World* World::worldInstance;
 const float World::WorldBlockSize = 100;
@@ -56,6 +57,7 @@ void World::LoadScene(const char * scene_path) {
 			}
 			else if (result == "sphere")
 			{
+				SphereIndex = mModel.size();
 				SphereObj* sphere = new SphereObj();
 				sphere->Load(iss);
 				mModel.push_back(sphere);
@@ -95,9 +97,10 @@ void World::LoadScene(const char * scene_path) {
 				mBuildingModel = cube;
             }
             else if (result == "maincharacter"){
-                mCharater = new MainCharacter();
+				mCharater = new MainCharacter();
                 mCharater->Load(iss);
-                
+                //mModel.push_back(mC);
+				
             }
 			else if (result == "terrain") {
 				Terrain* terrain = new Terrain();
@@ -174,7 +177,6 @@ void World::LoadScene(const char * scene_path) {
 
 	mcPositionInitial = mcPosition;
 	mCamera[mCurrentCamera]->Update(0.1);
-
 }
 
 void World::setupWorldBlock(WorldBlock* WB) {
@@ -188,7 +190,8 @@ void World::setupWorldBlock(WorldBlock* WB) {
 	
 	WB->setLightSource(lightSource);
 	WB->setBillboardList(mpBillboardList);
-	
+
+	WB->setSphereIndex(SphereIndex);
 
 }
 
@@ -196,17 +199,39 @@ void World::Update(float dt) {
 
 	// update charater --------------------------------------------------------------
 	// Prevent from having the camera move only when the cursor is within the windows
-	EventManager::DisableMouseCursor();
-
 
 	// The Camera moves based on the User inputs
 	// - You can access the mouse motion with EventManager::GetMouseMotionXY()
 	// - For mapping A S D W, you can look in WorldBlock.cpp for an example of accessing key states
 	// - Don't forget to use dt to control the speed of the camera motion
+	//Camera* cam = GetCurrentCamera();
+	//if (dynamic_cast<ThirdPersonCamera*>(cam) != nullptr)
+	//	dynamic_cast<ThirdPersonCamera*>(GetCurrentCamera())->setleftKeyPressed(false);
+	if (glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_2) == GLFW_PRESS) {
+		EventManager::DisableMouseCursor();
+		ThirdPersonCamera* TPC = static_cast<ThirdPersonCamera*>(mCamera[1]);
+		TPC->setleftKeyPressed(false);
+		// Mouse motion to get the variation in angle
+		mHorizontalAngle -= EventManager::GetMouseMotionX() * mAngularSpeed * dt;
+		mVerticalAngle -= EventManager::GetMouseMotionY() * mAngularSpeed * dt;
+	}
+	else if(glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS && 
+		mCurrentCamera == 1) {
+		EventManager::DisableMouseCursor();
+		ThirdPersonCamera* TPC = static_cast<ThirdPersonCamera*>(mCamera[1]);
+		TPC->setleftKeyPressed(true);
+		float mCamHorizontalAngle = EventManager::GetMouseMotionX() * mAngularSpeed * dt;
+		float mCamVerticalAngle = EventManager::GetMouseMotionY() * mAngularSpeed * dt;
+		TPC->addExtraCamAngle(mCamHorizontalAngle, mCamVerticalAngle);
+	}
+	else
+	{
+		ThirdPersonCamera* TPC = static_cast<ThirdPersonCamera*>(mCamera[1]);
+		TPC->setleftKeyPressed(false);
+		EventManager::EnableMouseCursor();
+	}
 
-	// Mouse motion to get the variation in angle
-	mHorizontalAngle -= EventManager::GetMouseMotionX() * mAngularSpeed * dt;
-	mVerticalAngle -= EventManager::GetMouseMotionY() * mAngularSpeed * dt;
+	//mouse left click and hold to change the camera position and angle
 
 	// Clamp vertical angle to [-85, 85] degrees
 	mVerticalAngle = std::max(-85.0f, std::min(85.0f, mVerticalAngle));
@@ -223,14 +248,13 @@ void World::Update(float dt) {
 	float phi = radians(mVerticalAngle);
 
 	mcLookAt = vec3(cosf(phi)*cosf(theta), sinf(phi), -cosf(phi)*sinf(theta));
-
 	vec3 groundNormal = vec3(0.0f, 1.0f, 0.0f);
-
 	mcSideVector = glm::cross(mcLookAt, groundNormal);
 	glm::normalize(mcSideVector);
 
-	vec3 sDirection(0.0f);
 
+	vec3 sDirection(0.0f);
+	//bool SpacePressed = false;
 
 	// A S D W for motion along the camera basis vectors
 	// Forward
@@ -258,12 +282,18 @@ void World::Update(float dt) {
 	// Up
 	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_SPACE) == GLFW_PRESS)
 	{
-		sDirection += vec3(0,1,0);
+
+		sDirection += vec3(0, 1, 0);
+	}
+	else
+	{
+		sDirection += vec3(0, -0.1, 0);
 	}
 	// Speed
-	float mSpeed = mCharacterDefaultSpeed;
-	if (glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS)
-		mSpeed *= mCharacterSpeedUpRate;
+	float mSpeed = mCharacterDefaultSpeed * mCharacterSpeedUpRate;;
+
+
+		
 
 	// Ground collision
 	if ((mcPosition.y - mcRadius) <= 0 && dot(sDirection, groundNormal) < 0.0f) {
@@ -340,18 +370,11 @@ void World::Update(float dt) {
 			}
 
 			if (dot(sDirection, mNormal) < 0.0f) {
-				//if (firstNormal == vec3(0.0f)) {
-				//	firstNormal = mNormal;
-					vec3 mSideVector = cross(mNormal, sDirection);
-					sDirection = cross(mSideVector, mNormal);
-					//if(sDirection == vec3(0.0f))
-					//	cout << "Huh" << endl;
-					sDirection = normalize(sDirection);
-				//}
-				//else if (firstNormal != mNormal) {
-				//		sDirection = vec3(0.0f);
-				//		break;
-				//}
+
+				vec3 mSideVector = cross(mNormal, sDirection);
+				sDirection = cross(mSideVector, mNormal);
+
+				sDirection = normalize(sDirection);
 			}
 
 		}
@@ -365,12 +388,11 @@ void World::Update(float dt) {
 	else if (length(sDirection) > 0) {
 		sDirection = normalize(sDirection);
 	}
-	
-	
 
+	if(sDirection.y<0)
+		sDirection *= vec3(1.0f, 0.3f, 1.0f);
 
 	// new charater position
-	
 	mcPosition += sDirection * dt * mSpeed;
 
 
@@ -381,6 +403,10 @@ void World::Update(float dt) {
 			glfwGetKey(EventManager::GetWindow(), GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
 			mcPosition = mcPositionInitial;
 	}
+
+
+	mCharater->Update(0.1);
+	
 	// update charater ends --------------------------------------------------------------
 
 
@@ -399,9 +425,6 @@ void World::Update(float dt) {
 		checkNeighbors();
 	}
 	
-
-
-
 
 	// User Inputs
 	// 0 1 2 to change the Camera
@@ -429,26 +452,32 @@ void World::Update(float dt) {
 	{
 		Renderer::SetShader(SHADER_SOLID_COLOR);
 	}
-	else if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_9) == GLFW_PRESS)
-	{
-		Renderer::SetShader(SHADER_BLUE);
-	}
+	//else if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_9) == GLFW_PRESS)
+	//{
+	//	Renderer::SetShader(SHADER_BLUE);
+	//}
 
 	for (vector<ParticleSystem*>::iterator it = mParticleSystemList.begin(); it != mParticleSystemList.end(); ++it)
 	{
 		(*it)->Update(dt);
 	}
 
-	mCharater->Update(dt);
-
 	mpBillboardList->Update(dt);
 	mcBillboardList->Update(dt);
-
 	mcParticleSystem->Update(dt, true);
-
 	mWorldBlock[0]->Update(dt);
 
+	if (!mWorldBlock[DisplayedWBIndex[8]]->IsLightSphere()) {
+		vec3 sPosition = mModel[SphereIndex]->GetPosition();
+		mat4 offSet = mWorldBlock[DisplayedWBIndex[8]]->getWBOffsetMatrix();
 
+		sPosition = vec3(offSet * vec4(sPosition, 1.0f));
+
+		vec3 diffVec = sPosition - mcPosition;
+		if (length(diffVec) < mcRadius) {
+			mWorldBlock[DisplayedWBIndex[8]]->setIsLightSphere(true);
+		}
+	}
 }
 
 
@@ -465,11 +494,26 @@ void World::Draw() {
 	for (int i = 0; i < 9; i++) {
 		mWorldBlock[DisplayedWBIndex[i]]->DrawCurrentShader();
 	}
-    mCharater->Draw(mat4(1.0f));
+	if(mCurrentCamera != 0)
+ 		mCharater->Draw(mat4(1.0f));
+
 	
 	// path lines shader
 	Renderer::CheckForErrors();
 	unsigned int prevShader = Renderer::GetCurrentShader();
+
+	Renderer::SetShader(SHADER_LIGHTSOURCE);
+	glUseProgram(Renderer::GetShaderProgramID());
+	Renderer::CheckForErrors();
+
+	for (int i = 0; i < 9; i++) {
+		//mWorldBlock[DisplayedWBIndex[i]]->DrawPathLinesShader();
+		mWorldBlock[DisplayedWBIndex[i]]->DrawCurrentLightSources();
+	}
+
+
+	Renderer::CheckForErrors();
+
 	Renderer::SetShader(SHADER_PATH_LINES);
 	glUseProgram(Renderer::GetShaderProgramID());
 	Renderer::CheckForErrors();
@@ -477,8 +521,6 @@ void World::Draw() {
 	for (int i = 0; i < 9; i++) {
 		mWorldBlock[DisplayedWBIndex[i]]->DrawPathLinesShader();
 	}
-
-	
 
 	Renderer::CheckForErrors();
 	glEnable(GL_BLEND);
@@ -556,17 +598,17 @@ World::World() {
 	int billboardTextureID = TextureLoader::LoadTexture("Textures/Particle.png");
 #else
 	//    int billboardTextureID = TextureLoader::LoadTexture("../Assets/Textures/BillboardTest.bmp");
-	int billboardTextureID = TextureLoader::LoadTexture("../Assets/Textures/Particle.png");
+	int billboardTextureID = TextureLoader::LoadTexture("../Assets/Textures/Particle3.png");
 #endif
 	assert(billboardTextureID != 0);
 
 	mpBillboardList = new BillboardList(2048, billboardTextureID);
 
-	int mcBillboardTextureID = TextureLoader::LoadTexture("../Assets/Textures/Particle.png");
+
+	int mcBillboardTextureID = TextureLoader::LoadTexture("../Assets/Textures/Particle3.png");
 	assert(mcBillboardTextureID != 0);
 
 	mcBillboardList = new BillboardList(2048, mcBillboardTextureID);
-
 
 }
 

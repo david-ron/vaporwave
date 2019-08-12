@@ -44,6 +44,8 @@ public:
 	vec3 getMClookAt() { return mcLookAt; }
 	vec3 getMCposition() { return mcPosition; }
 	float getMCradius() { return mcRadius; }
+	float getVerticalAngle() { return mVerticalAngle; }
+	float getHorizontalAngle() { return mHorizontalAngle; }
 
 
 	static const float WorldBlockSize;
@@ -62,6 +64,7 @@ private:
 
 	
 	std::vector<Model*> mModel;
+	int SphereIndex;
 	Model* mBuildingModel = nullptr;
 	vector<vec3> cornerPoint;		// 8 corner points for the model
 	vector<mat4> mBuildingsMw;		// all Buildings' world matrixes in the current 9 blocks
@@ -79,6 +82,8 @@ private:
 	const float mcRadius = 5.0f;
 	vec3 mcLookAt;			// my character's facing direction(lookAt vector for FPV)
 	vec3 mcSideVector;
+	vec3 cLookAt;
+	vec3 cSideVector;
 	const float mCharacterDefaultSpeed = 5.0f;
 	const float mCharacterSpeedUpRate = 5.0f;
 	const float mAngularSpeed = 2.5f;

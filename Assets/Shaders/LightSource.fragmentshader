@@ -5,7 +5,7 @@ uniform vec4 materialCoefficients; // x: ambient   y: diffuse   z: specular   w:
 
 uniform int lightSize;
 
-uniform vec3 lColor[8];
+uniform vec3 lColor;
 
 
 uniform vec3 lightAttenuation; // x: kC  y: kL  z: kQ
@@ -15,9 +15,9 @@ in vec4 v_color;		 // vertex color: also diffuse color
 
 in vec3 normal;          // Transformed normal in View Space
 in vec3 eyeVector;       // Vector from the vertex to the Camera in View Space
-in vec4 lightVector[8];	// Vector from the vertex to the Light in View Space
+in vec4 lightVector;	// Vector from the vertex to the Light in View Space
 						// Length of lightVector is the distance between light and vertex
-						 // if w = 1: Point light, if w = 0: directional light
+						// if w = 1: Point light, if w = 0: directional light
 
 
 
@@ -51,24 +51,12 @@ void main()
 
 	iTotal += iAmbient;
 
-	for (int i=0; i<lightSize; i++){
-		d = length(vec3(lightVector[i]));
+	d = length(vec3(lightVector));
 	
-		if(lightVector[i].w > 0)
-			f_att = 20.0/(lightAttenuation.x + lightAttenuation.y * d + lightAttenuation.z * d * d);
-		else
-			f_att = 1;
+	f_att = 10.0/(lightAttenuation.x + lightAttenuation.y * d + lightAttenuation.z * d * d);
+		
 
-		// diffuse light
-		iDiffuse = lColor[i] * max(0, dot(normalize(vec3(lightVector[i])), normalize(normal))) * materialCoefficients.y;
-	
-		// specular light
-		R = reflect(-normalize(vec3(lightVector[i])), normalize(normal));
-		iSpecular = materialCoefficients.z * lColor[i] * pow(max(0.0, dot(R,normalize(eyeVector))), materialCoefficients.w);
-
-		iTotal += f_att * (iDiffuse + iSpecular);
-	}
-
+	float cFactor = dot(normalize(lightVector.xyz), normalize(eyeVector))/(2.0f) + 0.6f;
 
 
 	//vec3 iTotal = iAmbient + f_att * (iDiffuse + iSpecular);
@@ -77,7 +65,10 @@ void main()
 	//vec3 iTotal = f_att * iDiffuse;
 	//vec3 iTotal = f_att * iSpecular;
 	
-	color = iTotal * vec3(v_color);
+	color = f_att * cFactor * vec3(v_color);
+	//color = cFactor * vec3(v_color);
+	//color = f_att * vec3(v_color);
+	//color = vec3(1.0f);
 	//color = v_color;
 
 }

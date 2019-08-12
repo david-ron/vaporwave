@@ -41,6 +41,7 @@ public:
 	void Update(float dt);
 	//void Draw();
 	void DrawCurrentShader();
+	void DrawCurrentLightSources();
 	void DrawPathLinesShader();
 	void DrawTextureShader();
 
@@ -55,6 +56,8 @@ public:
 	vec2 getWorldBlockCoor() { return vec2(WB_Coordinate[0], WB_Coordinate[1]); }
 	Buildings* getBuildings() { return mBuildings; }
 	void getBuildingsWorldMatrix(vector<mat4>&);
+	mat4 getWBOffsetMatrix() { return WB_OffsetMatrix; }
+	bool IsLightSphere() { return isLightSphere; }
 
 
     //const Camera* GetCurrentCamera() const;
@@ -74,13 +77,16 @@ public:
 	void setLightSource(std::vector<LightSource*> lightSource);
 	void setBillboardList(BillboardList* mpBillboardList);
 	void setOnThis(bool o) { onThis = o; }
-	//void setTerrain(Terrain*) {ter}
-	
+
+	void setIsLightSphere(bool LS) { isLightSphere = LS; }
+	void setSphereIndex(int i) { SphereIndex = i; }
+
     
 private:
     
 	//Terrain * terrain;
 	std::vector<Model*> mModel;
+	int SphereIndex;
     std::vector<Animation*> mAnimation;
     std::vector<AnimationKey*> mAnimationKey;
 	//std::vector<Camera*> mCamera;
@@ -101,4 +107,6 @@ private:
 
 	//to tell whether object is on a worldBlock
 	bool onThis = false;
+
+	bool isLightSphere;
 };

@@ -19,7 +19,7 @@
 #include "SphereObj.hpp"
 #include "LightSource.h"
 #include "MainCharacter.hpp"
-
+#include "WillMath.h"
 World* World::worldInstance;
 const float World::WorldBlockSize = 100;
 
@@ -196,11 +196,36 @@ void World::Update(float dt) {
 	// - You can access the mouse motion with EventManager::GetMouseMotionXY()
 	// - For mapping A S D W, you can look in WorldBlock.cpp for an example of accessing key states
 	// - Don't forget to use dt to control the speed of the camera motion
+	Camera* cam = GetCurrentCamera();
+	if (dynamic_cast<ThirdPersonCamera*>(cam) != nullptr)
+		dynamic_cast<ThirdPersonCamera*>(GetCurrentCamera())->setleftKeyPressed(false);
+	if (glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_2) == GLFW_PRESS) {
+		// Mouse motion to get the variation in angle
+		mHorizontalAngle -= EventManager::GetMouseMotionX() * mAngularSpeed * dt;
+		mVerticalAngle -= EventManager::GetMouseMotionY() * mAngularSpeed * dt;
 
-	// Mouse motion to get the variation in angle
-	mHorizontalAngle -= EventManager::GetMouseMotionX() * mAngularSpeed * dt;
-	mVerticalAngle -= EventManager::GetMouseMotionY() * mAngularSpeed * dt;
+	}
+	//mouse left click and hold to change the camera position and angle
+	
+	if (glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS && dynamic_cast<ThirdPersonCamera*>(cam) != nullptr) {
+		ThirdPersonCamera* cam = dynamic_cast<ThirdPersonCamera*>(GetCurrentCamera());
+		float mCameraHorizontalAngle = cam->getmHorizontalAngle();
+		float mCameraVerticalAngle = cam->getmVerticalAngle();
+		mCameraHorizontalAngle -= EventManager::GetMouseMotionX() * mAngularSpeed * dt;
+		mCameraVerticalAngle -= EventManager::GetMouseMotionY() * mAngularSpeed * dt;
 
+		cLookAt = calculateLookAt(mCameraHorizontalAngle, mCameraVerticalAngle);
+		vec3 groundNormal = vec3(0.0f, 1.0f, 0.0f);
+		cSideVector = glm::cross(mcLookAt, groundNormal);
+		glm::normalize(mcSideVector);
+		cam->setLookAt(cLookAt);
+		cam->setSideVector(cSideVector);
+		cam->setleftKeyPressed(true);
+	}
+	//else
+	//{
+
+	//}
 	// Clamp vertical angle to [-85, 85] degrees
 	mVerticalAngle = std::max(-85.0f, std::min(85.0f, mVerticalAngle));
 	if (mHorizontalAngle > 360)
@@ -212,15 +237,11 @@ void World::Update(float dt) {
 		mHorizontalAngle += 360;
 	}
 
-	float theta = radians(mHorizontalAngle);
-	float phi = radians(mVerticalAngle);
-
-	mcLookAt = vec3(cosf(phi)*cosf(theta), sinf(phi), -cosf(phi)*sinf(theta));
-
+	mcLookAt = calculateLookAt(mHorizontalAngle, mVerticalAngle);
 	vec3 groundNormal = vec3(0.0f, 1.0f, 0.0f);
-
 	mcSideVector = glm::cross(mcLookAt, groundNormal);
 	glm::normalize(mcSideVector);
+
 
 	vec3 sDirection(0.0f);
 
@@ -254,9 +275,10 @@ void World::Update(float dt) {
 		sDirection += vec3(0,1,0);
 	}
 	// Speed
-	float mSpeed = mCharacterDefaultSpeed;
-	if (glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS)
-		mSpeed *= mCharacterSpeedUpRate;
+	float mSpeed = mCharacterDefaultSpeed * mCharacterSpeedUpRate;;
+
+
+		
 
 	// Ground collision
 	if ((mcPosition.y - mcRadius) <= 0 && dot(sDirection, groundNormal) < 0.0f) {

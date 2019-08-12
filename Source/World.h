@@ -79,6 +79,8 @@ private:
 	const float mcRadius = 5.0f;
 	vec3 mcLookAt;			// my character's facing direction(lookAt vector for FPV)
 	vec3 mcSideVector;
+	vec3 cLookAt;
+	vec3 cSideVector;
 	const float mCharacterDefaultSpeed = 5.0f;
 	const float mCharacterSpeedUpRate = 5.0f;
 	const float mAngularSpeed = 2.5f;

@@ -122,9 +122,9 @@ void MainCharacter::Update(float dt)
     // mRotationAngleInDegrees += 90 * dt; // spins by 90 degrees per second
     
     //Model::Update(dt);
-
+	// if !leftkeypressed
 	mPosition = World::getWorldInstance()->getMCposition();
-
+	
 }
 bool MainCharacter::ParseLine(const std::vector<ci_string> &token){
     if (token.empty())

@@ -23,8 +23,14 @@ public:
 	virtual glm::mat4 GetViewMatrix() const;
 	vec3 getLookAt();
 	vec3 getSideVector();
-	
-
+	void setLookAt(vec3 LookAt) { mLookAt = LookAt; };
+	void setSideVector(vec3 SideVector) { mSideVector = SideVector; };
+	void setPostion(vec3 position) { mPosition = position; };
+	float getmHorizontalAngle() { return mHorizontalAngle; };
+	float getmVerticalAngle() { return mVerticalAngle; };
+	void setmHorizontalAngle(float HorizontalAngle) { mHorizontalAngle = HorizontalAngle; };
+	void setmVerticalAngle(float VerticalAngle) { mVerticalAngle = VerticalAngle; };
+	void setleftKeyPressed(bool keyPressed) { leftKeyPressed = keyPressed; };
 private:
 	glm::vec3 mPosition;	
 	float mHorizontalAngle; // horizontal angle
@@ -41,4 +47,8 @@ private:
 	float theta = radians(mHorizontalAngle);
 	float phi = radians(mVerticalAngle);
 	vec3 newPosition;
+
+	bool leftKeyPressed;
+
+
 };

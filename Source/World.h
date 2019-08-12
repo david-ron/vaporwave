@@ -44,6 +44,8 @@ public:
 	vec3 getMClookAt() { return mcLookAt; }
 	vec3 getMCposition() { return mcPosition; }
 	float getMCradius() { return mcRadius; }
+	float getVerticalAngle() { return mVerticalAngle; }
+	float getHorizontalAngle() { return mHorizontalAngle; }
 
 
 	static const float WorldBlockSize;

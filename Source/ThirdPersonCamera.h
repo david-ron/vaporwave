@@ -31,16 +31,23 @@ public:
 	void setmHorizontalAngle(float HorizontalAngle) { mHorizontalAngle = HorizontalAngle; };
 	void setmVerticalAngle(float VerticalAngle) { mVerticalAngle = VerticalAngle; };
 	void setleftKeyPressed(bool keyPressed) { leftKeyPressed = keyPressed; };
+
+	void addExtraCamAngle(float, float);
 private:
 	glm::vec3 mPosition;	
 	float mHorizontalAngle; // horizontal angle
 	float mVerticalAngle;   // vertical angle
+
+	float mCamHorizontalAngle; // extra horizontal angle for camera
+	float mCamVerticalAngle;   // extra vertical angle for camera
+
 
 	float mSpeed;			// WorldBlock units per second
 	const float speedUpRate = 4.0f;
 	float mAngularSpeed;    // Degrees per pixel
 
 	glm::vec3 mLookAt;
+	glm::vec3 mCamLookat; 
 	glm::vec3 mSideVector;
 
 	float radius=10.0f; //radius of the sphere

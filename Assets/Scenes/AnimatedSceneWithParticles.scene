@@ -208,3 +208,55 @@ scaling  = 1.0 1.0 1.0
 position = 0.0 0.0 0.0
 rotation = 0.0 0.0 0.0 0.0
 properties = 0.4 0.5 0.2 50
+
+[AnimationKey]
+name     = "FlyCycle1"
+position = 200.0 50.0 0.0
+
+[AnimationKey]
+name     = "FlyCycle2"
+position = 140.07 160.0 140.07
+
+[AnimationKey]
+name     = "FlyCycle3"
+position = 0.0 100.0 200.0
+
+[AnimationKey]
+name     = "FlyCycle4"
+position = -140.07 54.0 140.07
+
+[AnimationKey]
+name     = "FlyCycle5"
+position = -200.0 75.0 0.0
+
+[AnimationKey]
+name     = "FlyCycle6"
+position = -140.07 65.0 -140.07
+
+[AnimationKey]
+name     = "FlyCycle7"
+position = 0.0 40.0 -200.0
+
+[AnimationKey]
+name     = "FlyCycle8"
+position = 140.07 25.0 -140.07
+
+
+[Animation]
+name     = "FlyAnim"
+key      = "FlyCycle1"  time = 0.0f
+key      = "FlyCycle2"  time = 5.0f
+key      = "FlyCycle3"  time = 10.0f
+key      = "FlyCycle4"  time = 15.0f
+key      = "FlyCycle5"  time = 20.0f
+key      = "FlyCycle6"  time = 25.0f
+key      = "FlyCycle7"  time = 30.0f
+key      = "FlyCycle8"  time = 35.0f
+key      = "FlyCycle1"  time = 40.0f
+
+[Sphere]
+name     = "fly"
+animation = "FlyAnim"
+position = 10.0 5.0 0.0
+scaling  = 100.0 100.0 100.0
+properties = 0.2 0.8 0.2 50

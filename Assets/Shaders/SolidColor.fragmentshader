@@ -7,6 +7,7 @@ uniform int lightSize;
 
 uniform vec3 lColor[8];
 
+uniform int mLightDirectionIgnore;
 
 uniform vec3 lightAttenuation; // x: kC  y: kL  z: kQ
 
@@ -53,7 +54,6 @@ void main()
 
 	for (int i=0; i<lightSize; i++){
 		d = length(vec3(lightVector[i]));
-	
 		if(lightVector[i].w > 0)
 			f_att = 20.0/(lightAttenuation.x + lightAttenuation.y * d + lightAttenuation.z * d * d);
 		else
@@ -76,8 +76,10 @@ void main()
 	//vec3 iTotal = iAmbient;
 	//vec3 iTotal = f_att * iDiffuse;
 	//vec3 iTotal = f_att * iSpecular;
-	
-	color = iTotal * vec3(v_color);
+	if (mLightDirectionIgnore > 0)
+		color =  vec3(v_color);	
+	else
+		color = iTotal * vec3(v_color);
 	//color = v_color;
 
 }

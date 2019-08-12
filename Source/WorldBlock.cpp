@@ -238,11 +238,34 @@ void WorldBlock::DrawCurrentShader() {
 		mProperties = (*it)->getProperties();
 		GLuint materialCoefficientsID = glGetUniformLocation(Renderer::GetShaderProgramID(), "materialCoefficients");
 		glUniform4f(materialCoefficientsID, mProperties.x, mProperties.y, mProperties.z, mProperties.w);
-		if ((*it)->GetName() != "\"Building\"") {
+
+		if ((*it)->GetName() != "\"Building\"" && (*it)->GetName() != "\"fly\"") {
 			
 			(*it)->Draw(WB_OffsetMatrix);
 		}
+		else if ((*it)->GetName() == "\"fly\"") {
+			vec3 vColor;
+			float dimmer = fmod(glfwGetTime(),10)/10 ;
+			float lightBrightness;
+			if (1-dimmer > 0.6)
+				lightBrightness = (float)1 - dimmer;
+			else
+				lightBrightness = (0.4) + dimmer;
+
+			vColor = vec3(lightBrightness);
+			GLuint mVertexColorID = glGetUniformLocation(Renderer::GetShaderProgramID(), "mVertexColor");
+			glUniform3f(mVertexColorID, vColor.x, vColor.y, vColor.z);
+			GLuint mVertexColorEnableID = glGetUniformLocation(Renderer::GetShaderProgramID(), "mVertexColorEnable");
+			glUniform1i(mVertexColorEnableID, 1);
+			GLuint mLightDirectionIgnoreID = glGetUniformLocation(Renderer::GetShaderProgramID(), "mLightDirectionIgnore");
+			glUniform1i(mLightDirectionIgnoreID, 1);
+
+			(*it)->Draw(WB_OffsetMatrix);
+			glUniform1i(mVertexColorEnableID, 0);
+			glUniform1i(mLightDirectionIgnoreID, 0);
+		}
 		else
+		
 			for (int i = 0; i < BuildingAmo; i++) {
 
 				mat4 offSet = mBuildings->getBuildingOffsetMatrixAt(i);
@@ -271,6 +294,7 @@ void WorldBlock::DrawCurrentShader() {
 				//GLuint mVertexColorEnableID = glGetUniformLocation(Renderer::GetShaderProgramID(), "mVertexColorEnable");
 				glUniform1i(mVertexColorEnableID, 0);
 			}
+		
 	}
 
 	Renderer::CheckForErrors();

@@ -244,15 +244,21 @@ void WorldBlock::DrawCurrentShader() {
 			(*it)->Draw(WB_OffsetMatrix);
 		}
 		else if ((*it)->GetName() == "\"fly\"") {
+			cout << glfwGetTime() << "  ";
 			vec3 vColor;
-			float dimmer = fmod(glfwGetTime(),10)/10 ;
-			float lightBrightness;
-			if (1-dimmer > 0.6)
-				lightBrightness = (float)1 - dimmer;
-			else
-				lightBrightness = (0.4) + dimmer;
-
-			vColor = vec3(lightBrightness);
+			if (fmod(glfwGetTime(),60) > 30) {
+				vColor = vec3(0.0, 0.18, 0.39);
+			}
+			else {
+				float dimmer = fmod(glfwGetTime(), 10) / 10;
+				float lightBrightness;
+				if (1 - dimmer > 0.6)
+					lightBrightness = (float)1 - dimmer;
+				else
+					lightBrightness = (0.4) + dimmer;
+				vColor = vec3(lightBrightness);
+			}
+			
 			GLuint mVertexColorID = glGetUniformLocation(Renderer::GetShaderProgramID(), "mVertexColor");
 			glUniform3f(mVertexColorID, vColor.x, vColor.y, vColor.z);
 			GLuint mVertexColorEnableID = glGetUniformLocation(Renderer::GetShaderProgramID(), "mVertexColorEnable");

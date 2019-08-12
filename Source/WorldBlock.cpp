@@ -8,7 +8,6 @@
 //
 
 #include "Terrain/Terrain.h"
-#include "Terrain/Pixel.h"
 #include "WorldBlock.h"
 #include "Renderer.h"
 #include "ParsingHelper.h"
@@ -612,6 +611,9 @@ void WorldBlock::DrawCurrentShader() {
 	for (vector<Model*>::iterator it = mModel.begin(); it < mModel.end(); ++it)
 	{
 		
+		if ((*it)->GetName() != "\"terrain\"")
+			continue;
+
 		mProperties = (*it)->getProperties();
 		GLuint materialCoefficientsID = glGetUniformLocation(Renderer::GetShaderProgramID(), "materialCoefficients");
 		glUniform4f(materialCoefficientsID, mProperties.x, mProperties.y, mProperties.z, mProperties.w);

@@ -2,9 +2,34 @@
 
 #include "../Renderer.h"
 
+//struct HeightMapType //change to vec3 later 
+//{
+//	HeightMapType() {};
+//	~HeightMapType() {};
+//	glm::vec3 position;
+//};
+
+
+
 class bmpReader
 {
+
+public:
+	
+	static bmpReader* getInstance();
+	glm::vec3* LoadBitmapHeightMap(std::string m_terrainFilename);
+	
+
 private:
+
+	struct ModelType
+	{
+		glm::vec3 position, normal;
+	};
+
+	static bmpReader * Instance;
+
+	bmpReader();
 	struct VertexType
 	{
 		glm::vec3 position;
@@ -12,46 +37,19 @@ private:
 		glm::vec3 normal;
 	};
 
-	struct HeightMapType //change to vec3 later 
-	{
-		glm::vec3 position;
-	};
+	
 
-	struct ModelType
-	{
-		glm::vec3 position, normal;
-	};
-
-public:
-	bmpReader();
-
-	//to be changed
-	//TerrainClass(const TerrainClass&);
-	//~TerrainClass();
-
-	//bool Initialize(ID3D11Device*, char*);
-	//void Shutdown();
-	//bool Render(ID3D11DeviceContext*);
-	//int GetIndexCount();
-
-private:
-	bool LoadBitmapHeightMap();
-	void SetTerrainCoordinates();
-	bool BuildTerrainModel(); 
-	void ShutdownHeightMap();
-
-	bool InitializeBuffers();
-	void ShutdownTerrainModel();
+	
 
 
-
+	//glm::vec3 HeightMapType[225 * 225];
 
 	//to be changed
 
 	//void ShutdownBuffers();
 	//void RenderBuffers(ID3D11DeviceContext*);
 
-private:
+
 	unsigned int mVAO;
 	unsigned int mVBO;
 
@@ -60,7 +58,7 @@ private:
 	int m_terrainHeight, m_terrainWidth;
 	float m_heightScale;
 	char* m_terrainFilename;
-	HeightMapType* m_heightMap;
+	static glm::vec3* m_heightMap;
 	ModelType* m_terrainModel;
 
 

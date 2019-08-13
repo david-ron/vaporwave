@@ -4,11 +4,12 @@
 uniform vec4 materialCoefficients; // x: ambient   y: diffuse   z: specular   w: specular exponent
 
 uniform int lightSize;
-
 uniform vec3 lColor[8];
 
 
 uniform vec3 lightAttenuation; // x: kC  y: kL  z: kQ
+
+uniform int isTerrain;
 
 // Inputs
 in vec4 v_color;		 // vertex color: also diffuse color
@@ -18,7 +19,7 @@ in vec3 eyeVector;       // Vector from the vertex to the Camera in View Space
 in vec4 lightVector[8];	// Vector from the vertex to the Light in View Space
 						// Length of lightVector is the distance between light and vertex
 						 // if w = 1: Point light, if w = 0: directional light
-
+in vec3 vPosition_modelSpace;
 
 
 // Ouput data
@@ -77,7 +78,18 @@ void main()
 	//vec3 iTotal = f_att * iDiffuse;
 	//vec3 iTotal = f_att * iSpecular;
 	
-	color = iTotal * vec3(v_color);
+	color = vec3(v_color);
+
+	if(isTerrain==1 &&
+	((int(vPosition_modelSpace.x) % 8 ==0 && abs(int(vPosition_modelSpace.x) - vPosition_modelSpace.x) <0.1)||
+	(int(vPosition_modelSpace.z) % 8 ==0 && abs(int(vPosition_modelSpace.z) - vPosition_modelSpace.z) <0.1))){
+		//color = vec3(0.4, 0.8, 0.4);
+		color = vec3(1.0);
+	}
+
+		
+
+	color = iTotal * color;
 	//color = v_color;
 
 }

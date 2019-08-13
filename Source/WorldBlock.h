@@ -76,7 +76,7 @@ public:
 	void setCurrentCamera(unsigned int mCurrentCamera);
 	void setLightSource(std::vector<LightSource*> lightSource);
 	void setBillboardList(BillboardList* mpBillboardList);
-	void setOnThis(bool o) { onThis = o; }
+	void setOnThis(bool o);
 
 	void setIsLightSphere(bool LS) { isLightSphere = LS; }
 	void setSphereIndex(int i) { SphereIndex = i; }
@@ -109,4 +109,9 @@ private:
 	bool onThis = false;
 
 	bool isLightSphere;
+
+	int FireFlyAmo;
+	vector<vec4> FireFlysPara;
+	vector<vec3> FireFlysPosition;
+	unsigned long int timer = 0;
 };

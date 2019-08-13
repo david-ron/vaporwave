@@ -77,8 +77,8 @@ void EventManager::Initialize()
 	
 	/*int count;
 	GLFWmonitor** monitors = glfwGetMonitors(&count);*/
-	spWindow = glfwCreateWindow(1024, 768, "Vaporwave", nullptr, nullptr);
-	//spWindow = glfwCreateWindow(window_width, window_height, "Vaporwave", glfwGetPrimaryMonitor(), nullptr);
+	//spWindow = glfwCreateWindow(1024, 768, "Vaporwave", nullptr, nullptr);
+	spWindow = glfwCreateWindow(window_width, window_height, "Vaporwave", glfwGetPrimaryMonitor(), nullptr);
 
 	if (spWindow == nullptr)
 	{

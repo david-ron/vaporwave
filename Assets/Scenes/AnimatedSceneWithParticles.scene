@@ -207,4 +207,4 @@ name     = "terrain"
 scaling  = 1.0 1.0 1.0
 position = 0.0 0.0 0.0
 rotation = 0.0 0.0 0.0 0.0
-properties = 0.4 0.5 0.2 50
+properties = 0.2 0.8 0.2 50

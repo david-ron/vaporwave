@@ -98,6 +98,10 @@ void World::LoadScene(const char * scene_path) {
                 mCharater->Load(iss);
                 
             }
+			else if (result == "skybox") {
+				mskybox = new SkyBox();
+				mskybox->Load(iss);
+			}
 			else
 			{
 				fprintf(stderr, "Error loading scene file... !");
@@ -166,7 +170,7 @@ void World::LoadScene(const char * scene_path) {
 
 	} while (!allGood);
     
-    mskybox = new SkyBox();
+    
 	mcPositionInitial = mcPosition;
 	mCamera[mCurrentCamera]->Update(0.1);
 
@@ -484,7 +488,7 @@ void World::Draw() {
 	//Texture shader
 	Renderer::SetShader(SHADER_TEXTURED);
 	glUseProgram(Renderer::GetShaderProgramID());
-
+	
 	Renderer::CheckForErrors();
 
 	for (int i = 0; i < 9; i++) {
@@ -506,31 +510,23 @@ void World::Draw() {
 
     GLuint VPMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "ViewProjectionTransform");
     // Get a handle for our Transformation Matrices uniform
-    //GLuint WorldMatrixID = glGetUniformLocation(Renderer::GetShaderProgramID(), "WorldTransform");
     GLuint ViewMatrixID = glGetUniformLocation(Renderer::GetShaderProgramID(), "ViewTransform");
     GLuint ProjMatrixID = glGetUniformLocation(Renderer::GetShaderProgramID(), "ProjectionTransform");
+	mat4 VP = World::getWorldInstance()->GetCurrentCamera()->GetViewProjectionMatrix();
+	glUniformMatrix4fv(VPMatrixLocation, 1, GL_FALSE, &VP[0][0]);
+	
+	// viewTransform
+	//mat4 View = mCamera[mCurrentCamera]->GetViewMatrix();
+	mat4 View = mat4(mat3(World::getWorldInstance()->GetCurrentCamera()->GetViewMatrix()));
+	glUniformMatrix4fv(ViewMatrixID, 1, GL_FALSE, &View[0][0]);
+	// projectionMatrix
+	//mat4 Projection = mCamera[mCurrentCamera]->GetProjectionMatrix();
+	mat4 Projection = World::getWorldInstance()->GetCurrentCamera()->GetProjectionMatrix();
+	glUniformMatrix4fv(ProjMatrixID, 1, GL_FALSE, &Projection[0][0]);
+
+	mskybox->Draw(mat4(1.0f));
     
-    
-    
-    //// Get a handle for Material Attributes uniform
-    //GLuint MaterialID = glGetUniformLocation(Renderer::GetShaderProgramID(), "materialCoefficients");
-    
-    // Send the view projection constants to the shader
-    // VP
-    //mat4 VP = mCamera[mCurrentCamera]->GetViewProjectionMatrix();
-    mat4 VP = World::getWorldInstance()->GetCurrentCamera()->GetViewProjectionMatrix();
-    glUniformMatrix4fv(VPMatrixLocation, 1, GL_FALSE, &VP[0][0]);
-    
-    // viewTransform
-    //mat4 View = mCamera[mCurrentCamera]->GetViewMatrix();
-    mat4 View = World::getWorldInstance()->GetCurrentCamera()->GetViewMatrix();
-    glUniformMatrix4fv(ViewMatrixID, 1, GL_FALSE, &View[0][0]);
-    // projectionMatrix
-    //mat4 Projection = mCamera[mCurrentCamera]->GetProjectionMatrix();
-    mat4 Projection = World::getWorldInstance()->GetCurrentCamera()->GetProjectionMatrix();
-    glUniformMatrix4fv(ProjMatrixID, 1, GL_FALSE, &Projection[0][0]);
-    
-    mskybox->Draw();
+   
 	// Restore previous shader
 	Renderer::SetShader((ShaderType)prevShader);
     glUseProgram(Renderer::GetShaderProgramID());

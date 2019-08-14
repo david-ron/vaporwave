@@ -107,6 +107,7 @@ void World::LoadScene(const char * scene_path) {
 			else if (result == "skybox") {
 				mskybox = new SkyBox();
 				mskybox->Load(iss);
+			}
 			else if (result == "terrain") {
 				mTerrain = new Terrain();
 				mTerrain->Load(iss);

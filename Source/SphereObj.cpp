@@ -25,7 +25,7 @@ SphereObj::SphereObj(glm::vec3 size) : Model(){
     //read the vertices from the cube.obj file
     //We won't be needing the normals or UVs for this program
     
-    ObjLoader::loadOBJ(sphereObjFile.c_str(),vertices, normals, UVs, max, min);
+    ObjLoader::loadOBJ(sphereObjFile.c_str(),vertices, normals, UVs, max, min, properties);
     for (unsigned int i = 0; i<vertices.size(); ++i){makeSimpleColor(colors);};
     
     glGenVertexArrays(1, &mVAO);

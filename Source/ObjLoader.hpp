@@ -21,7 +21,8 @@ public:
                        std::vector<glm::vec3> & out_normals,
                        std::vector<glm::vec2> & out_uvs,
                        glm::vec3 & max,
-                       glm::vec3 & min);
+                       glm::vec3 & min,
+						glm::vec4 &mtl );
     
 private:
     

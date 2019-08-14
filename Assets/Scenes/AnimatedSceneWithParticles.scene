@@ -71,14 +71,12 @@ name     = "Ground"
 scaling  = 225.0 225.0 100.0
 position = 0.0 -50 0.0
 rotation = 1.0 0.0 0.0 90.0
-properties = 0.4 0.5 0.2 50
 
 [object]
 name     = "Building"
 scaling  = 2.0 7.0 2.0
 position = 0.0 0.0 0.0
 rotation = 1.0 0.0 0.0 0.0
-properties = 0.4 0.5 0.2 50
 
 
 [ParticleDescriptor]
@@ -144,7 +142,6 @@ name     = "Sphere"
 position = 10.0 2.0 0.0
 animation = "CycleAnim"
 particleEmitter = "Smoke"
-properties = 0.2 0.8 0.2 50
 
 [Light]
 name = "light1"
@@ -200,20 +197,17 @@ particleEmitter = "Gasy"
 scaling  = 0.80 0.80 0.80
 position = 0.0 0.0 0.0
 rotation = 1.0 0.0 0.0 0.0
-properties = 0.4 0.5 0.2 50
 
 
 [skybox]
 name = "skybox"
 scaling  = 10.00 10.00 10.00
 position = 0.0 0.0 0.0
-rotation = 1.0 0.0 0.0 0.0
-properties = 0.4 0.5 0.2 50
+rotation = 0.0 0.0 0.0 0.0
 
 [terrain]
 name     = "terrain"
 scaling  = 1.0 1.0 1.0
 position = 0.0 0.0 0.0
 rotation = 0.0 0.0 0.0 0.0
-properties = 0.4 0.5 0.2 50
 

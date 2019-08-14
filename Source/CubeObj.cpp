@@ -33,8 +33,8 @@ CubeObj::CubeObj(glm::vec3 size) : Model(){
     //read the vertices from the cube.obj file
     //We won't be needing the normals or UVs for this program
 
-
-	ObjLoader::loadOBJ(cubeObjFile.c_str(), vertices, normals, UVs, max, min);
+	
+	ObjLoader::loadOBJ(cubeObjFile.c_str(), vertices, normals, UVs, max, min, properties);
 
 
 	// the 8 corner points

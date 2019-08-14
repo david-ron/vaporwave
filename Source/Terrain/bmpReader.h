@@ -2,6 +2,14 @@
 
 #include "../Renderer.h"
 
+//struct HeightMapType //change to vec3 later 
+//{
+//	HeightMapType() {};
+//	~HeightMapType() {};
+//	glm::vec3 position;
+//};
+
+
 
 class bmpReader
 {
@@ -34,11 +42,18 @@ private:
 	
 
 
+	//glm::vec3 HeightMapType[225 * 225];
+
+	//to be changed
+
+	//void ShutdownBuffers();
+	//void RenderBuffers(ID3D11DeviceContext*);
+
 
 	unsigned int mVAO;
 	unsigned int mVBO;
 
-	
+	// to be changed
 	int m_vertexCount, m_indexCount;
 	int m_terrainHeight, m_terrainWidth;
 	float m_heightScale;

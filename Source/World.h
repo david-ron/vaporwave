@@ -5,7 +5,6 @@
 #include "Model.h"
 #include "MainCharacter.hpp"
 #include "Terrain\Terrain.h"
-#include "ViewSpaceBillboard.h"
 using namespace std;
 using namespace glm;
 //->getWorldBlock()
@@ -99,7 +98,6 @@ private:
 	std::vector<LightSource*> lightSource;
 
 	BillboardList* mpBillboardList;
-	ViewSpaceBillboard* mViewSpaceBillboardList;
 
 
 	// private functions

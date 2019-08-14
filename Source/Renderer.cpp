@@ -99,10 +99,7 @@ void Renderer::Initialize()
 								LoadShaders(shaderPathPrefix + "LightSource.vertexshader",
 											shaderPathPrefix + "LightSource.fragmentshader")
 	);
-	sShaderProgramID.push_back(
-								LoadShaders(shaderPathPrefix + "ViewSpace.vertexshader",
-									shaderPathPrefix + "ViewSpace.fragmentshader")
-	);
+
 	sCurrentShader = 0;
 
 }

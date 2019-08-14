@@ -82,11 +82,6 @@ WorldBlock::WorldBlock(vec2 coor)
 
 
 	isLightSphere = false;
-
-	FireFlyAmo = 50;
-	for (int i = 0; i < FireFlyAmo * 3; i++) {
-		FireFlysPara.push_back(vec4(EventManager::GetRandomFloat(-2, 2), EventManager::GetRandomFloat(0, 2), EventManager::GetRandomFloat(0, 2), EventManager::GetRandomFloat(-20, 20)));
-	}
 }
 
 WorldBlock::~WorldBlock()
@@ -143,12 +138,7 @@ WorldBlock::~WorldBlock()
 
 void WorldBlock::Update(float dt)
 {
-	for (int i = 0; i < FireFlyAmo; i++) {
-		float x = FireFlysPara[3 * i].x * cos(timer) + FireFlysPara[3 * i].y * timer * timer + FireFlysPara[3 * i].z * timer + FireFlysPara[3 * i].w;
-		float y = FireFlysPara[3 * i+1].x * cos(timer) + FireFlysPara[3 * i+1].y * timer * timer + FireFlysPara[3 * i+1].z * timer + FireFlysPara[3 * i+1].w;
-		float z = FireFlysPara[3 * i+2].x * cos(timer) + FireFlysPara[3 * i+2].y * timer * timer + FireFlysPara[3 * i+2].z * timer + FireFlysPara[3 * i+2].w;
-		FireFlysPosition.push_back( vec3(x, y, z));
-	}
+
 
     // Update animation and keys
     for (vector<Animation*>::iterator it = mAnimation.begin(); it < mAnimation.end(); ++it)
@@ -180,16 +170,9 @@ void WorldBlock::Update(float dt)
     
     mpBillboardList->Update(dt);
 
-
-
-
 }
 
-void WorldBlock::setOnThis(bool o) { 
-	onThis = o; 
-	if (o)
-		timer = 0;
-}
+
 
 void WorldBlock::DrawCurrentShader() {
 	Renderer::CheckForErrors();
@@ -295,7 +278,7 @@ void WorldBlock::DrawCurrentShader() {
 
 void WorldBlock::DrawCurrentLightSources() {
 
-
+	if (!isLightSphere) return;
 	Renderer::CheckForErrors();
 
 	// This looks for the MVP Uniform variable in the Vertex Program
@@ -332,23 +315,12 @@ void WorldBlock::DrawCurrentLightSources() {
 	GLuint LightPositionID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lPosition");
 	GLuint LightColorID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lColor");
 
-
+	
 	vec3 lPosition = WB_OffsetMatrix * vec4(mModel[SphereIndex]->GetPosition(), 1.0f);
 	glUniform3f(LightPositionID, lPosition.x, lPosition.y, lPosition.z);
 	glUniform3f(LightColorID, 1.0f, 1.0f, 1.0f);
-
-	if (isLightSphere)
-		mModel[SphereIndex]->Draw(WB_OffsetMatrix);
-
-	mat4 fireflyW = mat4(1.0f);
-	mat4 fireflyWs = scale(fireflyW, vec3(0.2, 0.3, 0.2));
-
-	for (int i = 0; i < FireFlyAmo; i++) {
-		fireflyW = translate(fireflyWs, FireFlysPosition[i]);
-
-		mModel[SphereIndex]->Draw(WB_OffsetMatrix * fireflyW);
-	}
-
+	
+	mModel[SphereIndex]->Draw(WB_OffsetMatrix);
 
 	//vec4 mProperties;
 	//// Draw models

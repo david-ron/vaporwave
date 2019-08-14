@@ -110,7 +110,6 @@ void ParticleSystem::Update(float dt, bool isCharater)
     if(mParticleList.size() != 0)
 		for (std::list<Particle*>::iterator it = mParticleList.begin(); it != mParticleList.end(); it++)
 		{
-			
 			Particle* p = *it;
 			p->currentTime += dt;
 			p->billboard.position += p->velocity * dt;
@@ -159,8 +158,5 @@ void ParticleSystem::Update(float dt, bool isCharater)
 					World::getWorldInstance()->RemoveBillboard(&(p->billboard));
 				mParticleList.remove(*it++);
 			}
-
-			if (it == mParticleList.end())
-				break;
 		}
 }

@@ -23,6 +23,7 @@ protected:
 private:
 
 
+	//glm::vec3 HeightMapType[225*225] ;
 
 	struct Vertex //from model
 	{

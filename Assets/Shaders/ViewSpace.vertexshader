@@ -1,0 +1,42 @@
+#version 330 core
+// 
+// Input vertex data, different for all executions of this shader.
+layout(location = 0) in vec3 vertexPosition_modelspace;
+layout(location = 1) in vec3 vertexNormal_modelspace;  // You will need this when you do lighting
+layout(location = 2) in vec4 vertexColor;
+layout(location = 3) in vec2 vertexUV;
+
+
+// Uniform Inputs
+uniform mat4 ProjectionTransform;
+uniform mat4 WorldTransform;
+uniform mat4 ViewTransform;
+uniform mat4 WBOffsetMatrix;
+
+// Outputs to fragment shader
+out vec3 normal;  // You will need this when you do per-fragment lighting
+out vec4 v_color;
+out vec2 UV;
+
+
+
+
+void main()
+{
+	//WBOffsetMatrix = mat4(1.0);
+	// Output position of the vertex, in clip space : MVP * position
+    gl_Position =  ProjectionTransform * WorldTransform * vec4(vertexPosition_modelspace, 1.0f);
+	//gl_Position =  WorldTransform * vec4(vertexPosition_modelspace, 1.0f);
+
+    normal = vertexNormal_modelspace; // Does this need to be transformed when we pass it to the fragment shader?
+	v_color = vertexColor;
+	UV = vertexUV;
+
+	mat4 MV = ViewTransform * WorldTransform;
+	vec3 vertexPosition_viewspace = vec3(MV * vec4(vertexPosition_modelspace,1.0f));
+	vec3 vertexPosition_worldspace = vec3(WorldTransform * vec4(vertexPosition_modelspace,1.0f));
+
+
+
+}
+

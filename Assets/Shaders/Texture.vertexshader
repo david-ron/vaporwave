@@ -18,34 +18,16 @@ out vec3 normal;  // You will need this when you do per-fragment lighting
 out vec4 v_color;
 out vec2 UV;
 
-out vec4 lightVector1;
-out vec4 lightVector2;
-out vec4 lightVector3;
-out vec4 lightVector4;
-out vec4 lightVector5;
-out vec4 lightVector6;
-out vec4 lightVector7;
-out vec4 lightVector8;
+out vec4 lightVector[8];
+
 
 
 //lighting
-uniform vec4 L1Position; // if w = 1: Point light, if w = 0: directional light
-uniform vec4 L2Position;
-uniform vec4 L3Position;
-uniform vec4 L4Position;
-uniform vec4 L5Position;
-uniform vec4 L6Position;
-uniform vec4 L7Position;
-uniform vec4 L8Position;
+uniform vec4 lPosition[8];
 
-uniform int L1Enable;
-uniform int L2Enable;
-uniform int L3Enable;
-uniform int L4Enable;
-uniform int L5Enable;
-uniform int L6Enable;
-uniform int L7Enable;
-uniform int L8Enable;
+uniform int lightSize;
+
+
 
 void main()
 {
@@ -61,6 +43,15 @@ void main()
 	vec3 vertexPosition_viewspace = vec3(MV * vec4(vertexPosition_modelspace,1.0f));
 	vec3 vertexPosition_worldspace = vec3(WorldTransform * vec4(vertexPosition_modelspace,1.0f));
 
+	for(int i=0;i<lightSize;i++){
+		if(lPosition[i].w == 1)
+			lightVector[i] = vec4(vec3(ViewTransform * vec4(vec3(lPosition[i]) - vertexPosition_worldspace, 0.0f)),1);
+		else
+			lightVector[i] = vec4(vec3(ViewTransform * (lPosition[i])),0);
+	
+	}
+
+/*
 	// light 1
 	if(L1Enable == 1)
 	if(L1Position[3] == 1)
@@ -127,5 +118,6 @@ void main()
 		lightVector8 = vec4(vec3(ViewTransform * vec4(vec3(L8Position) - vertexPosition_worldspace, 0.0f)),1);
 	else
 		lightVector8 = vec4(vec3(ViewTransform * (L8Position)),0);
+*/
 }
 

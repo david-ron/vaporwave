@@ -15,7 +15,6 @@
 #include "LightSource.h"
 #include "Buildings.h"
 
-
 #include <vector>
 
 //class myLights;
@@ -26,7 +25,7 @@ class AnimationKey;
 class ParticleSystem;
 class ParticleDescriptor;
 class LightSource;
-
+class SkyBox;
 using namespace std;
 using namespace glm;
 

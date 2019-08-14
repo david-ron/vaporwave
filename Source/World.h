@@ -95,13 +95,12 @@ private:
 	BillboardList* mcBillboardList;
 	ParticleSystem* mcParticleSystem;
 
-
+    SkyBox* mskybox;
 	std::vector<LightSource*> lightSource;
 
 	BillboardList* mpBillboardList;
 	ViewSpaceBillboard* mViewSpaceBillboardList;
 
-	
 
 	// private functions
 	void checkNeighbors();

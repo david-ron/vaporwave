@@ -12,9 +12,15 @@ glm::vec3* bmpReader::m_heightMap ;
 bmpReader::bmpReader()
 {
 
+
 	m_terrainHeight = 225;
 	m_terrainWidth = 225;
 	m_heightMap = new glm::vec3[m_terrainWidth * m_terrainHeight];
+	//HeightMapType* temp;
+
+	// Initialize the terrain height map with the data from the bitmap file.
+	//LoadBitmapHeightMap(temp);
+
 
 
 }
@@ -30,6 +36,8 @@ vec3* bmpReader::LoadBitmapHeightMap(std::string m_terrainFilename )
 	unsigned char* bitmapImage;
 	unsigned char height;
 
+	// Start by creating the array structure to hold the height map data.
+//-	m_heightMap = new glm::vec3[m_terrainWidth * m_terrainHeight];
 	if (!m_heightMap)
 	{
 		return false;
@@ -64,6 +72,8 @@ vec3* bmpReader::LoadBitmapHeightMap(std::string m_terrainFilename )
 		return false;
 	}
 
+	// Calculate the size of the bitmap image data.  
+	// Since we use non-divide by 2 dimensions (eg. 257x257) we need to add an extra byte to each line.
 	imageSize = m_terrainHeight * ((m_terrainWidth * 3) + 1);
 
 	// Allocate memory for the bitmap image data.
@@ -118,10 +128,16 @@ vec3* bmpReader::LoadBitmapHeightMap(std::string m_terrainFilename )
 	// Release the bitmap image data now that the height map array has been loaded.
 	delete[] bitmapImage;
 	bitmapImage = 0;
+
+	// Release the terrain filename now that is has been read in.
+	//delete[] m_terrainFilename;
+	//m_terrainFilename = 0;
+
+	//output = 
 		
 	return	m_heightMap;
 
-
+	//return m_heightMap;
 }
 
 

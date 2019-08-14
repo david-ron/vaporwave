@@ -21,6 +21,7 @@ out vec2 UV;
 out vec4 lightVector[8];
 
 
+
 //lighting
 uniform vec4 lPosition[8];
 

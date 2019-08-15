@@ -2,7 +2,6 @@
 layout (location = 0) in vec3 aPos;
 
 out vec3 TexCoords;
-uniform mat4 WorldTransform;
 uniform mat4 ProjectionTransform;
 uniform mat4 ViewTransform;
 uniform mat4 ViewProjectionTransform;

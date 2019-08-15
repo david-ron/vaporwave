@@ -6,6 +6,7 @@
 //  Copyright © 2019 Concordia. All rights reserved.
 //
 
+// mostly based on learnopegl tutorial
 #include "SkyBox.hpp"
 #include "Renderer.h"
 #include <iostream>
@@ -17,43 +18,38 @@
 SkyBox::SkyBox(glm::vec3 size){
 
 	// phase out for unit square objloaded
-    float skyboxVertices[] = {
+    float unitBox[] = {
         // positions
         -1.0f,  1.0f, -1.0f,
         -1.0f, -1.0f, -1.0f,
         1.0f, -1.0f, -1.0f,
         1.0f, -1.0f, -1.0f,
         1.0f,  1.0f, -1.0f,
-        -1.0f,  1.0f, -1.0f,
-        
+        -1.0f,  1.0f, -1.0f,        
         -1.0f, -1.0f,  1.0f,
         -1.0f, -1.0f, -1.0f,
         -1.0f,  1.0f, -1.0f,
         -1.0f,  1.0f, -1.0f,
         -1.0f,  1.0f,  1.0f,
-        -1.0f, -1.0f,  1.0f,
-        
+        -1.0f, -1.0f,  1.0f,        
         1.0f, -1.0f, -1.0f,
         1.0f, -1.0f,  1.0f,
         1.0f,  1.0f,  1.0f,
         1.0f,  1.0f,  1.0f,
         1.0f,  1.0f, -1.0f,
-        1.0f, -1.0f, -1.0f,
-        
+        1.0f, -1.0f, -1.0f,       
         -1.0f, -1.0f,  1.0f,
         -1.0f,  1.0f,  1.0f,
         1.0f,  1.0f,  1.0f,
         1.0f,  1.0f,  1.0f,
         1.0f, -1.0f,  1.0f,
-        -1.0f, -1.0f,  1.0f,
-        
+        -1.0f, -1.0f,  1.0f,        
         -1.0f,  1.0f, -1.0f,
         1.0f,  1.0f, -1.0f,
         1.0f,  1.0f,  1.0f,
         1.0f,  1.0f,  1.0f,
         -1.0f,  1.0f,  1.0f,
-        -1.0f,  1.0f, -1.0f,
-        
+        -1.0f,  1.0f, -1.0f,       
         -1.0f, -1.0f, -1.0f,
         -1.0f, -1.0f,  1.0f,
         1.0f, -1.0f, -1.0f,
@@ -66,7 +62,7 @@ SkyBox::SkyBox(glm::vec3 size){
     glGenBuffers(1, &mVBO);
     glBindVertexArray(mVAO);
     glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(unitBox), &unitBox, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 #if defined(PLATFORM_OSX)
@@ -122,9 +118,9 @@ void SkyBox::Draw(glm::mat4 offsetMatrix){
 
 	//glDisable(GL_DEPTH_TEST); can be used to isolate the skybox in the future (maybe if i implement ui...)
 	glDepthFunc(GL_LEQUAL);
-	GLuint WorldMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "WorldTransform");
-	glm::mat4 WorldMatrix = offsetMatrix * GetWorldMatrix();
-	glUniformMatrix4fv(WorldMatrixLocation, 1, GL_FALSE, &WorldMatrix[0][0]);
+	//GLuint WorldMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "WorldTransform");
+	//glm::mat4 WorldMatrix = offsetMatrix * GetWorldMatrix();
+	//glUniformMatrix4fv(WorldMatrixLocation, 1, GL_FALSE, &WorldMatrix[0][0]);
     // skybox cube
     glBindVertexArray(mVAO);
     glActiveTexture(GL_TEXTURE0);

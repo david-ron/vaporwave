@@ -6,6 +6,8 @@
 //  Copyright © 2019 Concordia. All rights reserved.
 //
 
+
+// mostly based on obj loader from lab tutorial
 #include "ObjLoader.hpp"
 #include <stdio.h>
 #include <stdlib.h>

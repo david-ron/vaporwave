@@ -11,8 +11,8 @@
 #include "ObjLoader.hpp"
 #include "World.h"
 #include <glm/gtc/matrix_transform.hpp>
+#include "TextureLoader.h"
 #include <cmath>
-
 using namespace glm;
 using namespace std;
 
@@ -31,12 +31,13 @@ MainCharacter::MainCharacter(glm::vec3 size) : Model(){
     vector<glm::vec2> UVs;
     vector<glm::vec3> colors;
     
-    int i = 0;
     //read the vertices from the cube.obj file
     //We won't be needing the normals or UVs for this program
     
+
+    textureID = TextureLoader::LoadTexture("Textures/purplevalley_up.tga");
     ObjLoader::loadOBJ(characterObjFile.c_str(),vertices, normals, UVs, max, min, properties);
-    
+
     // the 8 corner points
     CornerPoint.push_back(vec3(min.x, max.y, min.z));// 0 back top left point
     CornerPoint.push_back(vec3(min.x, max.y, max.z));// 1 back top right point
@@ -49,7 +50,7 @@ MainCharacter::MainCharacter(glm::vec3 size) : Model(){
     
     assert(CornerPoint.size() == 8);
     
-    for (unsigned int i = 0; i<vertices.size(); ++i){makeSimpleColor(colors);};
+    for (unsigned int i = 0; i<vertices.size(); ++i){UVs.push_back(vec2(0.5f,0.5f));};
     
     glGenVertexArrays(1, &mVAO);
     glBindVertexArray(mVAO); //Becomes active VAO
@@ -72,20 +73,20 @@ MainCharacter::MainCharacter(glm::vec3 size) : Model(){
     glEnableVertexAttribArray(1);
     
     //
-    GLuint colors_VBO;
-    glGenBuffers(1, &colors_VBO);
-    glBindBuffer(GL_ARRAY_BUFFER, colors_VBO);
-    glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(glm::vec3), &colors.front(), GL_STATIC_DRAW);
-    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
-    glEnableVertexAttribArray(2);
-    //UVs VBO setup
+//    GLuint colors_VBO;
+//    glGenBuffers(1, &colors_VBO);
+//    glBindBuffer(GL_ARRAY_BUFFER, colors_VBO);
+//    glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(glm::vec3), &colors.front(), GL_STATIC_DRAW);
+//    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+//    glEnableVertexAttribArray(2);
+//    //UVs VBO setup
     //     TODO readd UVS
-    //    GLuint uvs_VBO;
-    //    glGenBuffers(1, &uvs_VBO);
-    //    glBindBuffer(GL_ARRAY_BUFFER, uvs_VBO);
-    //    glBufferData(GL_ARRAY_BUFFER, UVs.size() * sizeof(glm::vec2), &UVs.front(), GL_STATIC_DRAW);
-    //    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
-    //    glEnableVertexAttribArray(2);
+        GLuint uvs_VBO;
+        glGenBuffers(1, &uvs_VBO);
+        glBindBuffer(GL_ARRAY_BUFFER, uvs_VBO);
+        glBufferData(GL_ARRAY_BUFFER, UVs.size() * sizeof(glm::vec2), &UVs.front(), GL_STATIC_DRAW);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
+        glEnableVertexAttribArray(2);
     
     glBindVertexArray(0); // Unbind VAO (it's always a good thing to unbind any buffer/array to prevent strange bugs), remember: do NOT unbind the EBO, keep it bound to this VAO
     vertexCount = vertices.size();
@@ -100,6 +101,16 @@ void MainCharacter::Draw(glm::mat4 offsetMatrix)
     glBindVertexArray(mVAO);
     glBindBuffer(GL_ARRAY_BUFFER, mVBO);
     
+
+    GLuint textureLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "mySampleTexture");
+    glActiveTexture(GL_TEXTURE0);
+    
+    Renderer::CheckForErrors();
+    
+    
+    glBindTexture(GL_TEXTURE_2D, textureID);
+    glUniform1i(textureLocation, 0);
+  // TODO need to add back
 	GLuint IsCharaLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "IsChara");
 	glUniform1i(IsCharaLocation, 1);
 	GLuint HeadMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "HeadMatrix");

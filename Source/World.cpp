@@ -472,9 +472,9 @@ void World::Draw() {
 	for (int i = 0; i < 9; i++) {
 		mWorldBlock[DisplayedWBIndex[i]]->DrawCurrentShader();
 	}
+    //mCharater->Draw(mat4(1.0f));
 	//mWorldBlock[DisplayedWBIndex[8]]->DrawCurrentShader();
-	if(mCurrentCamera != 0)
- 		mCharater->Draw(mat4(1.0f));
+
 
 	
 	// path lines shader
@@ -552,6 +552,30 @@ void World::Draw() {
    
 	// Restore previous shader
 	Renderer::SetShader((ShaderType)prevShader);
+    Renderer::SetShader(SHADER_MC);
+    glUseProgram(Renderer::GetShaderProgramID());
+    GLuint VPMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "ViewProjectionTransform");
+    // Get a handle for our Transformation Matrices uniform
+    //GLuint WorldMatrixID = glGetUniformLocation(Renderer::GetShaderProgramID(), "WorldTransform");
+    GLuint ViewMatrixID = glGetUniformLocation(Renderer::GetShaderProgramID(), "ViewTransform");
+    GLuint ProjMatrixID = glGetUniformLocation(Renderer::GetShaderProgramID(), "ProjectionTransform");
+    
+    mat4 VP = World::getWorldInstance()->GetCurrentCamera()->GetViewProjectionMatrix();
+    glUniformMatrix4fv(VPMatrixLocation, 1, GL_FALSE, &VP[0][0]);
+
+    mat4 View = World::getWorldInstance()->GetCurrentCamera()->GetViewMatrix();
+    glUniformMatrix4fv(ViewMatrixID, 1, GL_FALSE, &View[0][0]);
+
+    mat4 Projection = World::getWorldInstance()->GetCurrentCamera()->GetProjectionMatrix();
+    glUniformMatrix4fv(ProjMatrixID, 1, GL_FALSE, &Projection[0][0]);
+   // mCharater->Draw(mat4(1.0f));
+    if(mCurrentCamera != 0)
+ 		    mCharater->Draw(mat4(1.0f));
+    
+    Renderer::CheckForErrors();
+    
+    Renderer::SetShader((ShaderType)prevShader);
+
     glUseProgram(Renderer::GetShaderProgramID());
 	Renderer::EndFrame();
 }

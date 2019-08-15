@@ -91,6 +91,10 @@ void Renderer::Initialize()
                                LoadShaders(shaderPathPrefix + "Texture.vertexshader",
                                            shaderPathPrefix + "Texture.fragmentshader")
                                );
+    sShaderProgramID.push_back(
+                               LoadShaders(shaderPathPrefix + "mc.vertexshader",
+                                           shaderPathPrefix + "mc.fragmentshader")
+                               );
 
     sShaderProgramID.push_back(LoadShaders(shaderPathPrefix + "Sky.vertexshader",
                                            shaderPathPrefix + "Sky.fragmentshader"));

@@ -25,6 +25,7 @@ enum ShaderType
 	SHADER_PATH_LINES,
 	SHADER_BLUE,
     SHADER_TEXTURED,
+    SHADER_MC,
     SHADER_SKY,
 	SHADER_LIGHTSOURCE,
 	NUM_SHADERS
@@ -48,7 +49,6 @@ public:
     // not sure if needed
     static unsigned int GetFrameBuffer() { return sCurrentShader; }
 	static void SetShader(ShaderType type);
-    
     static void CheckForErrors();
     static bool PrintError();
 

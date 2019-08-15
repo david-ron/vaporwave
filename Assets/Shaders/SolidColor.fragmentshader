@@ -48,7 +48,6 @@ void main()
 
 	float d;
 	float f_att;
-
 	iTotal += iAmbient;
 
 	for (int i=0; i<lightSize; i++){
@@ -62,9 +61,13 @@ void main()
 		// diffuse light
 		iDiffuse = lColor[i] * max(0, dot(normalize(vec3(lightVector[i])), normalize(normal))) * materialCoefficients.y;
 	
-		// specular light
-		R = reflect(-normalize(vec3(lightVector[i])), normalize(normal));
-		iSpecular = materialCoefficients.z * lColor[i] * pow(max(0.0, dot(R,normalize(eyeVector))), materialCoefficients.w);
+		// specular light phong
+		//R = reflect(-normalize(vec3(lightVector[i])), normalize(normal));
+		//iSpecular = materialCoefficients.z * lColor[i] * pow(max(0.0, dot(R,normalize(eyeVector))), materialCoefficients.w);
+		// phong-blinn  from textbook
+		vec3 halfDir = normalize(vec3(lightVector[i])+normal);
+		float angle = clamp(dot(halfDir,normal), 0 , 1);
+		iSpecular = materialCoefficients.z * lColor[i] *pow(angle, materialCoefficients.w);
 
 		iTotal += f_att * (iDiffuse + iSpecular);
 	}

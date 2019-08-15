@@ -21,7 +21,7 @@
 
 using namespace glm;
 using namespace std;
-ThirdPersonCamera::ThirdPersonCamera(glm::vec3 position, glm::vec3 lookAt) :  Camera(), mPosition(position), mLookAt(lookAt), mHorizontalAngle(90.0f), mVerticalAngle(0.0f), mSpeed(5.0f), mAngularSpeed(2.5f)
+ThirdPersonCamera::ThirdPersonCamera(glm::vec3 position, glm::vec3 lookAt) :  Camera(), mPosition(position), mLookAt(lookAt), mHorizontalAngle(90.0f), mVerticalAngle(0.0f), mSpeed(5.0f), mAngularSpeed(2.5f), mCamLookat(vec3(0.0f))
 {
 
 }
@@ -32,99 +32,67 @@ ThirdPersonCamera::~ThirdPersonCamera()
 
 void ThirdPersonCamera::Update(float dt)
 {
-	//// Prevent from having the camera move only when the cursor is within the windows
-	//EventManager::DisableMouseCursor();
+	
+	/*if (!leftKeyPressed) {
+		
+	}*/
 
+	if (!leftKeyPressed) {
+		mCamHorizontalAngle = 0;
+		mCamVerticalAngle = 0;
+	}
 
-	//// The Camera moves based on the User inputs
-	//// - You can access the mouse motion with EventManager::GetMouseMotionXY()
-	//// - For mapping A S D W, you can look in WorldBlock.cpp for an example of accessing key states
-	//// - Don't forget to use dt to control the speed of the camera motion
-
-	//// Mouse motion to get the variation in angle
-	//mHorizontalAngle -= EventManager::GetMouseMotionX() * mAngularSpeed * dt;
-	//mVerticalAngle   -= EventManager::GetMouseMotionY() * mAngularSpeed * dt;
-
-	//// Clamp vertical angle to [-85, 85] degrees
-	//mVerticalAngle = std::max(-85.0f, std::min(85.0f, mVerticalAngle));
-	//if (mHorizontalAngle > 360)
-	//{
-	//	mHorizontalAngle -= 360;
-	//}
-	//else if (mHorizontalAngle < -360)
-	//{
-	//	mHorizontalAngle += 360;
-	//}
-
-	//float theta = radians(mHorizontalAngle);
-	//float phi = radians(mVerticalAngle);
-
-	//mLookAt = vec3(cosf(phi)*cosf(theta), sinf(phi), -cosf(phi)*sinf(theta));
-	//
-	//mSideVector = glm::cross(mLookAt, vec3(0.0f, 1.0f, 0.0f));
-	//glm::normalize(mSideVector);
-
-	//// A S D W for motion along the camera basis vectors
-	//if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_W ) == GLFW_PRESS)
-	//{
-	//	if (glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS)
-	//		mPosition += mLookAt * dt * mSpeed * speedUpRate;
-	//	else
-	//		mPosition += mLookAt * dt * mSpeed;
-	//}
-
-	//if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_S ) == GLFW_PRESS)
-	//{
-	//	if (glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS)
-	//		mPosition -= mLookAt * dt * mSpeed * speedUpRate;
-	//	else
-	//		mPosition -= mLookAt * dt * mSpeed;
-	//}
-
-	//if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_D ) == GLFW_PRESS)
-	//{
-	//	if (glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS)
-	//		mPosition += mSideVector * dt * mSpeed * speedUpRate;
-	//	else
-	//		mPosition += mSideVector * dt * mSpeed;
-	//}
-
-	//if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_A ) == GLFW_PRESS)
-	//{
-	//	if (glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS)
-	//		mPosition -= mSideVector * dt * mSpeed * speedUpRate;
-	//	else 
-	//		mPosition -= mSideVector * dt * mSpeed;
-	//}
-
-	//if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_SPACE) == GLFW_PRESS)
-	//{
-	//	if (glfwGetMouseButton(EventManager::GetWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS)
-	//		mPosition += vec3(0,1,0) * dt * mSpeed * speedUpRate;
-	//	else
-	//		mPosition += vec3(0, 1, 0) * dt * mSpeed;
-	//}
-	//
-	//if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_O) == GLFW_PRESS)
-	//{
-	//	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS ||
-	//		glfwGetKey(EventManager::GetWindow(), GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
-	//		mPosition = vec3(3.0f, 5.0f, 20.0f);
-	//	
-	//}
-
-	//World::getWorldInstance()->updateMCharacterPosition(mPosition);
 
 	mLookAt = World::getWorldInstance()->getMClookAt();
 	mPosition = World::getWorldInstance()->getMCposition();
 	mSideVector = World::getWorldInstance()->getMCsideVector();
 
-	//newPosition = mPosition -vec3(radius*cosf(phi)*cosf(theta), 
-	//								radius*sinf(phi), 
-	//								-radius * cosf(phi)*sinf(theta));
+	mHorizontalAngle = World::getWorldInstance()->getHorizontalAngle();
+	mVerticalAngle = World::getWorldInstance()->getVerticalAngle();
 
-	newPosition = mPosition - mLookAt * 20.0f;
+	float mH = mHorizontalAngle + mCamHorizontalAngle;
+	float mV = mVerticalAngle + mCamVerticalAngle;
+
+
+	mV= std::max(-85.0f, std::min(85.0f, mV));
+
+	if (mH> 360)
+	{
+		mH-= 360;
+	}
+	else if (mH< -360)
+	{
+		mH+= 360;
+	}
+
+	float theta = radians(mH);
+	float phi = radians(mV);
+
+	mCamLookat = vec3(cosf(phi)*cosf(theta), sinf(phi), -cosf(phi)*sinf(theta));
+
+	//newPosition = mPosition - mLookAt * 20.0f;
+	//newPosition = mPosition - mCamLookat * 20.0f;
+	newPosition = mPosition - mCamLookat * distance;
+	//newPosition = mPosition - vec3(0.0,3.0,0.0) - (mCamLookat - vec3(0.0,0.2,0.0)) * distance;
+
 }
+
+void ThirdPersonCamera::addExtraCamAngle(float H, float V) {
+	mCamHorizontalAngle -= H;
+	mCamVerticalAngle -= V;
+
+	//cout << mCamVerticalAngle << endl;
+	//if (mCamHorizontalAngle > 360)
+	//{
+	//	mCamHorizontalAngle -= 360;
+	//}
+	//else if (mCamHorizontalAngle < -360)
+	//{
+	//	mCamHorizontalAngle+= 360;
+	//}
+}
+
+
 
 glm::vec3 ThirdPersonCamera::getLookAt() { return mLookAt; }
 glm::vec3 ThirdPersonCamera::getSideVector() { return mSideVector; }
@@ -134,4 +102,11 @@ glm::mat4 ThirdPersonCamera::GetViewMatrix() const
 
 	return glm::lookAt(	newPosition , mPosition , vec3(0.0f, 1.0f, 0.0f));
 	
+}
+
+void ThirdPersonCamera::setDistance(float diff) {
+	distance += diff;
+
+	distance = std::max(0.1f, std::min(30.0f, distance));
+
 }

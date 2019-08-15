@@ -96,6 +96,14 @@ void Renderer::Initialize()
                                            shaderPathPrefix + "mc.fragmentshader")
                                );
 
+    sShaderProgramID.push_back(LoadShaders(shaderPathPrefix + "Sky.vertexshader",
+                                           shaderPathPrefix + "Sky.fragmentshader"));
+
+	sShaderProgramID.push_back(
+								LoadShaders(shaderPathPrefix + "LightSource.vertexshader",
+											shaderPathPrefix + "LightSource.fragmentshader")
+	);
+
 	sCurrentShader = 0;
 
 }

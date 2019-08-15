@@ -9,6 +9,7 @@
 
 #include "EventManager.h"
 #include "Renderer.h"
+#include "ThirdPersonCamera.h"
 
 #include <GLFW/glfw3.h>
 
@@ -100,6 +101,8 @@ void EventManager::Initialize()
 	// Initial time
 	sLastFrameTime = glfwGetTime();
     srand((unsigned int) time(nullptr));
+
+	
 }
 
 void EventManager::Shutdown()
@@ -181,3 +184,4 @@ int EventManager::GetRandomInt()
 {
 	return static_cast <int> (rand());
 }
+

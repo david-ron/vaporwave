@@ -16,6 +16,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/common.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include <glm/gtx/string_cast.hpp>
 #include <iostream>
@@ -291,144 +292,24 @@ void BillboardList::Draw(glm::mat4 offsetMatrix)
 	int lightSize = mWorld->getLightSize();
 	LightSource lightSource;/// = mWorld->getLightSourceAt(0);
 
+	int lSize = World::getWorldInstance()->getLightSize();
+	GLuint LightSizeID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightSize");
+	glUniform1i(LightSizeID, lSize);
 
-	// Light 1
-	enabled = 0;
-	GLuint L1EnableID = glGetUniformLocation(Renderer::GetShaderProgramID(), "L1Enable");
-	GLuint L1PositionID = glGetUniformLocation(Renderer::GetShaderProgramID(), "L1Position");
-	GLuint L1ColorID = glGetUniformLocation(Renderer::GetShaderProgramID(), "L1Color");
 
-	if (lightSize > 0) {
-		enabled = 1;
-		lightSource = mWorld->getLightSourceAt(0);
-		lPosition = lightSource.getPosition();
-		lColor = lightSource.getColor();
+	vec4 LightPositions[8];
+	vec3 LightColor[8];
+
+	for (int i = 0; i < lSize; i++) {
+		LightPositions[i] = World::getWorldInstance()->getLightSourceAt(i).getPosition();
+		LightColor[i] = World::getWorldInstance()->getLightSourceAt(i).getColor();
 	}
 
-	glUniform1i(L1EnableID, enabled);
-	glUniform4f(L1PositionID, lPosition.x, lPosition.y, lPosition.z, lPosition.w);
-	glUniform3f(L1ColorID, lColor.x, lColor.y, lColor.z);
-	
-	// Light 2
-	enabled = 0;
+	GLuint LightPositionID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lPosition");
+	GLuint LightColorID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lColor");
 
-	GLuint L2EnableID = glGetUniformLocation(Renderer::GetShaderProgramID(), "L2Enable");
-	GLuint L2PositionID = glGetUniformLocation(Renderer::GetShaderProgramID(), "L2Position");
-	GLuint L2ColorID = glGetUniformLocation(Renderer::GetShaderProgramID(), "L2Color");
-
-	if (lightSize > 1) {
-		enabled = 1;
-		lightSource = mWorld->getLightSourceAt(1);
-		lPosition = lightSource.getPosition();
-		lColor = lightSource.getColor();
-	}
-	glUniform1i(L2EnableID, enabled);
-	glUniform4f(L2PositionID, lPosition.x, lPosition.y, lPosition.z, lPosition.w);
-	glUniform3f(L2ColorID, lColor.x, lColor.y, lColor.z);
-
-	// Light 3
-	enabled = 0;
-
-	GLuint L3EnableID = glGetUniformLocation(Renderer::GetShaderProgramID(), "L3Enable");
-	GLuint L3PositionID = glGetUniformLocation(Renderer::GetShaderProgramID(), "L3Position");
-	GLuint L3ColorID = glGetUniformLocation(Renderer::GetShaderProgramID(), "L3Color");
-
-	if (lightSize > 2) {
-		enabled = 1;
-		lightSource = mWorld->getLightSourceAt(2);
-		lPosition = lightSource.getPosition();
-		lColor = lightSource.getColor();
-	}
-
-	glUniform1i(L3EnableID, enabled);
-	glUniform4f(L3PositionID, lPosition.x, lPosition.y, lPosition.z, lPosition.w);
-	glUniform3f(L3ColorID, lColor.x, lColor.y, lColor.z);
-
-	// Light 4
-	enabled = 0;
-
-	GLuint L4EnableID = glGetUniformLocation(Renderer::GetShaderProgramID(), "L4Enable");
-	GLuint L4PositionID = glGetUniformLocation(Renderer::GetShaderProgramID(), "L4Position");
-	GLuint L4ColorID = glGetUniformLocation(Renderer::GetShaderProgramID(), "L4Color");
-
-	if (lightSize > 3) {
-		enabled = 1;
-		lightSource = mWorld->getLightSourceAt(3);
-		lPosition = lightSource.getPosition();
-		lColor = lightSource.getColor();
-	}
-	glUniform1i(L4EnableID, enabled);
-	glUniform4f(L4PositionID, lPosition.x, lPosition.y, lPosition.z, lPosition.w);
-	glUniform3f(L4ColorID, lColor.x, lColor.y, lColor.z);
-
-	// Light 5
-	enabled = 0;
-
-	GLuint L5EnableID = glGetUniformLocation(Renderer::GetShaderProgramID(), "L5Enable");
-	GLuint L5PositionID = glGetUniformLocation(Renderer::GetShaderProgramID(), "L5Position");
-	GLuint L5ColorID = glGetUniformLocation(Renderer::GetShaderProgramID(), "L5Color");
-
-	if (lightSize > 4) {
-		enabled = 1;
-		lightSource = mWorld->getLightSourceAt(4);
-		lPosition = lightSource.getPosition();
-		lColor = lightSource.getColor();
-	}
-	glUniform1i(L5EnableID, enabled);
-	glUniform4f(L5PositionID, lPosition.x, lPosition.y, lPosition.z, lPosition.w);
-	glUniform3f(L5ColorID, lColor.x, lColor.y, lColor.z);
-
-	// Light 6
-	enabled = 0;
-
-	GLuint L6EnableID = glGetUniformLocation(Renderer::GetShaderProgramID(), "L6Enable");
-	GLuint L6PositionID = glGetUniformLocation(Renderer::GetShaderProgramID(), "L6Position");
-	GLuint L6ColorID = glGetUniformLocation(Renderer::GetShaderProgramID(), "L6Color");
-
-	if (lightSize > 5) {
-		enabled = 1;
-		lightSource = mWorld->getLightSourceAt(5);
-		lPosition = lightSource.getPosition();
-		lColor = lightSource.getColor();
-	}
-	glUniform1i(L6EnableID, enabled);
-	glUniform4f(L6PositionID, lPosition.x, lPosition.y, lPosition.z, lPosition.w);
-	glUniform3f(L6ColorID, lColor.x, lColor.y, lColor.z);
-
-
-	// Light 7
-	enabled = 0;
-
-	GLuint L7EnableID = glGetUniformLocation(Renderer::GetShaderProgramID(), "L7Enable");
-	GLuint L7PositionID = glGetUniformLocation(Renderer::GetShaderProgramID(), "L7Position");
-	GLuint L7ColorID = glGetUniformLocation(Renderer::GetShaderProgramID(), "L7Color");
-
-	if (lightSize > 6) {
-		enabled = 1;
-		lightSource = mWorld->getLightSourceAt(6);
-		lPosition = lightSource.getPosition();
-		lColor = lightSource.getColor();
-	}
-	glUniform1i(L7EnableID, enabled);
-	glUniform4f(L7PositionID, lPosition.x, lPosition.y, lPosition.z, lPosition.w);
-	glUniform3f(L7ColorID, lColor.x, lColor.y, lColor.z);
-
-	// Light 8
-	enabled = 0;
-
-	GLuint L8EnableID = glGetUniformLocation(Renderer::GetShaderProgramID(), "L8Enable");
-	GLuint L8PositionID = glGetUniformLocation(Renderer::GetShaderProgramID(), "L8Position");
-	GLuint L8ColorID = glGetUniformLocation(Renderer::GetShaderProgramID(), "L8Color");
-
-	if (lightSize > 7) {
-		enabled = 1;
-		lightSource = mWorld->getLightSourceAt(7);
-		lPosition = lightSource.getPosition();
-		lColor = lightSource.getColor();
-	}
-	glUniform1i(L8EnableID, enabled);
-	glUniform4f(L8PositionID, lPosition.x, lPosition.y, lPosition.z, lPosition.w);
-	glUniform3f(L8ColorID, lColor.x, lColor.y, lColor.z);
+	glUniform4fv(LightPositionID, lSize, value_ptr(LightPositions[0]));
+	glUniform3fv(LightColorID, lSize, value_ptr(LightColor[0]));
 
 
 

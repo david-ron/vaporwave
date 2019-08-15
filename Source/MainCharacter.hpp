@@ -48,9 +48,14 @@ private:
     unsigned int textureID;
     glm::vec3 max;
     glm::vec3 min;
-    
+    glm::vec3 mLookAt;
     std::vector<glm::vec3> CornerPoint;
     
+	float breakTime = 30;
+	float aniTime = 12;
+	float timer = 0;
+	glm::mat4 HeadMatrix;
+
 };
 
 

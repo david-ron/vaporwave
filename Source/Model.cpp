@@ -141,7 +141,7 @@ bool Model::ParseLine(const std::vector<ci_string> &token)
 			else
 				World::getWorldInstance()->AddParticleSystem(ps);
         }
-		else if (token[0] == "properties")
+		/*else if (token[0] == "properties")
 		{
 			assert(token.size() > 5);
 			assert(token[1] == "=");
@@ -150,7 +150,7 @@ bool Model::ParseLine(const std::vector<ci_string> &token)
 			properties.y = static_cast<float>(atof(token[3].c_str()));
 			properties.z = static_cast<float>(atof(token[4].c_str()));
 			properties.w = static_cast<float>(atof(token[5].c_str()));
-		}
+		}*/
 		else
 		{
 			return false;

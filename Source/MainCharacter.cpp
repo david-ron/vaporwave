@@ -12,6 +12,7 @@
 #include "World.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include "TextureLoader.h"
+#include <cmath>
 using namespace glm;
 using namespace std;
 
@@ -33,8 +34,10 @@ MainCharacter::MainCharacter(glm::vec3 size) : Model(){
     //read the vertices from the cube.obj file
     //We won't be needing the normals or UVs for this program
     
-    ObjLoader::loadOBJ(characterObjFile.c_str(),vertices, normals, UVs, max, min);
+
     textureID = TextureLoader::LoadTexture("Textures/purplevalley_up.tga");
+    ObjLoader::loadOBJ(characterObjFile.c_str(),vertices, normals, UVs, max, min, properties);
+
     // the 8 corner points
     CornerPoint.push_back(vec3(min.x, max.y, min.z));// 0 back top left point
     CornerPoint.push_back(vec3(min.x, max.y, max.z));// 1 back top right point
@@ -98,6 +101,7 @@ void MainCharacter::Draw(glm::mat4 offsetMatrix)
     glBindVertexArray(mVAO);
     glBindBuffer(GL_ARRAY_BUFFER, mVBO);
     
+
     GLuint textureLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "mySampleTexture");
     glActiveTexture(GL_TEXTURE0);
     
@@ -106,20 +110,47 @@ void MainCharacter::Draw(glm::mat4 offsetMatrix)
     
     glBindTexture(GL_TEXTURE_2D, textureID);
     glUniform1i(textureLocation, 0);
+  // TODO need to add back
+	GLuint IsCharaLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "IsChara");
+	glUniform1i(IsCharaLocation, 1);
+	GLuint HeadMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "HeadMatrix");
+	glUniformMatrix4fv(HeadMatrixLocation, 1, GL_FALSE, &HeadMatrix[0][0]);
+
+
     GLuint WorldMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "WorldTransform");
     //glm::mat4 WorldMatrix = offsetMatrix * GetWorldMatrix();
-	mat4 modelSpaceMatrix = translate(mat4(1.0f), vec3(0.0f, -5.0f, 0.0));
-	glm::mat4 WorldMatrix = GetWorldMatrix() * modelSpaceMatrix;
+	mat4 modelSpaceMatrix = translate(mat4(1.0f), vec3(0.0f, -6.1f, 0.0));
+	 modelSpaceMatrix = rotate(modelSpaceMatrix, radians(90.0f), vec3(0, 1, 0));
+	//rotate the main character along the lookAt vector
+	
+	//cos theta= lookAt*(1,0,0)/magnitude of lookAt*
+	double dotProduct = dot(mLookAt,vec3(1.0f,0.0f,0.0f));
+	float RotationAngle = acos(dotProduct);
+	if (mLookAt.z < 0)
+		RotationAngle = 2 * 3.1416 - RotationAngle;
+
+	//if (RotationAngle < 0) {
+	//	RotationAngle =360-RotationAngle;
+	//}
+	
+	//cout << RotationAngle << endl;
+
+	mat4 rotationMatrix = rotate(mat4(1.0f),RotationAngle,vec3(0.0f,-1.0f,0.0f));
+	//mat4 rotationMatrix = mat4(1.0f);
+	
+	glm::mat4 WorldMatrix = GetWorldMatrix() * rotationMatrix * modelSpaceMatrix;
     glUniformMatrix4fv(WorldMatrixLocation, 1, GL_FALSE, &WorldMatrix[0][0]);
     //glUniformMatrix4fv(WorldMatrixLocation, 1, GL_FALSE, mAnimation->GetAnimationWorldMatrix()[0][0]);
     
     // Get a handle for Material Attributes uniform
     GLuint MaterialID = glGetUniformLocation(Renderer::GetShaderProgramID(), "materialCoefficients");
     // glUniform4f(MaterialID, ka, kd, ks, n);
-    glUniform4f(MaterialID, 0.2f, 0.8f, 0.2f, 50);
+    glUniform4f(MaterialID, properties.x, properties.y, properties.z, properties.w);
     
     // Draw the triangles !
     glDrawArrays(GL_TRIANGLES, 0, vertexCount); // 36 vertices: 3 * 2 * 6 (3 per triangle, 2 triangles per face, 6 faces)
+
+	glUniform1i(IsCharaLocation, 0);
 }
 
 void MainCharacter::Update(float dt)
@@ -129,8 +160,38 @@ void MainCharacter::Update(float dt)
     // mRotationAngleInDegrees += 90 * dt; // spins by 90 degrees per second
     
     //Model::Update(dt);
-
+	// if !leftkeypressed
+	vec3 oldPos = mPosition;
 	mPosition = World::getWorldInstance()->getMCposition();
+	mLookAt = World::getWorldInstance()->getMClookAt();
+
+	if (length(oldPos - mPosition) > 0.1)
+		timer = 0;
+
+	timer += dt;
+	if (timer > breakTime + aniTime)
+		timer -= breakTime + aniTime;
+
+	float sTime = aniTime / 4.0;
+	if (timer < breakTime)
+		HeadMatrix = mat4(1.0f);
+	else {
+		float t = timer - breakTime;
+		if (t < sTime) {
+			t = (t/-sTime + 1) * 3.1415/2;
+		}
+		else if (t < sTime*2) {
+			t = (t - sTime) / sTime * 3.1415 / 2;
+		}
+		else {
+			t = (t - sTime*3) / sTime * 3.1415 / 2 + 3.1415;
+		}
+		t = cos(t);
+
+		HeadMatrix = rotate(mat4(1.0f), t, vec3(0.0, 1.0, 0.0));
+	}
+
+
 
 }
 bool MainCharacter::ParseLine(const std::vector<ci_string> &token){

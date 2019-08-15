@@ -6,6 +6,8 @@
 //  Copyright © 2019 Concordia. All rights reserved.
 //
 
+
+// mostly based on obj loader from lab tutorial
 #include "ObjLoader.hpp"
 #include <stdio.h>
 #include <stdlib.h>
@@ -17,16 +19,18 @@ bool ObjLoader::loadOBJ(
              std::vector<glm::vec3> & out_normals,
              std::vector<glm::vec2> & out_uvs,
              glm::vec3 & max,
-             glm::vec3 & min) {
+             glm::vec3 & min,
+			 glm::vec4 & mtl) {
     
     std::vector<int> vertexIndices, uvIndices, normalIndices;
     std::vector<glm::vec3> temp_vertices;
     std::vector<glm::vec2> temp_uvs;
     std::vector<glm::vec3> temp_normals;
-    
+	std::vector<glm::vec4> temp_mtl;
+
     max = glm::vec3(-INFINITY);
     min = glm::vec3(INFINITY);
-    
+	char MtlFile[128];
     FILE * file;
     file = fopen(path, "r");
     if (!file) {
@@ -63,6 +67,10 @@ bool ObjLoader::loadOBJ(
 			if (vertex.z < min.z)
 				min.z = vertex.z;
         }
+		else if (strcmp(lineHeader, "mtllib") == 0) {
+			//fgets(line, 128, file);
+			fscanf(file, "%s\n", MtlFile);
+		}
         else if (strcmp(lineHeader, "vt") == 0) {
             glm::vec2 uv;
             fscanf(file, "%f %f\n", &uv.x, &uv.y);
@@ -127,10 +135,7 @@ bool ObjLoader::loadOBJ(
         }
         
     }
-    //std::cout << "Vertex indices: " << vertexIndices.size() << std::endl;
-    //std::cout << "UV indices: " << uvIndices.size() << std::endl;
-    //std::cout << "Normal indices: " << normalIndices.size() << std::endl;
-    // For each vertex of each triangle
+
     for (unsigned int i = 0; i < vertexIndices.size(); i++) {
         if (uvIndices.size() != 0) {
             if (i < uvIndices.size()) {
@@ -151,7 +156,38 @@ bool ObjLoader::loadOBJ(
         glm::vec3 vertex = temp_vertices[vertexIndex - 1];
         out_vertices.push_back(vertex);
     }
-    
+	//ka kd ks have rgb values but we will just use the first value
+	// they are all the same in our case... its just to read them all in
+	;
+	file = fopen((std::string("../Assets/Models/")+std::string(MtlFile)).c_str(), "r");
+	glm::vec3 temp_ka;
+	glm::vec3 temp_kd;
+	glm::vec3 temp_ks;
+	glm::vec3 temp_ke;
+	while (1) {
+
+		char lineHeader[128];
+		// read the first word of the line
+		int res = fscanf(file, "%s", lineHeader);
+		if (res == EOF)
+			break;
+		if (strcmp(lineHeader, "Ka") == 0) {
+			fscanf(file, "%f %f %f\n", &temp_ka.x, &temp_ka.y, &temp_ka.z);
+		}
+		else if (strcmp(lineHeader, "Kd") == 0) {
+			fscanf(file, "%f %f\n", &temp_kd.x, &temp_kd.y, &temp_kd.z);
+		}
+		else if (strcmp(lineHeader, "Ks") == 0) {
+			fscanf(file, "%f %f %f\n", &temp_ks.x, &temp_ks.y, &temp_ks.z);
+		}
+		else if (strcmp(lineHeader, "Ke") == 0) {
+			fscanf(file, "%f %f %f\n", &temp_ke.x, &temp_ke.y, &temp_ke.z);
+		}
+	}
+	mtl.x = temp_ka.x;
+	mtl.y = temp_kd.x;
+	mtl.z = temp_ks.x;
+	mtl.w = temp_ks.x;
     return true;
 }
 

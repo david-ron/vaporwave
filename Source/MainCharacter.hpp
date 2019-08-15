@@ -40,7 +40,7 @@ private:
 #if defined(PLATFORM_OSX)
     const std::string characterObjFile = "./Models/gameChar.obj";
 #else
-    const std::string characterObjFile ="../Assets/Models/gameChar.obj";
+    const std::string characterObjFile ="../Assets/Models/testdood2.obj";
 #endif
     unsigned int mVAO;
     unsigned int mVBO;

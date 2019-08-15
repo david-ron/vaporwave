@@ -40,7 +40,6 @@ int TextureLoader::LoadTexture(const char * imagepath)
 	// This will upload the texture to the GPU memory
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height,
 		0, GL_BGRA, GL_UNSIGNED_BYTE, (void*)FreeImage_GetBits(image32bits));
-
 	// Free images
 	FreeImage_Unload(image);
 	FreeImage_Unload(image32bits);

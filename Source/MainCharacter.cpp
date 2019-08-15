@@ -35,7 +35,7 @@ MainCharacter::MainCharacter(glm::vec3 size) : Model(){
     //We won't be needing the normals or UVs for this program
     
 
-    textureID = TextureLoader::LoadTexture("Textures/purplevalley_up.tga");
+    textureID = TextureLoader::LoadTexture("../Assets/Textures/Blocksempty.png");
     ObjLoader::loadOBJ(characterObjFile.c_str(),vertices, normals, UVs, max, min, properties);
 
     // the 8 corner points
@@ -49,9 +49,7 @@ MainCharacter::MainCharacter(glm::vec3 size) : Model(){
     CornerPoint.push_back(vec3(max.x, min.y, min.z));// 7 front bottom left point
     
     assert(CornerPoint.size() == 8);
-    
-    for (unsigned int i = 0; i<vertices.size(); ++i){UVs.push_back(vec2(0.5f,0.5f));};
-    
+        
     glGenVertexArrays(1, &mVAO);
     glBindVertexArray(mVAO); //Becomes active VAO
     // Bind the Vertex Array Object first, then bind and set vertex buffer(s) and attribute pointer(s).
@@ -95,6 +93,7 @@ MainCharacter::MainCharacter(glm::vec3 size) : Model(){
 void MainCharacter::Draw(glm::mat4 offsetMatrix)
 //void MainCharacter::Draw()
 {
+
     // Draw the Vertex Buffer
     // Note this draws a unit Cube
     // The Model View Projection transforms are computed in the Vertex Shader

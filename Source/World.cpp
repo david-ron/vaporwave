@@ -22,6 +22,7 @@
 #include "SkyBox.hpp"
 #include "Terrain/Terrain.h"
 #include "WillMath.h"
+#include <glm/gtc/type_ptr.hpp>
 //#include <openglut.h>
 
 World* World::worldInstance;
@@ -502,6 +503,36 @@ void World::Draw() {
 	}
 
 	Renderer::CheckForErrors();
+	// Drawing main character...
+	Renderer::SetShader(SHADER_MC);
+	glUseProgram(Renderer::GetShaderProgramID());
+	GLuint LightAttenuationID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightAttenuation");
+	glUniform3f(LightAttenuationID, 0.0f, 0.0f, 1.0f);
+	int lSize = lightSource.size();
+	GLuint LightSizeID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightSize");
+	glUniform1i(LightSizeID, lSize);
+	vec4 LightPositions[8];
+	vec3 LightColor[8];
+	for (int i = 0; i < lSize; i++) {
+		LightPositions[i] = lightSource[i]->getPosition();
+		LightColor[i] = lightSource[i]->getColor();
+	}
+	GLuint LightPositionID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lPosition");
+	GLuint LightColorID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lColor");
+	glUniform4fv(LightPositionID, lSize, value_ptr(LightPositions[0]));
+	glUniform3fv(LightColorID, lSize, value_ptr(LightColor[0]));
+	GLuint VPMatrixLocationmc = glGetUniformLocation(Renderer::GetShaderProgramID(), "ViewProjectionTransform");
+	GLuint ViewMatrixIDmc = glGetUniformLocation(Renderer::GetShaderProgramID(), "ViewTransform");
+	GLuint ProjMatrixIDmc = glGetUniformLocation(Renderer::GetShaderProgramID(), "ProjectionTransform");
+	mat4 VPmc = World::getWorldInstance()->GetCurrentCamera()->GetViewProjectionMatrix();
+	glUniformMatrix4fv(VPMatrixLocationmc, 1, GL_FALSE, &VPmc[0][0]);
+	mat4 Viewmc = World::getWorldInstance()->GetCurrentCamera()->GetViewMatrix();
+	glUniformMatrix4fv(ViewMatrixIDmc, 1, GL_FALSE, &Viewmc[0][0]);
+	mat4 Projectionmc = World::getWorldInstance()->GetCurrentCamera()->GetProjectionMatrix();
+	glUniformMatrix4fv(ProjMatrixIDmc, 1, GL_FALSE, &Projectionmc[0][0]);
+	// mCharater->Draw(mat4(1.0f));
+	if (mCurrentCamera != 0)
+		mCharater->Draw(mat4(1.0f));
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	
@@ -525,6 +556,14 @@ void World::Draw() {
 	Renderer::SetShader(oldShader);
 	Renderer::CheckForErrors();
     
+
+
+
+
+
+
+
+	//Skybox last
     glDisable(GL_BLEND);
     Renderer::SetShader(SHADER_SKY);
     glUseProgram(Renderer::GetShaderProgramID());
@@ -552,25 +591,7 @@ void World::Draw() {
    
 	// Restore previous shader
 	Renderer::SetShader((ShaderType)prevShader);
-    Renderer::SetShader(SHADER_MC);
-    glUseProgram(Renderer::GetShaderProgramID());
-    GLuint VPMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "ViewProjectionTransform");
-    // Get a handle for our Transformation Matrices uniform
-    //GLuint WorldMatrixID = glGetUniformLocation(Renderer::GetShaderProgramID(), "WorldTransform");
-    GLuint ViewMatrixID = glGetUniformLocation(Renderer::GetShaderProgramID(), "ViewTransform");
-    GLuint ProjMatrixID = glGetUniformLocation(Renderer::GetShaderProgramID(), "ProjectionTransform");
-    
-    mat4 VP = World::getWorldInstance()->GetCurrentCamera()->GetViewProjectionMatrix();
-    glUniformMatrix4fv(VPMatrixLocation, 1, GL_FALSE, &VP[0][0]);
 
-    mat4 View = World::getWorldInstance()->GetCurrentCamera()->GetViewMatrix();
-    glUniformMatrix4fv(ViewMatrixID, 1, GL_FALSE, &View[0][0]);
-
-    mat4 Projection = World::getWorldInstance()->GetCurrentCamera()->GetProjectionMatrix();
-    glUniformMatrix4fv(ProjMatrixID, 1, GL_FALSE, &Projection[0][0]);
-   // mCharater->Draw(mat4(1.0f));
-    if(mCurrentCamera != 0)
- 		    mCharater->Draw(mat4(1.0f));
     
     Renderer::CheckForErrors();
     

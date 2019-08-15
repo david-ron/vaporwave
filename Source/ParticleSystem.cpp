@@ -107,7 +107,7 @@ void ParticleSystem::Update(float dt, bool isCharater)
         // ...
     }
     
-    if(mParticleList.size() != 0)
+    if(!mParticleList.empty())
 		for (std::list<Particle*>::iterator it = mParticleList.begin(); it != mParticleList.end(); it++)
 		{
 			Particle* p = *it;

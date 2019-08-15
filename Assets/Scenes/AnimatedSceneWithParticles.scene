@@ -117,6 +117,12 @@ fadeOutTime = 0.7
 totalLifetime = 2.0
 totalLifetimeRandomness = 0.3
 
+[maincharacter]
+name     = "MainCharacter"
+particleEmitter = "Gasy"
+scaling  = 0.80 0.80 0.80
+position = 0.0 0.0 0.0
+rotation = 1.0 0.0 0.0 0.0
 
 [ParticleDescriptor]
 name        = "Smoke"
@@ -190,14 +196,6 @@ name = "light8"
 position = 0.3 0.3 -0.3 0.0
 color = 1 1 1
 lightAttenuation = 0.0 0.0 1.0
-
-[maincharacter]
-name     = "MainCharacter"
-particleEmitter = "Gasy"
-scaling  = 0.80 0.80 0.80
-position = 0.0 0.0 0.0
-rotation = 1.0 0.0 0.0 0.0
-
 
 [skybox]
 name = "skybox"

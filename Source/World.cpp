@@ -260,9 +260,9 @@ void World::Update(float dt) {
 
 		sDirection += vec3(0, 1, 0);
 	}
-	else if ((mcPosition.y - mcRadius) > groundHight + 0.5)
+	else if ((mcPosition.y - mcRadius) > groundHight + 2)
 	{
-		sDirection += vec3(0, -0.3, 0);
+		sDirection += vec3(0, -0.1, 0);
 	}
 	// Speed
 	float mSpeed = mCharacterDefaultSpeed * mCharacterSpeedUpRate;;
@@ -272,7 +272,7 @@ void World::Update(float dt) {
 
 
 	// Ground collision
-	if ((mcPosition.y - mcRadius) <= groundHight + 0.5  && dot(sDirection, groundNormal) < 0.0f) {
+	if ((mcPosition.y - mcRadius) <= groundHight + 1 && dot(sDirection, groundNormal) < 0.0f) {
 
 		vec3 mSideVector = cross(groundNormal, sDirection);
 		sDirection = cross(mSideVector, groundNormal);
@@ -443,8 +443,7 @@ void World::Update(float dt) {
 	mpBillboardList->Update(dt);
 	mcBillboardList->Update(dt);
 	mcParticleSystem->Update(dt, true);
-	
-	mViewSpaceBillboardList->Update(dt);
+	mWorldBlock[0]->Update(dt);
 
 	if (!mWorldBlock[DisplayedWBIndex[8]]->IsLightSphere()) {
 		vec3 sPosition = mModel[SphereIndex]->GetPosition();
@@ -457,9 +456,6 @@ void World::Update(float dt) {
 			mWorldBlock[DisplayedWBIndex[8]]->setIsLightSphere(true);
 		}
 	}
-
-	for(int i=0;i<9;i++)
-		mWorldBlock[DisplayedWBIndex[i]]->Update(dt);
 }
 
 
@@ -496,16 +492,15 @@ void World::Draw() {
 	}
 
 
-
 	Renderer::CheckForErrors();
 
-	//Renderer::SetShader(SHADER_PATH_LINES);
-	//glUseProgram(Renderer::GetShaderProgramID());
-	//Renderer::CheckForErrors();
+	Renderer::SetShader(SHADER_PATH_LINES);
+	glUseProgram(Renderer::GetShaderProgramID());
+	Renderer::CheckForErrors();
 
-	//for (int i = 0; i < 9; i++) {
-	//	mWorldBlock[DisplayedWBIndex[i]]->DrawPathLinesShader();
-	//}
+	for (int i = 0; i < 9; i++) {
+		mWorldBlock[DisplayedWBIndex[i]]->DrawPathLinesShader();
+	}
 
 	Renderer::CheckForErrors();
 	glEnable(GL_BLEND);
@@ -513,7 +508,7 @@ void World::Draw() {
 	
 	Renderer::CheckForErrors();
 
-	//ShaderType oldShader = (ShaderType)Renderer::GetCurrentShader();
+	ShaderType oldShader = (ShaderType)Renderer::GetCurrentShader();
 	//Texture shader
 	Renderer::SetShader(SHADER_TEXTURED);
 	glUseProgram(Renderer::GetShaderProgramID());
@@ -528,6 +523,7 @@ void World::Draw() {
     Renderer::SetShader(SHADER_TEXTURED);
 
 	Renderer::CheckForErrors();
+
 	//Renderer::SetShader(oldShader);
 	
 	// View space texture shader
@@ -535,9 +531,15 @@ void World::Draw() {
 	glUseProgram(Renderer::GetShaderProgramID());
 	mViewSpaceBillboardList->Draw();
 
-	glDisable(GL_BLEND);
-	Renderer::SetShader(SHADER_SKY);
-	glUseProgram(Renderer::GetShaderProgramID());
+
+	Renderer::SetShader(oldShader);
+	Renderer::CheckForErrors();
+    
+    glDisable(GL_BLEND);
+    Renderer::SetShader(SHADER_SKY);
+    glUseProgram(Renderer::GetShaderProgramID());
+  
+
     GLuint VPMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "ViewProjectionTransform");
     // Get a handle for our Transformation Matrices uniform
     GLuint ViewMatrixID = glGetUniformLocation(Renderer::GetShaderProgramID(), "ViewTransform");
@@ -624,18 +626,7 @@ World::World() {
 
 	//glutMouseWheelFunc(mouseWheel);
 
-	int Num0TextureID = TextureLoader::LoadTexture("../Assets/Textures/Number0.png");
-	int Num1TextureID = TextureLoader::LoadTexture("../Assets/Textures/Number1.png");
 
-	mViewSpaceBillboardList = new ViewSpaceBillboard(2048);
-	mViewSpaceBillboardList->AddTextureID(Num0TextureID);
-	mViewSpaceBillboardList->AddTextureID(Num1TextureID);
-
-	Billboard* b = new Billboard();
-	b->position = vec3(10.0,10.0,10.0);
-	b->size = vec2(100,100);
-	b->color = vec4(1.0);
-	mViewSpaceBillboardList->AddBillboard(b);
 }
 
 void World::scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
@@ -644,7 +635,15 @@ void World::scroll_callback(GLFWwindow* window, double xoffset, double yoffset) 
 }
 
 World::~World() {
-
+	//delete mWorldBlock0;
+	//delete mWorldBlock1;
+	//delete mWorldBlock2;
+	//delete mWorldBlock3;
+	//delete mWorldBlock4;
+	//delete mWorldBlock5;
+	//delete mWorldBlock6;
+	//delete mWorldBlock7;
+	//delete mWorldBlock8;
 };
 
 

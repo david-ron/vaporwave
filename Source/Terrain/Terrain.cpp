@@ -60,13 +60,10 @@ void Terrain::Draw(glm::mat4 offsetMatrix)
 	GLuint MaterialID = glGetUniformLocation(Renderer::GetShaderProgramID(), "materialCoefficients");
 	glUniform4f(MaterialID, 0.2f, 0.8f, 0.2f, 50);
 
-	GLuint IsTerrainID = glGetUniformLocation(Renderer::GetShaderProgramID(), "isTerrain");
-	glUniform1i(IsTerrainID,1);
-
 	// Draw the triangles !
 
 	glDrawArrays(GL_TRIANGLES, 0, m_vertexCount); // 36 vertices: 3 * 2 * 6 (3 per triangle, 2 triangles per face, 6 faces)
-	glUniform1i(IsTerrainID, 0);
+	
 }
 
 bool Terrain::ParseLine(const std::vector<ci_string>& token)
@@ -155,11 +152,14 @@ bool Terrain::BuildTerrainModel()
 			if(it%(2*step)<step)
 				color = glm::vec3(0.7f, 0.0f, 0.9f);
 			else
-				color = glm::vec3(0.6f, 0.5f, 1.0f);
+				color = glm::vec3(0.7f, 0.7f, 1.0f);
 
+			if (it % step == 0 || j % step == 0)
+				color = glm::vec3(0.4, 0.8, 0.4);
 
 			it++;
-
+			// Now create two triangles for that quad.
+			// Triangle 1 - Upper left.
 
 			m_terrainModel[index].position = m_heightMap[index1] - vec3(World::WorldBlockSize / 2, 0, World::WorldBlockSize / 2);
 			testPostion.push_back(m_terrainModel[index].position);
@@ -204,7 +204,7 @@ bool Terrain::BuildTerrainModel()
 		}
 	}
 
-	delete[] m_heightMap;
+	//delete[] m_heightMap;
 
 	glGenVertexArrays(1, &mVAO);
 	glBindVertexArray(mVAO);
@@ -294,4 +294,5 @@ void Terrain::getHightAndNormal(const vec3 coor, float& hight, vec3& normal) {
 	hight = cHight;
 	normal = cNormal;
 
+	//cout << "(" << coor.x << " ," << coor.z << ") :" << cHight << endl;
 }

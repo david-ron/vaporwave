@@ -33,8 +33,8 @@ CubeObj::CubeObj(glm::vec3 size) : Model(){
     //read the vertices from the cube.obj file
     //We won't be needing the normals or UVs for this program
 
-
-	ObjLoader::loadOBJ(cubeObjFile.c_str(), vertices, normals, UVs, max, min);
+	
+	ObjLoader::loadOBJ(cubeObjFile.c_str(), vertices, normals, UVs, max, min, properties);
 
 
 	// the 8 corner points
@@ -107,7 +107,7 @@ void CubeObj::Draw(glm::mat4 offsetMatrix)
     // Get a handle for Material Attributes uniform
     GLuint MaterialID = glGetUniformLocation(Renderer::GetShaderProgramID(), "materialCoefficients");
     // glUniform4f(MaterialID, ka, kd, ks, n);
-    glUniform4f(MaterialID, 0.2f, 0.8f, 0.2f, 50);
+    glUniform4f(MaterialID, properties.x, properties.y, properties.z, properties.w);
     
     // Draw the triangles !
     glDrawArrays(GL_TRIANGLES, 0, vertexCount); // 36 vertices: 3 * 2 * 6 (3 per triangle, 2 triangles per face, 6 faces)

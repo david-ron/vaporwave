@@ -472,7 +472,8 @@ void World::Draw() {
 	// Set shader to use
 	glUseProgram(Renderer::GetShaderProgramID());
 	Renderer::CheckForErrors();
-
+	Renderer::SetShader(SHADER_SOLID_COLOR);
+	glUseProgram(Renderer::GetShaderProgramID());
 	for (int i = 0; i < 9; i++) {
 		mWorldBlock[DisplayedWBIndex[i]]->DrawCurrentShader();
 	}
@@ -528,14 +529,15 @@ void World::Draw() {
 
 	Renderer::CheckForErrors();
 	//Renderer::SetShader(oldShader);
-
+	
 	// View space texture shader
 	Renderer::SetShader(SHADER_VIEWSPACE);
 	glUseProgram(Renderer::GetShaderProgramID());
 	mViewSpaceBillboardList->Draw();
 
-
-
+	glDisable(GL_BLEND);
+	Renderer::SetShader(SHADER_SKY);
+	glUseProgram(Renderer::GetShaderProgramID());
     GLuint VPMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "ViewProjectionTransform");
     // Get a handle for our Transformation Matrices uniform
     GLuint ViewMatrixID = glGetUniformLocation(Renderer::GetShaderProgramID(), "ViewTransform");

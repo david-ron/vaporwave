@@ -7,26 +7,17 @@ using namespace std;
 #include <iostream>
 
 bmpReader* bmpReader::Instance = nullptr;
-glm::vec3* bmpReader::m_heightMap ;
+glm::vec3* bmpReader::heightMap;
 
 bmpReader::bmpReader()
 {
-
-
-	m_terrainHeight = 225;
-	m_terrainWidth = 225;
-	m_heightMap = new glm::vec3[m_terrainWidth * m_terrainHeight];
-	//HeightMapType* temp;
-
-	// Initialize the terrain height map with the data from the bitmap file.
-	//LoadBitmapHeightMap(temp);
-
-
-
+	terrainHeight = 0;
+	terrainWidth = 0;
+	heightMap = 0;
 }
 
 
-vec3* bmpReader::LoadBitmapHeightMap(std::string m_terrainFilename )
+vec3* bmpReader::LoadBitMap(std::string bmpFile, int &twidth, int &theight)
 {
 	int error, imageSize, k, index;
 	FILE* filePtr;
@@ -36,108 +27,40 @@ vec3* bmpReader::LoadBitmapHeightMap(std::string m_terrainFilename )
 	unsigned char* bitmapImage;
 	unsigned char height;
 
-	// Start by creating the array structure to hold the height map data.
-//-	m_heightMap = new glm::vec3[m_terrainWidth * m_terrainHeight];
-	if (!m_heightMap)
-	{
-		return false;
-	}
+	fopen_s(&filePtr, bmpFile.c_str(), "rb");
+	fread(&bitmapFileHeader, sizeof(BITMAPFILEHEADER), 1, filePtr);
+	fread(&bitmapInfoHeader, sizeof(BITMAPINFOHEADER), 1, filePtr);
 
-	// Open the bitmap map file in binary.
-	error = fopen_s(&filePtr, m_terrainFilename.c_str(), "rb");
-	if (error != 0)
-	{
-		return false;
-	}
+	terrainHeight = bitmapInfoHeader.biHeight;
+	terrainWidth = bitmapInfoHeader.biWidth;
+	theight = terrainHeight;
+	twidth = terrainWidth;
 
-	// Read in the bitmap file header.
-	count = fread(&bitmapFileHeader, sizeof(BITMAPFILEHEADER), 1, filePtr);
-	if (count != 1)
-	{
-		return false;
-	}
-
-	// Read in the bitmap info header.
-	count = fread(&bitmapInfoHeader, sizeof(BITMAPINFOHEADER), 1, filePtr);
-	if (count != 1)
-	{
-		return false;
-	}
-
-	cout << bitmapInfoHeader.biHeight;
-
-	// Make sure the height map dimensions are the same as the terrain dimensions for easy 1 to 1 mapping.
-	if ((bitmapInfoHeader.biHeight != m_terrainHeight) || (bitmapInfoHeader.biWidth != m_terrainWidth))
-	{
-		return false;
-	}
-
-	// Calculate the size of the bitmap image data.  
-	// Since we use non-divide by 2 dimensions (eg. 257x257) we need to add an extra byte to each line.
-	imageSize = m_terrainHeight * ((m_terrainWidth * 3) + 1);
-
-	// Allocate memory for the bitmap image data.
+	imageSize = terrainHeight * ((terrainWidth * 3) + 1);
 	bitmapImage = new unsigned char[imageSize];
-	if (!bitmapImage)
-	{
-		return false;
-	}
-
-	// Move to the beginning of the bitmap data.
 	fseek(filePtr, bitmapFileHeader.bfOffBits, SEEK_SET);
-
-	// Read in the bitmap image data.
-	count = fread(bitmapImage, 1, imageSize, filePtr);
-	if (count != imageSize)
-	{
-		return false;
-	}
-
-	// Close the file.
-	error = fclose(filePtr);
-	if (error != 0)
-	{
-		return false;
-	}
+	fread(bitmapImage, 1, imageSize, filePtr);
+	fclose(filePtr);
 
 	// Initialize the position in the image data buffer.
 	k = 0;
 
+	heightMap = new glm::vec3[terrainWidth * terrainHeight];
 	// Read the image data into the height map array.
-	for (int j = 0; j < m_terrainHeight; j++)
+	for (int j = 0; j < terrainHeight; j++)
 	{
-		for (int i = 0; i < m_terrainWidth; i++)
+		for (int i = 0; i < terrainWidth; i++)
 		{
-			// Bitmaps are upside down so load bottom to top into the height map array.
-			index = (m_terrainWidth * (m_terrainHeight - 1 - j)) + i;
-
-			// Get the grey scale pixel value from the bitmap image data at this location.
+			index = (terrainWidth * (terrainHeight - 1 - j)) + i;
 			height = bitmapImage[k];
-
-			// Store the pixel value as the height at this point in the height map array.
-			m_heightMap[index].y = (float)height / 6;
-
-			// Increment the bitmap image data index.
+			heightMap[index].y = (float)height / 6;
 			k += 3;
 		}
-
-		// Compensate for the extra byte at end of each line in non-divide by 2 bitmaps (eg. 257x257).
 		k++;
 	}
-	
-	// Release the bitmap image data now that the height map array has been loaded.
 	delete[] bitmapImage;
 	bitmapImage = 0;
-
-	// Release the terrain filename now that is has been read in.
-	//delete[] m_terrainFilename;
-	//m_terrainFilename = 0;
-
-	//output = 
-		
-	return	m_heightMap;
-
-	//return m_heightMap;
+	return	heightMap;
 }
 
 
@@ -146,5 +69,5 @@ bmpReader* bmpReader::getInstance() {
 	if (Instance == nullptr)
 		Instance = new bmpReader();
 	return Instance;
-	
+
 }

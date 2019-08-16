@@ -19,10 +19,9 @@ Terrain::Terrain()
 	mVBO = 0;
 
 	bmpFile = "../Assets/Textures/terrain.bmp";
-	heightMap = bmpReader::getInstance()->LoadBitMap(bmpFile, terrainWidth, terrainHeight);
+	heightMap = bmpReader::getInstance()->LoadBMP(bmpFile, terrainWidth, terrainHeight);
 	SetTerrainPosition();
 	CreateTerrain();
-
 }
 
 Terrain::~Terrain()
@@ -47,7 +46,6 @@ void Terrain::Draw(glm::mat4 offsetMatrix)
 	glUniform4f(MaterialID, 0.2f, 0.8f, 0.2f, 50);
 	GLuint IsTerrainID = glGetUniformLocation(Renderer::GetShaderProgramID(), "isTerrain");
 	glUniform1i(IsTerrainID, 1);
-
 	glDrawArrays(GL_TRIANGLES, 0, vertexAmount); 
 
 }
@@ -87,12 +85,14 @@ void Terrain::SetTerrainPosition()
 
 void Terrain::CreateTerrain()
 {
-	int it, step, index, index1, index2, index3, index4;
+	int it, step, index, upperLeft, upperRight, bottomLeft, bottomRight;
 	vertexAmount = (terrainHeight - 1) * (terrainWidth - 1) * 6;
 	terrain = new Vertex[vertexAmount]; // modeltype is a struct of float x,y,z
+	glm::vec3 color;
 	index = 0;
 	it = 0;
 	step = 8;
+	
 
 	for (int i = 0; i < (terrainHeight - 1); i++)
 	{
@@ -102,18 +102,16 @@ void Terrain::CreateTerrain()
 
 		for (int j = 0; j < (terrainWidth - 1); j++)
 		{
-			index1 = (terrainWidth * i) + j;          // Upper left.
-			index2 = (terrainWidth * i) + (j + 1);      // Upper right.
-			index3 = (terrainWidth * (i + 1)) + j;      // Bottom left.
-			index4 = (terrainWidth * (i + 1)) + (j + 1);  // Bottom right.
+			upperLeft = (terrainWidth * i) + j;         
+			upperRight = (terrainWidth * i) + (j + 1);      
+			bottomLeft = (terrainWidth * (i + 1)) + j;     
+			bottomRight = (terrainWidth * (i + 1)) + (j + 1); 
 
-			glm::vec3 normalTriangle1 = glm::triangleNormal(heightMap[index1],
-				heightMap[index2], heightMap[index3]);
+			glm::vec3 normalTriangle1 = glm::triangleNormal(heightMap[upperLeft],
+				heightMap[upperRight], heightMap[bottomLeft]);
 
-			glm::vec3 normalTriangle2 = glm::triangleNormal(heightMap[index3],
-				heightMap[index2], heightMap[index4]);
-
-			glm::vec3 color;
+			glm::vec3 normalTriangle2 = glm::triangleNormal(heightMap[bottomLeft],
+				heightMap[upperRight], heightMap[bottomRight]);
 
 			if (it % (2 * step) < step) {
 				color = glm::vec3(0.7f, 0.0f, 0.9f);
@@ -121,44 +119,34 @@ void Terrain::CreateTerrain()
 				color = glm::vec3(0.7f, 0.7f, 1.0f);
 			}
 
-			if (it % step == 0 || j % step == 0) {
-				color = glm::vec3(0.4, 0.8, 0.4);
-			}
-
 			it++;
 
-			// Triangle 1 - Upper left.
-			terrain[index].position = heightMap[index1] - vec3(World::WorldBlockSize / 2, 0, World::WorldBlockSize / 2);
+			terrain[index].position = heightMap[upperLeft] - vec3(World::WorldBlockSize / 2, 0, World::WorldBlockSize / 2);
 			terrain[index].normal = normalTriangle1;
 			terrain[index].color = color;
 			index++;
 
-			// Triangle 1 - Upper right.
-			terrain[index].position = heightMap[index2] - vec3(World::WorldBlockSize / 2, 0, World::WorldBlockSize / 2);
+			terrain[index].position = heightMap[upperRight] - vec3(World::WorldBlockSize / 2, 0, World::WorldBlockSize / 2);
 			terrain[index].normal = normalTriangle1;
 			terrain[index].color = color;
 			index++;
 
-			// Triangle 1 - Bottom left.
-			terrain[index].position = heightMap[index3] - vec3(World::WorldBlockSize / 2, 0, World::WorldBlockSize / 2);
+			terrain[index].position = heightMap[bottomLeft] - vec3(World::WorldBlockSize / 2, 0, World::WorldBlockSize / 2);
 			terrain[index].normal = normalTriangle1;
 			terrain[index].color = color;
 			index++;
 
-			// Triangle 2 - Bottom left.
-			terrain[index].position = heightMap[index3] - vec3(World::WorldBlockSize / 2, 0, World::WorldBlockSize / 2);
+			terrain[index].position = heightMap[bottomLeft] - vec3(World::WorldBlockSize / 2, 0, World::WorldBlockSize / 2);
 			terrain[index].normal = normalTriangle2;
 			terrain[index].color = color;
 			index++;
 
-			// Triangle 2 - Upper right.
-			terrain[index].position = heightMap[index2] - vec3(World::WorldBlockSize / 2, 0, World::WorldBlockSize / 2);
+			terrain[index].position = heightMap[upperRight] - vec3(World::WorldBlockSize / 2, 0, World::WorldBlockSize / 2);
 			terrain[index].normal = normalTriangle2;
 			terrain[index].color = color;
 			index++;
 
-			// Triangle 2 - Bottom right.
-			terrain[index].position = heightMap[index4] - vec3(World::WorldBlockSize / 2, 0, World::WorldBlockSize / 2);
+			terrain[index].position = heightMap[bottomRight] - vec3(World::WorldBlockSize / 2, 0, World::WorldBlockSize / 2);
 			terrain[index].normal = normalTriangle2;
 			terrain[index].color = color;
 			index++;

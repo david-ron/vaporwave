@@ -8,7 +8,7 @@ class bmpReader
 public:
 
 	static bmpReader* getInstance();
-	glm::vec3* LoadBitMap(std::string bmpFile, int &twidth, int &theight);
+	glm::vec3* LoadBMP(std::string bmpFile, int &twidth, int &theight);
 
 
 private:

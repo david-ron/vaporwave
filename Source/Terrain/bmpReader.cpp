@@ -16,54 +16,50 @@ bmpReader::bmpReader()
 	heightMap = 0;
 }
 
-
-vec3* bmpReader::LoadBitMap(std::string bmpFile, int &twidth, int &theight)
+vec3* bmpReader::LoadBMP(std::string bmpFile, int &twidth, int &theight)
 {
-	int error, imageSize, k, index;
+	int size, step, index;
+	step = 0;
 	FILE* filePtr;
 	unsigned long long count;
-	BITMAPFILEHEADER bitmapFileHeader;
-	BITMAPINFOHEADER bitmapInfoHeader;
-	unsigned char* bitmapImage;
+	BITMAPFILEHEADER fileHeader;
+	BITMAPINFOHEADER infoHeader;
+	unsigned char* image;
 	unsigned char height;
 
 	fopen_s(&filePtr, bmpFile.c_str(), "rb");
-	fread(&bitmapFileHeader, sizeof(BITMAPFILEHEADER), 1, filePtr);
-	fread(&bitmapInfoHeader, sizeof(BITMAPINFOHEADER), 1, filePtr);
+	fread(&fileHeader, sizeof(BITMAPFILEHEADER), 1, filePtr); 
+	fread(&infoHeader, sizeof(BITMAPINFOHEADER), 1, filePtr);
 
-	terrainHeight = bitmapInfoHeader.biHeight;
-	terrainWidth = bitmapInfoHeader.biWidth;
+	terrainHeight = infoHeader.biHeight;
+	terrainWidth = infoHeader.biWidth;
 	theight = terrainHeight;
 	twidth = terrainWidth;
 
-	imageSize = terrainHeight * ((terrainWidth * 3) + 1);
-	bitmapImage = new unsigned char[imageSize];
-	fseek(filePtr, bitmapFileHeader.bfOffBits, SEEK_SET);
-	fread(bitmapImage, 1, imageSize, filePtr);
+	size = terrainHeight * ((terrainWidth * 3) + 1);
+	image = new unsigned char[size];
+	fseek(filePtr, fileHeader.bfOffBits, SEEK_SET); 
+	fread(image, 1, size, filePtr);
 	fclose(filePtr);
 
-	// Initialize the position in the image data buffer.
-	k = 0;
-
 	heightMap = new glm::vec3[terrainWidth * terrainHeight];
-	// Read the image data into the height map array.
-	for (int j = 0; j < terrainHeight; j++)
+
+	for (int i = 0; i < terrainHeight; i++)
 	{
-		for (int i = 0; i < terrainWidth; i++)
+		for (int j = 0; j < terrainWidth; j++)
 		{
-			index = (terrainWidth * (terrainHeight - 1 - j)) + i;
-			height = bitmapImage[k];
-			heightMap[index].y = (float)height / 6;
-			k += 3;
+			height = image[step];
+			// makes the height of the terrain lower
+			heightMap[(terrainWidth - 1 - i) * (terrainHeight)+j].y = (float)height / 6;
+			step += 3;
 		}
-		k++;
+		step++;
 	}
-	delete[] bitmapImage;
-	bitmapImage = 0;
+
+	delete[] image;
+
 	return	heightMap;
 }
-
-
 
 bmpReader* bmpReader::getInstance() {
 	if (Instance == nullptr)

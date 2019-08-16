@@ -23,7 +23,6 @@ protected:
 private:
 
 
-	//glm::vec3 HeightMapType[225*225] ;
 
 	struct Vertex //from model
 	{
@@ -39,31 +38,22 @@ private:
 		glm::vec3 normal;
 	};
 
-	//struct HeightMapType //change to vec3 later 
-	//{
-	//	glm::vec3 position;
-	//};
 
-	struct ModelType
-	{
-		glm::vec3 position, normal, color;
-	};
+	void SetTerrainPosition();
+	void CreateTerrain();
 
-	void SetTerrainCoordinates();
-	bool BuildTerrainModel();
-	void ShutdownTerrainModel();
 
 	unsigned int mVAO;
 	unsigned int mVBO;
-	//unsigned int vertexCount;
 
-	// to be changed
-	unsigned int m_vertexCount, m_indexCount;
-	int m_terrainHeight, m_terrainWidth;
-	float m_heightScale;
-	glm::vec3* m_heightMap;
-	char* m_terrainFilename;
-	Vertex* m_terrainModel;
+
+
+	unsigned int vertexAmount;
+	int terrainHeight, terrainWidth;
+	float scaleHeight;
+	glm::vec3* heightMap;
+	char* bmpFile;
+	Vertex* terrain;
 
 
 };

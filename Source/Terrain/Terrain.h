@@ -21,9 +21,6 @@ protected:
 	virtual bool ParseLine(const std::vector<ci_string> &token);
 
 private:
-
-
-
 	struct Vertex //from model
 	{
 		glm::vec3 position;
